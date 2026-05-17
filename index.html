@@ -1290,10 +1290,9 @@ function loadGoogleMaps() {
   });
 }
 
-function searchGooglePlaces(lat, lng, type) {
+function searchGooglePlaces(lat, lng, type, radius = 10000) {
   return new Promise((resolve) => {
-    // Timeout: falls Places-API nicht antwortet (z.B. Key-Beschränkung), leeres Array
-    const timer = setTimeout(() => resolve([]), 6000);
+    const timer = setTimeout(() => resolve([]), 10000);
     try {
       if (!placesService) {
         const div = document.createElement('div');
@@ -1302,7 +1301,7 @@ function searchGooglePlaces(lat, lng, type) {
       }
       placesService.nearbySearch({
         location: new google.maps.LatLng(lat, lng),
-        radius: 10000,
+        radius,
         type,
       }, (results, status) => {
         clearTimeout(timer);
@@ -1485,9 +1484,11 @@ async function searchCity() {
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
           searchGooglePlaces(geo.lat, geo.lng, 'museum'),
-          searchGooglePlaces(geo.lat, geo.lng, 'zoo'),
-          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park'),
-        ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
+          searchGooglePlaces(geo.lat, geo.lng, 'zoo', 40000),
+          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 30000),
+          searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 30000),
+          searchGooglePlaces(geo.lat, geo.lng, 'park', 15000),
+        ]).then(([a,b,c,d,e,f]) => [...a,...b,...c,...d,...e,...f]),
       ]);
       // Deduplicate by place_id, then limit
       const dedup = arr => {
