@@ -1715,12 +1715,18 @@ async function searchCity() {
                       .filter(p => {
                         const types = p.types || [];
                         const name = (p.name || '').toLowerCase();
+                        const ratings = p.user_ratings_total || 0;
                         const isRealZoo = types.includes('zoo') || types.includes('aquarium');
-                        const zooKw = ['zoo','tierpark','wildpark','safari','aquarium','meeresmuseum','reptilien','vogelpark','naturschutz','wildlife','tiergehege'];
+                        const zooKw = ['zoo','tierpark','wildpark','safari','aquarium','meeresmuseum','reptilien','vogelpark','naturschutz','wildlife','tiergehege','farmpark','farm park'];
                         const hasZooName = zooKw.some(k => name.includes(k));
+                        // Einzelne Tiergehege / Tiere im Zoo ausschließen
+                        const animalKw = ['löwe','tiger','elefant','giraffe','pinguin','gorilla','orang','schimpanse','zebra','nashorn','nilpferd','krokodil','schlange','papagei','erdmännchen','flamingo','gepard','leopard','wolf','bär','panda','koala','känguru','gehege','enclosure','paddock','streichelzoo','streichel'];
+                        const isAnimalExhibit = animalKw.some(k => name.includes(k));
                         const excludeKw = ['camping','schwimmbad','freibad','hallenbad','pool','steinpark','kletterpark','spielplatz','minigolf','kart'];
                         const isExcluded = excludeKw.some(k => name.includes(k));
-                        return !isExcluded && (isRealZoo || hasZooName);
+                        // Mindestanzahl Bewertungen: echte Zoos haben i.d.R. viele Bewertungen
+                        const hasSufficientRatings = ratings >= 50;
+                        return !isExcluded && !isAnimalExhibit && (isRealZoo || hasZooName) && hasSufficientRatings;
                       })
                       .map(normGooglePlace),
         museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
