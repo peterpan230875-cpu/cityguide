@@ -1476,17 +1476,18 @@ async function searchCity() {
           searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
           searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway'),
           searchGooglePlaces(geo.lat, geo.lng, 'bakery'),
-        ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
+          searchGooglePlaces(geo.lat, geo.lng, 'fast_food'),
+        ]).then(([a,b,c,d,e]) => [...a,...b,...c,...d,...e]),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'bar'),
           searchGooglePlaces(geo.lat, geo.lng, 'night_club'),
         ]).then(([a,b]) => [...a,...b]),
         Promise.all([
+          searchGooglePlaces(geo.lat, geo.lng, 'zoo', 40000),
+          searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 30000),
+          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 30000),
           searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
           searchGooglePlaces(geo.lat, geo.lng, 'museum'),
-          searchGooglePlaces(geo.lat, geo.lng, 'zoo', 40000),
-          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 30000),
-          searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 30000),
           searchGooglePlaces(geo.lat, geo.lng, 'park', 15000),
         ]).then(([a,b,c,d,e,f]) => [...a,...b,...c,...d,...e,...f]),
       ]);
@@ -1495,9 +1496,9 @@ async function searchCity() {
         const seen = new Set();
         return arr.filter(p => { if (seen.has(p.place_id)) return false; seen.add(p.place_id); return true; });
       };
-      essenPlaces   = dedup(er).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      essenPlaces   = dedup(er).slice(0, CONFIG.resultsPerCategory * 2).map(normGooglePlace);
       trinkenPlaces = dedup(tr).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
-      kulturPlaces  = dedup(kr).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      kulturPlaces  = dedup(kr).slice(0, CONFIG.resultsPerCategory * 2).map(normGooglePlace);
       // Fallback falls Key gesperrt (z.B. localhost)
       if (!essenPlaces.length)   essenPlaces   = getDemoData(currentCity, 'essen');
       if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
