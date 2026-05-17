@@ -1465,7 +1465,7 @@ async function searchCity() {
 
     // 2. Google Places oder Overpass
     const gmLoaded = await loadGoogleMaps();
-    let essenPlaces, trinkenPlaces, kulturPlaces, source;
+    let essenPlaces, trinkenPlaces, kulturPlaces, kulturPools, source;
 
     if (gmLoaded) {
       setLoading(true, 'Lade Orte mit Bewertungen…');
