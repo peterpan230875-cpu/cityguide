@@ -2584,10 +2584,14 @@ function openTransitNetworkMap() {
     const lat = currentLat || 48.2;
     const lng = currentLng || 16.37;
     const m = L.map('transitNetMap', { zoomControl: true }).setView([lat, lng], 13);
-    // OpenPTMap — zeigt alle ÖPNV-Linien mit Nummern aus OSM
+    // Satellit als Basis
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '© Esri', maxZoom: 19,
+    }).addTo(m);
+    // OpenPTMap als Overlay — zeigt alle ÖPNV-Linien mit Nummern aus OSM
     L.tileLayer('https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://memomaps.de">MemoMaps</a> / OpenPTMap © OSM',
-      maxZoom: 17,
+      maxZoom: 17, opacity: 0.85,
     }).addTo(m);
     if (userGpsLat && userGpsLng) {
       L.marker([userGpsLat, userGpsLng], {
