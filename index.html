@@ -1171,6 +1171,7 @@
 
       <!-- TRINKEN -->
       <div id="panel-trinken" class="tab-panel" style="display:none;"></div>
+      <div id="panel-favs" class="tab-panel" style="display:none;"></div>
 
       <!-- KULTUR -->
       <div id="panel-kultur" class="tab-panel" style="display:none;"></div>
@@ -1206,6 +1207,10 @@
     <button class="nav-btn" onclick="switchTab('buchen')" id="nav-buchen">
       <span class="nav-icon">🎟️</span>
       <span class="nav-label">Buchen</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('favs')" id="nav-favs">
+      <span class="nav-icon">❤️</span>
+      <span class="nav-label">Favoriten</span>
     </button>
   </nav>
 
@@ -2314,13 +2319,19 @@ function renderPlaceCard(p, includeBook = false, insider = false) {
   const links = navLink(p);
   const gmDir = dirLink(p.lat, p.lng, p.name);
   const gygUrl = gygLink(currentCity, p.name);
+  const fav = isFav(p);
+  const pJson = esc(JSON.stringify(p));
 
   return `
-  <div class="place-card fade-in">
+  <div class="place-card fade-in" id="card-${favKey(p).replace(/[^a-z0-9]/g,'_')}">
     <div class="place-top">
       <div class="place-icon-wrap">${p.icon}</div>
       <div class="place-info">
-        <div class="place-name">${esc(p.name)}${insider ? '<span class="insider-badge">🔍 Geheimtipp</span>' : ''}${cuisineBadge(p)}</div>
+        <div class="place-name" style="display:flex;align-items:center;gap:6px;">
+          <span>${esc(p.name)}</span>
+          ${insider ? '<span class="insider-badge">🔍 Geheimtipp</span>' : ''}${cuisineBadge(p)}
+          <button onclick='handleFavToggle(${pJson})' style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;" title="Favorit">${fav ? '❤️' : '🤍'}</button>
+        </div>
         <div class="place-address">📍 ${esc(p.address || 'Adresse nicht verfügbar')}</div>
         <div class="place-badges">
           ${starBadge(p.rating, p.ratingCount)}
@@ -2338,9 +2349,63 @@ function renderPlaceCard(p, includeBook = false, insider = false) {
   </div>`;
 }
 
+function handleFavToggle(p) {
+  toggleFav(p);
+  // re-render current tab to update heart icons
+  const t = document.querySelector('.nav-btn.active')?.id?.replace('nav-','');
+  if (t === 'essen')   renderEssen(statePlaces.essen);
+  else if (t === 'trinken') renderTrinken(statePlaces.trinken);
+  else if (t === 'kultur')  renderKultur(statePlaces.kultur);
+  else if (t === 'favs')    renderFavs();
+}
+
 let activeEssenFilter = 'alle';
 let activeTrinkenFilter = 'alle';
 let activeKulturFilter = 'alle';
+let activeEssenSort = 'rating';
+let activeTrinkenSort = 'rating';
+let activeKulturSort = 'rating';
+
+// ── Favourites ────────────────────────────────────────────────
+function favKey(p) { return (p.name + '|' + (p.address||'')).toLowerCase(); }
+function getFavs() { try { return JSON.parse(localStorage.getItem('cg_favs') || '{}'); } catch { return {}; } }
+function isFav(p) { return !!getFavs()[favKey(p)]; }
+function toggleFav(p) {
+  const favs = getFavs();
+  const k = favKey(p);
+  if (favs[k]) delete favs[k]; else favs[k] = p;
+  localStorage.setItem('cg_favs', JSON.stringify(favs));
+}
+
+// ── Sort ──────────────────────────────────────────────────────
+function sortPlaces(places, sort) {
+  const arr = [...places];
+  if (sort === 'alpha') return arr.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+  if (sort === 'count') return arr.sort((a,b) => (b.ratingCount??0) - (a.ratingCount??0));
+  if (sort === 'price') return arr.sort((a,b) => {
+    if (a.priceLevel === null && b.priceLevel === null) return 0;
+    if (a.priceLevel === null) return 1;
+    if (b.priceLevel === null) return -1;
+    return a.priceLevel - b.priceLevel;
+  });
+  return arr.sort((a,b) => { // rating (default)
+    const ra = a.rating??0, rb = b.rating??0;
+    if (rb !== ra) return rb - ra;
+    return (b.ratingCount??0) - (a.ratingCount??0);
+  });
+}
+
+function sortBarHtml(active, setFn) {
+  const opts = [
+    { id:'rating', label:'⭐ Bewertung' },
+    { id:'count',  label:'📊 Anzahl' },
+    { id:'alpha',  label:'🔤 A–Z' },
+    { id:'price',  label:'💰 Preis' },
+  ];
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;padding:4px 0 8px 0;">${opts.map(o =>
+    `<button onclick="${setFn}('${o.id}')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid ${active===o.id?'var(--gold)':'rgba(255,255,255,.15)'};background:${active===o.id?'rgba(251,191,36,.15)':'transparent'};color:${active===o.id?'var(--gold)':'var(--text2)'};cursor:pointer;">${o.label}</button>`
+  ).join('')}</div>`;
+}
 
 function isInsider(p) {
   if (p.demo) return false;
@@ -2507,9 +2572,9 @@ function renderEssen(places) {
   const poolFilters = ['fastfood','buffet','lokal','guenstig','normal','gehoben','insider'];
   let filtered;
   if (poolFilters.includes(activeEssenFilter) && pools[activeEssenFilter]) {
-    filtered = sortByRating(pools[activeEssenFilter]);
+    filtered = sortPlaces(pools[activeEssenFilter], activeEssenSort);
   } else {
-    filtered = sortByRating(places);
+    filtered = sortPlaces(places, activeEssenSort);
   }
   const insiderNote = activeEssenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), wenig bekannt. Wo Einheimische hingehen.</div>`
@@ -2526,6 +2591,7 @@ function renderEssen(places) {
     </button>`;
   }).join('');
   el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
+    + sortBarHtml(activeEssenSort, 'setSortEssen')
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('')
@@ -2539,9 +2605,9 @@ function renderTrinken(places) {
   const poolFilters = ['pub','bar','cafe','nacht'];
   let filtered;
   if (poolFilters.includes(activeTrinkenFilter) && pools[activeTrinkenFilter] && pools[activeTrinkenFilter].length) {
-    filtered = sortByRating(pools[activeTrinkenFilter]);
+    filtered = sortPlaces(pools[activeTrinkenFilter], activeTrinkenSort);
   } else {
-    filtered = sortByRating(applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP));
+    filtered = sortPlaces(applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP), activeTrinkenSort);
   }
   const insiderNote = activeTrinkenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
@@ -2556,6 +2622,7 @@ function renderTrinken(places) {
     </button>`;
   }).join('');
   el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
+    + sortBarHtml(activeTrinkenSort, 'setSortTrinken')
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
@@ -2573,9 +2640,9 @@ function renderKultur(places) {
   const poolFilters = ['zoo','museum','sehens','natur','historisch'];
   let filtered;
   if (poolFilters.includes(activeKulturFilter) && pools[activeKulturFilter] && pools[activeKulturFilter].length) {
-    filtered = sortByRating(pools[activeKulturFilter]);
+    filtered = sortPlaces(pools[activeKulturFilter], activeKulturSort);
   } else {
-    filtered = sortByRating(applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP));
+    filtered = sortPlaces(applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP), activeKulturSort);
   }
   const insiderNote = activeKulturFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
@@ -2591,6 +2658,7 @@ function renderKultur(places) {
     </button>`;
   }).join('');
   el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
+    + sortBarHtml(activeKulturSort, 'setSortKultur')
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('')
@@ -2598,6 +2666,26 @@ function renderKultur(places) {
 }
 
 function setEssenFilter(f)   { activeEssenFilter   = f; renderEssen(statePlaces.essen); }
+function setSortEssen(s)     { activeEssenSort     = s; renderEssen(statePlaces.essen); }
+function setSortTrinken(s)   { activeTrinkenSort   = s; renderTrinken(statePlaces.trinken); }
+function setSortKultur(s)    { activeKulturSort    = s; renderKultur(statePlaces.kultur); }
+
+function renderFavs() {
+  const el = document.getElementById('panel-favs');
+  if (!el) return;
+  const favs = Object.values(getFavs());
+  if (!favs.length) {
+    el.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text2);">
+      <div style="font-size:48px;margin-bottom:16px;">🤍</div>
+      <p>Noch keine Favoriten gespeichert.</p>
+      <p style="font-size:13px;margin-top:8px;">Tippe auf 🤍 auf einer Karte um sie hier zu speichern.</p>
+    </div>`;
+    return;
+  }
+  const sorted = sortPlaces(favs, 'rating');
+  el.innerHTML = `<p class="section-title">❤️ Meine Favoriten (${sorted.length})</p>`
+    + sorted.map(p => renderPlaceCard(p, false, false)).join('');
+}
 function setTrinkenFilter(f) { activeTrinkenFilter  = f; renderTrinken(statePlaces.trinken); }
 function setKulturFilter(f)  { activeKulturFilter   = f; renderKultur(statePlaces.kultur); }
 
@@ -2786,11 +2874,8 @@ function switchTab(tab) {
   const panel = document.getElementById(`panel-${tab}`);
   if (panel) panel.style.display = 'block';
 
-  // Reset on transport tab
-  if (tab === 'transport') {
-    mapVisible = false;
-    activeTransportCat = null;
-  }
+  if (tab === 'transport') { mapVisible = false; activeTransportCat = null; }
+  if (tab === 'favs') renderFavs();
 }
 
 function showResults() {
