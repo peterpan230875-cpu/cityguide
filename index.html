@@ -1290,7 +1290,7 @@ function loadGoogleMaps() {
   });
 }
 
-function searchGooglePlaces(lat, lng, type, radius = 10000) {
+function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null) {
   return new Promise((resolve) => {
     const timer = setTimeout(() => resolve([]), 10000);
     try {
@@ -1299,11 +1299,9 @@ function searchGooglePlaces(lat, lng, type, radius = 10000) {
         const map = new google.maps.Map(div, { center: { lat, lng }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
       }
-      placesService.nearbySearch({
-        location: new google.maps.LatLng(lat, lng),
-        radius,
-        type,
-      }, (results, status) => {
+      const req = { location: new google.maps.LatLng(lat, lng), radius, type };
+      if (keyword) req.keyword = keyword;
+      placesService.nearbySearch(req, (results, status) => {
         clearTimeout(timer);
         resolve(status === google.maps.places.PlacesServiceStatus.OK ? results : []);
       });
@@ -1465,7 +1463,7 @@ async function searchCity() {
 
     // 2. Google Places oder Overpass
     const gmLoaded = await loadGoogleMaps();
-    let essenPlaces, trinkenPlaces, kulturPlaces, kulturPools, source;
+    let essenPlaces, trinkenPlaces, kulturPlaces, kulturPools, trinkenPools, source;
 
     if (gmLoaded) {
       setLoading(true, 'Lade Orte mit Bewertungen…');
@@ -1477,11 +1475,14 @@ async function searchCity() {
           searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway'),
           searchGooglePlaces(geo.lat, geo.lng, 'bakery'),
           searchGooglePlaces(geo.lat, geo.lng, 'fast_food'),
-        ]).then(([a,b,c,d,e]) => [...a,...b,...c,...d,...e]),
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'buffet'),
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 5000, 'kantine mensa'),
+        ]).then(([a,b,c,d,e,f,g]) => [...a,...b,...c,...d,...e,...f,...g]),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'bar'),
+          searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
           searchGooglePlaces(geo.lat, geo.lng, 'night_club'),
-        ]).then(([a,b]) => [...a,...b]),
+        ]).then(r => r),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'zoo', 50000),
           searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 40000),
@@ -1499,7 +1500,17 @@ async function searchCity() {
         return arr.filter(p => { if (seen.has(p.place_id)) return false; seen.add(p.place_id); return true; });
       };
       essenPlaces   = dedup(er).slice(0, CONFIG.resultsPerCategory * 2).map(normGooglePlace);
-      trinkenPlaces = dedup(tr).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      // Trinken: separate pools pro Kategorie
+      const PUB_KW = ['pub','kneipe','wirtshaus','beisl','gasthaus','tavern','taverna','inn','brauhaus','pinte','bodega'];
+      const isPub = p => PUB_KW.some(k => (p.name||'').toLowerCase().includes(k));
+      const [trBar, trCafe, trNight] = tr;
+      trinkenPools = {
+        pub:   dedup(trBar.filter(isPub)).map(normGooglePlace),
+        bar:   dedup(trBar.filter(p => !isPub(p))).map(normGooglePlace),
+        cafe:  dedup(trCafe).map(normGooglePlace),
+        nacht: dedup(trNight).map(normGooglePlace),
+      };
+      trinkenPlaces = dedup([...trBar, ...trCafe, ...trNight]).map(normGooglePlace);
       // Kultur: separate pools per category so zoo can never be displaced
       const [krZoo, krAquarium, krAmusement, krSehens, krMuseum, krGallery, krNatur, krHistorisch] = kr;
       const kulturPools = {
@@ -1536,7 +1547,7 @@ async function searchCity() {
     activeKulturFilter = 'alle';
     transportMapReady = false;
     if (leafletMap) { leafletMap.remove(); leafletMap = null; }
-    statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces, kulturPools: kulturPools || {} };
+    statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces, kulturPools: kulturPools || {}, trinkenPools: trinkenPools || {} };
 
     // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
@@ -2310,6 +2321,8 @@ function applyFilter(places, filter, typeMap) {
   if (filter === 'insider') return places.filter(isInsider);
   if (filter === 'lokal') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
   if (filter === 'fastfood') return places.filter(p => isChain(p) || (p.types||[]).includes('fast_food') || (p.types||[]).includes('meal_takeaway'));
+  const BUFFET_KW = ['buffet','kantine','mensa','self-service','all you can eat','ayce','smorgasbord'];
+  if (filter === 'buffet') return places.filter(p => BUFFET_KW.some(k => (p.name||'').toLowerCase().includes(k)));
   if (filter === 'guenstig') return places.filter(p =>
     (p.priceLevel !== null && p.priceLevel <= 1) ||
     (p.priceLevel === null && CHEAP_TYPES.some(t => (p.types||[]).includes(t)))
@@ -2394,10 +2407,11 @@ const ESSEN_FILTERS = [
   { id: 'alle',      icon: '🍽️', label: 'Alle' },
   { id: 'lokal',     icon: '🏠', label: 'Lokal & Traditionell' },
   { id: 'fastfood',  icon: '🍔', label: 'Fast Food & Ketten' },
+  { id: 'buffet',    icon: '🍱', label: 'Buffet & Kantine' },
   { id: 'guenstig',  icon: '💚', label: 'Günstig' },
   { id: 'normal',    icon: '🍴', label: 'Normal' },
-  { id: 'gehoben',  icon: '💎', label: 'Gehoben' },
-  { id: 'insider',  icon: '🔍', label: 'Geheimtipp' },
+  { id: 'gehoben',   icon: '💎', label: 'Gehoben' },
+  { id: 'insider',   icon: '🔍', label: 'Geheimtipp' },
 ];
 const ESSEN_TYPE_MAP = {};
 
@@ -2454,11 +2468,27 @@ function renderEssen(places) {
 function renderTrinken(places) {
   const el = document.getElementById('panel-trinken');
   if (!places.length) { el.innerHTML = noResults('Keine Bars/Cafés gefunden.'); return; }
-  const filtered = sortByRating(applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP));
+  const pools = statePlaces.trinkenPools || {};
+  const poolFilters = ['pub','bar','cafe','nacht'];
+  let filtered;
+  if (poolFilters.includes(activeTrinkenFilter) && pools[activeTrinkenFilter] && pools[activeTrinkenFilter].length) {
+    filtered = sortByRating(pools[activeTrinkenFilter]);
+  } else {
+    filtered = sortByRating(applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP));
+  }
   const insiderNote = activeTrinkenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
     : '';
-  el.innerHTML = pillsHtml(TRINKEN_FILTERS, activeTrinkenFilter, 'setTrinkenFilter', places, TRINKEN_TYPE_MAP)
+  const pillsWithCount = TRINKEN_FILTERS.map(f => {
+    let count;
+    if (f.id === 'alle') count = places.length;
+    else if (poolFilters.includes(f.id) && pools[f.id]) count = pools[f.id].length;
+    else count = applyFilter(places, f.id, TRINKEN_TYPE_MAP).length;
+    return `<button class="filter-pill${f.id === activeTrinkenFilter ? ' active' : ''}" onclick="setTrinkenFilter('${f.id}')">
+      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
+    </button>`;
+  }).join('');
+  el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
