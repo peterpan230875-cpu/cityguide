@@ -1712,11 +1712,20 @@ async function searchCity() {
       const [krZoo, krAquarium, krAmusement, krSehens, krMuseum, krGallery, krNatur, krHistorisch] = kr;
       const kulturPools = {
         zoo:        dedup([...krZoo, ...krAquarium, ...krAmusement])
-                      .filter(p => ['zoo','aquarium','amusement_park'].some(t => (p.types||[]).includes(t)))
+                      .filter(p => {
+                        const types = p.types || [];
+                        const name = (p.name || '').toLowerCase();
+                        const isRealZoo = types.includes('zoo') || types.includes('aquarium');
+                        const zooKw = ['zoo','tierpark','wildpark','safari','aquarium','meeresmuseum','reptilien','vogelpark','naturschutz','wildlife','tiergehege'];
+                        const hasZooName = zooKw.some(k => name.includes(k));
+                        const excludeKw = ['camping','schwimmbad','freibad','hallenbad','pool','steinpark','kletterpark','spielplatz','minigolf','kart'];
+                        const isExcluded = excludeKw.some(k => name.includes(k));
+                        return !isExcluded && (isRealZoo || hasZooName);
+                      })
                       .map(normGooglePlace),
         museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
         sehens:     dedup(krSehens).map(normGooglePlace),
-        natur:      dedup(krNatur).map(normGooglePlace),
+        natur:      dedup([...krNatur, ...krAmusement]).map(normGooglePlace),
         historisch: dedup(krHistorisch).map(normGooglePlace),
       };
       kulturPlaces = dedup([...krZoo,...krAquarium,...krAmusement,...krSehens,...krMuseum,...krGallery,...krNatur,...krHistorisch]).map(normGooglePlace);
