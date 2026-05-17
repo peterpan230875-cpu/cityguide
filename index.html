@@ -630,32 +630,28 @@
     }
     .leaflet-popup-tip { background: var(--card); }
     .leaflet-popup-content b { color: var(--gold2); }
-    /* ── Transport Categories ── */
+    /* ── Transport & Buchen Categories ── */
     .transport-cats {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 4px;
       margin-bottom: 12px;
     }
-    .transport-cats::-webkit-scrollbar { display: none; }
     .tcat-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      padding: 10px 14px;
+      padding: 10px 6px;
       border-radius: 12px;
       border: 1.5px solid var(--border);
       background: var(--bg3);
       color: var(--text2);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
-      min-width: 60px;
       transition: all .2s;
     }
     .tcat-btn .tcat-icon { font-size: 22px; }
@@ -1653,38 +1649,32 @@ function toggleMap() {
   }
 }
 
+const BUCHEN_CATS = [
+  { id: 'alle',     icon: '🌍', label: 'Alle',        q: '' },
+  { id: 'kultur',   icon: '🏛️', label: 'Kultur',      q: 'Kultur Sehenswürdigkeiten' },
+  { id: 'freizeit', icon: '🎉', label: 'Freizeit',    q: 'Freizeit Spaß Erlebnis' },
+  { id: 'essen',    icon: '🍽️', label: 'Essen',       q: 'Essen Kulinarik Food Tour' },
+  { id: 'natur',    icon: '🌿', label: 'Natur',       q: 'Natur Outdoor Wandern' },
+  { id: 'luxus',    icon: '💎', label: 'Luxus',       q: 'Luxus Exklusiv Premium' },
+  { id: 'shows',    icon: '🎭', label: 'Shows',       q: 'Show Event Unterhaltung' },
+  { id: 'sport',    icon: '🏄', label: 'Sport',       q: 'Sport Abenteuer Wassersport' },
+];
+let activeBuchenCat = 'alle';
+
 function renderBuchen(geo) {
   const city = geo.displayName;
-  const places = statePlaces.kultur;
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
 
-  const cardsHtml = places.length
-    ? places.map(p => {
-        const photoUrl = getPhotoUrl(p.photoRef);
-        const navQ = encodeURIComponent(`${p.name} ${p.address}`);
-        const pName = p.name.replace(/'/g, "\\'");
-        return `
-        <div class="photo-card fade-in">
-          <div class="photo-card-img">
-            ${photoUrl
-              ? `<img src="${photoUrl}" alt="${esc(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>${p.icon}</div>'" />`
-              : `<div class="photo-placeholder">${p.icon}</div>`}
-          </div>
-          <div class="photo-card-body">
-            <div class="photo-card-name">${esc(p.name)}</div>
-            ${p.rating ? `<div class="photo-card-rating">⭐ ${p.rating.toFixed(1)}${p.ratingCount ? ` (${p.ratingCount})` : ''}</div>` : ''}
-            <div class="photo-card-addr">📍 ${esc(p.address || '')}</div>
-            <div class="photo-card-actions">
-              <button class="btn btn-book" onclick="openBookingSheet('${pName}', '${esc(city)}')">🎟️ Touren</button>
-              <a href="https://www.google.com/maps/search/?api=1&query=${navQ}" target="_blank" class="btn btn-nav">📍 Karte</a>
-            </div>
-          </div>
-        </div>`;
-      }).join('')
-    : '';
+  const catBtns = BUCHEN_CATS.map(c => `
+    <button class="tcat-btn${c.id === activeBuchenCat ? ' active' : ''}" id="bcat-${c.id}" onclick="selectBuchenCat('${c.id}')">
+      <span class="tcat-icon">${c.icon}</span>
+      ${c.label}
+    </button>`).join('');
 
-  const viatorCity = encodeURIComponent(city);
+  const q = activeBuchenCat === 'alle'
+    ? esc(city)
+    : `${esc(city)} ${BUCHEN_CATS.find(c => c.id === activeBuchenCat).q}`;
 
   const gygWidget = `
   <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
@@ -1693,24 +1683,52 @@ function renderBuchen(geo) {
        data-gyg-number-of-items="8"
        data-gyg-currency="EUR"
        ${pidAttr}
-       data-gyg-q="${esc(city)}">
+       data-gyg-q="${q}">
   </div>`;
 
-  const priceNote = pid
-    ? `<div class="demo-banner" style="margin-bottom:10px;">💡 Preise, Fotos & Bewertungen direkt in der App</div>`
-    : `<div class="api-warning" style="margin-bottom:10px;">
-        <strong>💶 Preise</strong> werden sichtbar sobald eine GYG Partner-ID in <code>config.js</code> eingetragen ist.<br>
-        Kostenlose Registrierung: <a href="https://partner.getyourguide.com/en-us/signup" target="_blank" style="color:var(--gold2);">partner.getyourguide.com →</a>
-       </div>`;
-
   document.getElementById('panel-buchen').innerHTML = `
-  ${places.length ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${places.length})</p>${cardsHtml}` : ''}
-  <p class="section-title" style="margin-top:${places.length ? 20 : 0}px;">🎟️ Aktivitäten in ${esc(city)}</p>
-  ${priceNote}
-  <div id="gygTabWidget">${gygWidget}</div>
-  <a href="https://www.viator.com/de-DE/tours/${viatorCity}/" target="_blank" class="map-toggle-btn" style="margin-top:12px; text-decoration:none;">
-    🌐 Alternativ: Viator Preise ansehen →
-  </a>`;
+  <div class="transport-cats">${catBtns}</div>
+  <p class="section-title" style="margin-top:4px;">🎟️ Aktivitäten in ${esc(city)}</p>
+  <div id="gygTabWidget">${gygWidget}</div>`;
+
+  loadGYGScript();
+}
+
+function selectBuchenCat(catId) {
+  activeBuchenCat = catId;
+  document.querySelectorAll('[id^="bcat-"]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`bcat-${catId}`);
+  if (btn) btn.classList.add('active');
+
+  const city = currentCity;
+  const pid = CONFIG.getYourGuidePartnerId;
+  const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
+  const cat = BUCHEN_CATS.find(c => c.id === catId);
+  const q = catId === 'alle' ? esc(city) : `${esc(city)} ${cat.q}`;
+
+  document.getElementById('gygTabWidget').innerHTML = `
+  <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+       data-gyg-locale-code="de-DE"
+       data-gyg-widget="activities"
+       data-gyg-number-of-items="8"
+       data-gyg-currency="EUR"
+       ${pidAttr}
+       data-gyg-q="${q}">
+  </div>`;
+  loadGYGScript();
+}
+
+function loadGYGScript() {
+  if (document.getElementById('gygScript')) {
+    if (window.GYG && window.GYG.reinit) window.GYG.reinit();
+    return;
+  }
+  const s = document.createElement('script');
+  s.id = 'gygScript';
+  s.async = true;
+  s.src = 'https://widget.getyourguide.com/dist/pa.umd.production.min.js';
+  s.dataset.gygPartnerKey = CONFIG.getYourGuidePartnerId || '';
+  document.body.appendChild(s);
 }
 
 // ── Booking Sheet (GetYourGuide Widget in-app) ──
