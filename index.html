@@ -2255,7 +2255,7 @@ function renderPlaceCard(p, includeBook = false, insider = false) {
     <div class="place-top">
       <div class="place-icon-wrap">${p.icon}</div>
       <div class="place-info">
-        <div class="place-name">${esc(p.name)}${insider ? '<span class="insider-badge">🔍 Geheimtipp</span>' : ''}</div>
+        <div class="place-name">${esc(p.name)}${insider ? '<span class="insider-badge">🔍 Geheimtipp</span>' : ''}${cuisineBadge(p)}</div>
         <div class="place-address">📍 ${esc(p.address || 'Adresse nicht verfügbar')}</div>
         <div class="place-badges">
           ${starBadge(p.rating, p.ratingCount)}
@@ -2288,6 +2288,7 @@ const CHEAP_TYPES = ['fast_food','meal_takeaway','bakery','street_food','food_co
 function applyFilter(places, filter, typeMap) {
   if (filter === 'alle') return places;
   if (filter === 'insider') return places.filter(isInsider);
+  if (filter === 'lokal') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
   if (filter === 'guenstig') return places.filter(p =>
     (p.priceLevel !== null && p.priceLevel <= 1) ||
     (p.priceLevel === null && CHEAP_TYPES.some(t => (p.types||[]).includes(t)))
@@ -2308,8 +2309,69 @@ function pillsHtml(filters, active, onclickFn, places, typeMap) {
   }).join('')}</div>`;
 }
 
+// International chains to exclude from "Lokal" filter
+const INTL_CHAINS = [
+  'mcdonald','burger king','kfc','subway','starbucks','pizza hut','domino',
+  'costa coffee','tim horton','five guys','shake shack','popeye','taco bell',
+  'wendy','dunkin','papa john','little caesar','dairy queen','baskin',
+  'häagen','nando','pret a manger','leon','wagamama','vapiano','hans im glück',
+  'nordsee','wienerwald','dean & david','l\'osteria','vapiano','joe & the juice',
+  'café nero','caffè nero','gloria jean','coffee bean','second cup','caribou',
+  'hardee','carl\'s jr','jollibee','chick-fil','in-n-out','whataburger',
+  'sonic drive','jack in the box','arby','long john silver','a&w ',
+];
+
+// Local cuisine by city keyword
+const LOCAL_CUISINE_DB = {
+  'barcelona':  { label: 'Katalanisch', icon: '🥘', keywords: ['tapas','paella','catalan','catalan','iberian','seafood','mariscos','pintxos','bocadillo','churros'] },
+  'madrid':     { label: 'Spanisch',    icon: '🥘', keywords: ['tapas','cocido','spanish','bocadillo','tortilla','jamón','churros','cervecería'] },
+  'wien':       { label: 'Österreichisch', icon: '🥩', keywords: ['schnitzel','beisl','heuriger','austrian','österreichisch','wiener','gulasch','tafelspitz'] },
+  'paris':      { label: 'Französisch', icon: '🥐', keywords: ['brasserie','bistro','french','français','crêpe','crêperie','boulangerie','patisserie','quiche'] },
+  'london':     { label: 'Britisch',    icon: '🍺', keywords: ['pub','fish and chips','pie','british','english','gastropub','chippy'] },
+  'berlin':     { label: 'Deutsch',     icon: '🌭', keywords: ['currywurst','döner','berliner','deutsch','german','kneipe','biergarten','schnitzel','wurst'] },
+  'münchen':    { label: 'Bayerisch',   icon: '🥨', keywords: ['bier','biergarten','bavarian','bayerisch','weißwurst','brez','schnitzel','haxe'] },
+  'munich':     { label: 'Bayerisch',   icon: '🥨', keywords: ['bier','biergarten','bavarian','bayerisch','weißwurst','brez'] },
+  'rome':       { label: 'Römisch',     icon: '🍝', keywords: ['trattoria','osteria','pizzeria','roman','romano','pasta','carbonara','cacio e pepe','antipasto'] },
+  'amsterdam':  { label: 'Niederländisch', icon: '🧀', keywords: ['dutch','hollands','stamppot','bitterballen','broodje','kroket','rijsttafel','stroopwafel'] },
+  'lisbon':     { label: 'Portugiesisch', icon: '🐟', keywords: ['pastelaria','tasca','bacalhau','piri piri','portuguese','fado','bifanas','ginjinha'] },
+  'prague':     { label: 'Tschechisch', icon: '🍺', keywords: ['czech','tschechisch','svíčková','knedlíky','pivnice','hospoda','goulash','trdelník'] },
+  'budapest':   { label: 'Ungarisch',   icon: '🌶️', keywords: ['goulash','gulyás','hungarian','ungarisch','langos','palinka','csárda','lángos','paprika'] },
+  'istanbul':   { label: 'Türkisch',    icon: '🥙', keywords: ['turkish','türkisch','kebab','meze','baklava','börek','pide','köfte','hamsi','meyhane','lokanta'] },
+  'dubai':      { label: 'Arabisch/Emiratisch', icon: '🫔', keywords: ['arabic','emirati','shawarma','hummus','mandi','machboos','luqaimat','harees','iranian','lebanese','middle eastern'] },
+  'antalya':    { label: 'Türkisch',    icon: '🥙', keywords: ['turkish','türkisch','kebab','pide','gözleme','balık','meyhane','lokanta','börek'] },
+  'singapore':  { label: 'Singapurisch', icon: '🍜', keywords: ['hawker','chicken rice','laksa','hainanese','singaporean','char kway','nasi','roti prata','satay'] },
+  'tokyo':      { label: 'Japanisch',   icon: '🍱', keywords: ['ramen','sushi','izakaya','tempura','yakitori','japanese','japanisch','tonkatsu','udon','soba','kaiseki','okonomiyaki'] },
+  'new york':   { label: 'New Yorker',  icon: '🍕', keywords: ['deli','diner','bagel','pizza','new york','brooklyn','bodega','cheesecake'] },
+  'copenhagen': { label: 'Dänisch',     icon: '🍞', keywords: ['danish','dänisch','smørrebrød','new nordic','hygge','frokost','stegt flæsk'] },
+  'oslo':       { label: 'Norwegisch',  icon: '🐟', keywords: ['norwegian','norsk','rakfisk','brunost','kjøttkaker','bacalao','lutefisk'] },
+  'hamburg':    { label: 'Hamburgisch', icon: '🐟', keywords: ['labskaus','fischbrötchen','matjes','alsterwasser','franzbrötchen','grünkohl','hamburgisch'] },
+  'marseille':  { label: 'Provençalisch', icon: '🐟', keywords: ['bouillabaisse','provençal','marseillais','pissaladière','panisse','pastis','rouille'] },
+  'rotterdam':  { label: 'Niederländisch', icon: '🧀', keywords: ['dutch','hollands','haring','broodje','bitterballen','stroopwafel','poffertjes'] },
+  'zurich':     { label: 'Schweizer',   icon: '🧀', keywords: ['swiss','schweizer','rösti','raclette','fondue','zürcher','käse','cervelat'] },
+  'zürich':     { label: 'Schweizer',   icon: '🧀', keywords: ['swiss','schweizer','rösti','raclette','fondue'] },
+};
+
+function isChain(p) {
+  const name = (p.name || '').toLowerCase();
+  return INTL_CHAINS.some(c => name.includes(c));
+}
+
+function getLocalCuisine(cityName) {
+  return LOCAL_CUISINE_DB[cityName.toLowerCase()] || null;
+}
+
+function cuisineBadge(p) {
+  const cuisine = getLocalCuisine(currentCity);
+  if (!cuisine) return '';
+  const name = (p.name || '').toLowerCase();
+  const isLocal = cuisine.keywords.some(k => name.includes(k));
+  if (!isLocal) return '';
+  return `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);color:#fbbf24;border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700;margin-left:4px;">${cuisine.icon} ${cuisine.label}</span>`;
+}
+
 const ESSEN_FILTERS = [
   { id: 'alle',     icon: '🍽️', label: 'Alle' },
+  { id: 'lokal',    icon: '🏠', label: 'Lokal & Traditionell' },
   { id: 'guenstig', icon: '💚', label: 'Günstig' },
   { id: 'normal',   icon: '🍴', label: 'Normal' },
   { id: 'gehoben',  icon: '💎', label: 'Gehoben' },
@@ -2357,6 +2419,8 @@ function renderEssen(places) {
   const filtered = applyFilter(places, activeEssenFilter, ESSEN_TYPE_MAP);
   const insiderNote = activeEssenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), aber wenig bekannt (&lt;500 Bewertungen). Wo Einheimische hingehen.</div>`
+    : activeEssenFilter === 'lokal'
+    ? `<div class="ticket-tip" style="margin-bottom:12px;">🏠 <strong>Lokal & Traditionell</strong> — Keine internationalen Ketten. Echte lokale Küche, wie die Einheimischen essen.</div>`
     : '';
   el.innerHTML = pillsHtml(ESSEN_FILTERS, activeEssenFilter, 'setEssenFilter', places, ESSEN_TYPE_MAP)
     + insiderNote
