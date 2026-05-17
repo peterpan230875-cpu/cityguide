@@ -1728,8 +1728,9 @@ async function searchCity() {
                       .map(normGooglePlace),
         museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
         sehens:     dedup(krSehens).map(normGooglePlace),
-        natur:      dedup([...krNatur, ...krAmusement]).map(normGooglePlace),
-        historisch: dedup(krHistorisch).map(normGooglePlace),
+        natur:        dedup(krNatur).map(normGooglePlace),
+        freizeitpark: dedup(krAmusement).map(normGooglePlace),
+        historisch:   dedup(krHistorisch).map(normGooglePlace),
       };
       kulturPlaces = dedup([...krZoo,...krAquarium,...krAmusement,...krSehens,...krMuseum,...krGallery,...krNatur,...krHistorisch]).map(normGooglePlace);
       // Fallback falls Key gesperrt (z.B. localhost)
@@ -2713,20 +2714,22 @@ const TRINKEN_TYPE_MAP = {
 const KULTUR_FILTERS = [
   { id: 'alle',       icon: '🏛️', label: 'Alle' },
   { id: 'museum',     icon: '🖼️', label: 'Museen' },
-  { id: 'sehens',     icon: '📸', label: 'Sehenswürdigkeit' },
-  { id: 'zoo',        icon: '🦁', label: 'Zoo & Tierpark' },
-  { id: 'natur',      icon: '🌿', label: 'Parks & Natur' },
-  { id: 'theater',    icon: '🎭', label: 'Theater & Shows' },
-  { id: 'historisch', icon: '🏰', label: 'Historisch' },
-  { id: 'insider',    icon: '🔍', label: 'Geheimtipp' },
+  { id: 'sehens',      icon: '📸', label: 'Sehenswürdigkeit' },
+  { id: 'zoo',         icon: '🦁', label: 'Zoo & Tierpark' },
+  { id: 'natur',       icon: '🌿', label: 'Parks & Natur' },
+  { id: 'freizeitpark',icon: '🎢', label: 'Freizeitpark' },
+  { id: 'theater',     icon: '🎭', label: 'Theater & Shows' },
+  { id: 'historisch',  icon: '🏰', label: 'Historisch' },
+  { id: 'insider',     icon: '🔍', label: 'Geheimtipp' },
 ];
 const KULTUR_TYPE_MAP = {
-  museum:     ['museum','🏛️','🎨'],
-  sehens:     ['tourist_attraction','attraction','viewpoint','⭐'],
-  zoo:        ['zoo','🦁','🎢','amusement_park'],
-  natur:      ['park','nature_reserve','garden','🌿'],
-  theater:    ['theatre','cinema','🎭'],
-  historisch: ['castle','monument','ruins','memorial','historic','🏰','⛪'],
+  museum:      ['museum','🏛️','🎨'],
+  sehens:      ['tourist_attraction','attraction','viewpoint','⭐'],
+  zoo:         ['zoo','🦁'],
+  natur:       ['park','nature_reserve','garden','🌿'],
+  freizeitpark:['amusement_park','🎢'],
+  theater:     ['theatre','cinema','🎭'],
+  historisch:  ['castle','monument','ruins','memorial','historic','🏰','⛪'],
 };
 
 function renderEssen(places) {
@@ -2801,7 +2804,7 @@ function renderKultur(places) {
   }
   // Use dedicated pool if available for this filter category
   const pools = statePlaces.kulturPools || {};
-  const poolFilters = ['zoo','museum','sehens','natur','historisch'];
+  const poolFilters = ['zoo','museum','sehens','natur','freizeitpark','historisch'];
   let filtered;
   if (poolFilters.includes(activeKulturFilter) && pools[activeKulturFilter] && pools[activeKulturFilter].length) {
     filtered = sortPlaces(pools[activeKulturFilter], activeKulturSort);
