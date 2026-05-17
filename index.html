@@ -1476,22 +1476,29 @@ async function searchCity() {
 
     // 2. Google Places oder Overpass
     const gmLoaded = await loadGoogleMaps();
-    let essenPlaces, trinkenPlaces, kulturPlaces, kulturPools, trinkenPools, source;
+    let essenPlaces, essenPools, trinkenPlaces, kulturPlaces, kulturPools, trinkenPools, source;
 
     if (gmLoaded) {
       setLoading(true, 'Lade Orte mit Bewertungen…');
       source = 'Google';
-      const [er, tr, kr] = await Promise.all([
+      const tag = (t) => (r) => r.map(p => (p._tag = p._tag || t, p));
+      const [erRestaurant, erFastfood, erBuffet, erKantine, tr, kr] = await Promise.all([
+        // Normale Restaurants (lokal, günstig, normal, gehoben, geheimtipp, alle)
         Promise.all([
-          searchGooglePlaces(geo.lat, geo.lng, 'restaurant').then(r => r.map(p => (p._tag='restaurant',p))),
-          searchGooglePlaces(geo.lat, geo.lng, 'cafe').then(r => r.map(p => (p._tag='cafe',p))),
-          searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway').then(r => r.map(p => (p._tag='meal_takeaway',p))),
-          searchGooglePlaces(geo.lat, geo.lng, 'bakery').then(r => r.map(p => (p._tag='bakery',p))),
-          searchGooglePlaces(geo.lat, geo.lng, 'fast_food').then(r => r.map(p => (p._tag='fast_food',p))),
-          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'buffet').then(r => r.map(p => (p._tag=p._tag||'buffet',p))),
-          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 5000, 'kantine mensa').then(r => r.map(p => (p._tag=p._tag||'kantine',p))),
-          searchGooglePlaces(geo.lat, geo.lng, null, 10000, 'restaurant').then(r => r.map(p => (p._tag=p._tag||'restaurant',p))),
-        ]).then(([a,b,c,d,e,f,g,h]) => [...a,...b,...c,...d,...e,...f,...g,...h]),
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant').then(tag('restaurant')),
+          searchGooglePlaces(geo.lat, geo.lng, 'cafe').then(tag('cafe')),
+          searchGooglePlaces(geo.lat, geo.lng, 'bakery').then(tag('bakery')),
+          searchGooglePlaces(geo.lat, geo.lng, null, 10000, 'restaurant').then(tag('restaurant')),
+        ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
+        // Fast Food & Ketten — eigene Suche
+        Promise.all([
+          searchGooglePlaces(geo.lat, geo.lng, 'fast_food').then(tag('fast_food')),
+          searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway').then(tag('meal_takeaway')),
+        ]).then(([a,b]) => [...a,...b]),
+        // Buffet — eigene Suche
+        searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 10000, 'buffet').then(tag('buffet')),
+        // Kantine — eigene Suche
+        searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'kantine mensa canteen').then(tag('kantine')),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'bar'),
           searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
@@ -1513,8 +1520,20 @@ async function searchCity() {
         const seen = new Set();
         return arr.filter(p => { if (seen.has(p.place_id)) return false; seen.add(p.place_id); return true; });
       };
-      // Essen: alle Ergebnisse normalisieren ohne slice, Filter entscheiden was angezeigt wird
-      essenPlaces = dedup(er).map(normGooglePlace);
+      // Essen: separate Pools pro Kategorie
+      const allRestaurants = dedup(erRestaurant).map(normGooglePlace);
+      const ffNorm = dedup(erFastfood).map(normGooglePlace);
+      const buffetNorm = dedup([...erBuffet, ...erKantine]).map(normGooglePlace);
+      essenPools = {
+        fastfood:  ffNorm,
+        buffet:    buffetNorm,
+        lokal:     allRestaurants.filter(p => !isChain(p)),
+        guenstig:  allRestaurants.filter(p => p.priceLevel !== null && p.priceLevel <= 1),
+        normal:    allRestaurants.filter(p => p.priceLevel === 2),
+        gehoben:   allRestaurants.filter(p => p.priceLevel !== null && p.priceLevel >= 3),
+        insider:   allRestaurants.filter(p => p.rating >= 4.2 && p.ratingCount < 300),
+      };
+      essenPlaces = allRestaurants;
       // Trinken: separate pools pro Kategorie
       const PUB_KW = ['pub','kneipe','wirtshaus','beisl','gasthaus','tavern','taverna','inn','brauhaus','pinte','bodega'];
       const isPub = p => PUB_KW.some(k => (p.name||'').toLowerCase().includes(k));
@@ -1562,7 +1581,7 @@ async function searchCity() {
     activeKulturFilter = 'alle';
     transportMapReady = false;
     if (leafletMap) { leafletMap.remove(); leafletMap = null; }
-    statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces, kulturPools: kulturPools || {}, trinkenPools: trinkenPools || {} };
+    statePlaces = { essen: essenPlaces, essenPools: essenPools || {}, trinken: trinkenPlaces, trinkenPools: trinkenPools || {}, kultur: kulturPlaces, kulturPools: kulturPools || {} };
 
     // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
@@ -2484,16 +2503,32 @@ const KULTUR_TYPE_MAP = {
 function renderEssen(places) {
   const el = document.getElementById('panel-essen');
   if (!places.length) { el.innerHTML = noResults('Keine Restaurants gefunden.'); return; }
-  const filtered = sortByRating(applyFilter(places, activeEssenFilter, ESSEN_TYPE_MAP));
+  const pools = statePlaces.essenPools || {};
+  const poolFilters = ['fastfood','buffet','lokal','guenstig','normal','gehoben','insider'];
+  let filtered;
+  if (poolFilters.includes(activeEssenFilter) && pools[activeEssenFilter]) {
+    filtered = sortByRating(pools[activeEssenFilter]);
+  } else {
+    filtered = sortByRating(places);
+  }
   const insiderNote = activeEssenFilter === 'insider'
-    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), aber wenig bekannt (&lt;500 Bewertungen). Wo Einheimische hingehen.</div>`
+    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), wenig bekannt. Wo Einheimische hingehen.</div>`
     : activeEssenFilter === 'lokal'
-    ? `<div class="ticket-tip" style="margin-bottom:12px;">🏠 <strong>Lokal & Traditionell</strong> — Keine internationalen Ketten. Echte lokale Küche, wie die Einheimischen essen.</div>`
+    ? `<div class="ticket-tip" style="margin-bottom:12px;">🏠 <strong>Lokal & Traditionell</strong> — Keine internationalen Ketten. Echte lokale Küche.</div>`
     : '';
-  el.innerHTML = pillsHtml(ESSEN_FILTERS, activeEssenFilter, 'setEssenFilter', places, ESSEN_TYPE_MAP)
+  const pillsWithCount = ESSEN_FILTERS.map(f => {
+    let count;
+    if (f.id === 'alle') count = places.length;
+    else if (poolFilters.includes(f.id) && pools[f.id]) count = pools[f.id].length;
+    else count = 0;
+    return `<button class="filter-pill${f.id === activeEssenFilter ? ' active' : ''}" onclick="setEssenFilter('${f.id}')">
+      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
+    </button>`;
+  }).join('');
+  el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
     + insiderNote
     + (filtered.length
-        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
+        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('')
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
