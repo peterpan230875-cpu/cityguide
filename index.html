@@ -1846,6 +1846,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro-Eingänge)', '📱 T-mobilitat App', '🏪 Tabakläden (Estancos)', '🌐 tmb.cat'],
       tip: '💡 T-Casual kaufen — spart 55% gegenüber Einzelfahrten!',
+      networkMap: { url: 'https://www.tmb.cat/en/barcelona-transport/map/metro', label: 'TMB Metro-Netzplan' },
     },
     'madrid': {
       operator: 'Metro Madrid / EMT',
@@ -1862,6 +1863,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro)', '📱 Metro Madrid App', '🌐 metromadrid.es'],
       tip: '💡 Für Kurztrips: Tourist Ticket 3T schlägt Einzelfahrten ab 3 Trips/Tag.',
+      networkMap: { url: 'https://www.metromadrid.es/en/travel-in-the-metro/metro-de-madrid-maps', label: 'Metro Madrid Netzplan' },
     },
     'paris': {
       operator: 'RATP / Île-de-France Mobilités',
@@ -1880,6 +1882,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Métro/RER)', '📱 Bonjour RATP App', '🏪 Tabakläden', '🌐 ratp.fr'],
       tip: '💡 Paris Visite lohnt sich ab 5 Fahrten/Tag. Navigo Easy für Gelegenheitsnutzer.',
+      networkMap: { url: 'https://www.ratp.fr/sites/default/files/plans-lignes/Plans-essentiels/Plan-Metro.1736413859.pdf', label: 'RATP Métro-Plan (PDF)' },
     },
     'london': {
       operator: 'Transport for London (TfL)',
@@ -1895,6 +1898,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (U-Bahn)', '📱 TfL Go App', '🏪 Convenience Stores', '🌐 tfl.gov.uk'],
       tip: '💡 Visitor Oyster Card kaufen — automatisches Tageslimit, günstiger als Einzeltickets.',
+      networkMap: { url: 'https://content.tfl.gov.uk/standard-tube-map.pdf', label: 'TfL Tube Map (PDF)' },
     },
     'berlin': {
       operator: 'BVG / VBB',
@@ -1911,6 +1915,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (U/S-Bahn)', '📱 BVG Jelbi App', '🏪 Einzelhandel', '🌐 bvg.de'],
       tip: '💡 Tageskarte ab 3 Fahrten günstiger als Einzeltickets.',
+      networkMap: { url: 'https://www.bvg.de/dam/jcr:60a89e3b-f88d-4d48-b8a6-98ab340ada05/S_U-Bahn_07_2024_Internetversion_BVG.pdf', label: 'BVG Netzplan S+U (PDF)' },
     },
     'munich': {
       operator: 'MVV / MVG München',
@@ -1927,6 +1932,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (U/S-Bahn)', '📱 MVV App', '🏪 Tabakläden', '🌐 mvv-muenchen.de'],
       tip: '💡 Partnerkarte: 5 Personen für 17,80 € — ideal für Familien!',
+      networkMap: { url: 'https://www.mvv-muenchen.de/fileadmin/mediapool/03-Plaene_Bahnhoefe/Netzplaene/Downloads_2025/2025_layout_SURTX_M_SCR.pdf', label: 'MVV Netzplan (PDF)' },
     },
     'vienna': {
       operator: 'Wiener Linien / WienMobil',
@@ -1945,6 +1951,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (U-Bahn)', '📱 WienMobil App', '🏪 Trafik', '🌐 wienerlinien.at'],
       tip: '💡 72h-Karte ist das beste Preis-Leistungs-Verhältnis für 3-Tage-Trips.',
+      networkMap: { url: 'https://www.wienerlinien.at/documents/2424499/7499660/Tagnetz_2023-12.pdf', label: 'Wiener Linien Netzplan (PDF)' },
     },
     'rome': {
       operator: 'ATAC Roma',
@@ -1961,6 +1968,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro A & B)', '📱 MyCicero App', '🏪 Tabaccherie', '🌐 atac.roma.it'],
       tip: '💡 Rom hat günstigste Einzeltickets Europas. Tageskarte ab 6 Fahrten sinnvoll.',
+      networkMap: { url: 'https://www.atac.roma.it/en/utility/maps', label: 'ATAC Roma Netzplan' },
     },
     'amsterdam': {
       operator: 'GVB Amsterdam',
@@ -1977,6 +1985,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro/Tram)', '📱 GVB App', '🏪 GVB Service-Punkte', '💳 Bankkarte direkt eintappen'],
       tip: '💡 Einfach Bankkarte/Handy antappen — OVpay, kein Ticket kaufen nötig!',
+      networkMap: { url: 'https://www.gvb.nl/en/gvb-maps', label: 'GVB Amsterdam Netzplan' },
     },
     'lisbon': {
       operator: 'Carris / Metro Lisboa',
@@ -1993,6 +2002,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro)', '📱 Carris App', '🏪 Zeitungskioske', '🌐 metrolisboa.pt'],
       tip: '💡 Lisboa Card lohnt bei Museumsbesuchen — Transport + 36 Sehenswürdigkeiten inklusive.',
+      networkMap: { url: 'https://www.metrolisboa.pt/en/travel/diagrams-and-maps/', label: 'Metro Lisboa Netzplan' },
     },
     'prague': {
       operator: 'DPP Praha',
@@ -2008,6 +2018,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro)', '📱 Lítačka App (5% günstiger)', '🏪 DPP-Büros', '🌐 dpp.cz'],
       tip: '💡 Lítačka App nutzen — 5% Rabatt gegenüber Automat.',
+      networkMap: { url: 'https://www.dpp.cz/en/timetables/traffic-scheme', label: 'DPP Praha Netzplan' },
     },
     'budapest': {
       operator: 'BKK Budapest',
@@ -2023,6 +2034,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro)', '📱 BudapestGO App', '🏪 Ticket-Kioske', '🌐 bkk.hu'],
       tip: '💡 72h-Ticket: bestes Preis-Leistungs-Verhältnis für Wochenend-Trips.',
+      networkMap: { url: 'https://bkk.hu/en/journey-planning/maps/', label: 'BKK Budapest Netzplan' },
     },
     'istanbul': {
       operator: 'IETT / Belbim',
@@ -2037,6 +2049,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Istanbulkart-Automaten', '📱 Belbim App', '🏪 Einzelhandel', '🌐 iett.istanbul'],
       tip: '💡 Istanbulkart kaufen — spart 70% gegenüber Papiertickets!',
+      networkMap: { url: 'https://www.metro.istanbul/en/YolcuHizmetleri/AgHaritalari', label: 'Metro İstanbul Netzplan' },
     },
     'zurich': {
       operator: 'ZVV / VBZ Zürich',
@@ -2050,6 +2063,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (SBB/ZVV)', '📱 ZVV-App', '🌐 sbb.ch'],
       tip: '💡 Zürich ist teuer — Swiss Travel Pass lohnt sich für Schweizreisen.',
+      networkMap: { url: 'https://www.zvv.ch/en/timetable-and-information/network.html', label: 'ZVV Zürich Netzplan' },
     },
     'dubai': {
       operator: 'RTA Dubai (Nol Card)',
@@ -2066,6 +2080,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro/Tram)', '📱 S\'hail App', '🏪 Carrefour / Supermarkets', '🌐 rta.ae'],
       tip: '💡 Nol Silver Card kaufen — günstiger, und der Tageslimit von 14 AED gilt automatisch.',
+      networkMap: { url: 'https://www.rta.ae/wps/portal/rta/ae/public-transport/networks-routes/metro', label: 'RTA Dubai Metro Netzplan' },
     },
     'new york': {
       operator: 'MTA New York',
@@ -2080,6 +2095,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Subway)', '📱 MYmta App', '🌐 mta.info', '💳 Bankkarte direkt antappen (OMNY)'],
       tip: '💡 Einfach Kreditkarte/Handy antappen (OMNY) — kein Ticket-Kauf nötig. 7-Tage-Cap: $ 34.',
+      networkMap: { url: 'https://www.datocms-assets.com/21037/1580335134-subwaymap.pdf', label: 'MTA New York Subway Map (PDF)' },
     },
     'tokyo': {
       operator: 'Tokyo Metro / Toei / JR East',
@@ -2096,6 +2112,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (alle Bahnhöfe)', '📱 Suica App (iPhone/Android)', '🏪 Convenience Stores', '🌐 tokyometro.jp'],
       tip: '💡 Welcome Suica empfohlen: kein Pfand, Aufladen per App, überall akzeptiert.',
+      networkMap: { url: 'https://www.tokyometro.jp/en/subwaymap/', label: 'Tokyo Metro Netzplan' },
     },
     'antalya': {
       operator: 'Antalya Ulaşım A.Ş. (AntRay)',
@@ -2109,6 +2126,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Tram-Haltestellen)', '📱 Antalyakart Mobil App', '🏪 Kioske & Supermärkte'],
       tip: '💡 Antalyakart kaufen — günstiger als Einzelticket und an allen Haltestellen aufladbar.',
+      networkMap: { url: 'https://www.antalya.bel.tr/hizmetler/ulasim', label: 'Antalya ÖPNV Karte' },
     },
     'marseille': {
       operator: 'RTM — Régie des Transports Métropolitains',
@@ -2128,6 +2146,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro-Stationen)', '📱 RTM App', '🏪 Tabakläden', '🌐 rtm.fr'],
       tip: '💡 Kinder unter 11 Jahren fahren kostenlos. 72h-Ticket beste Wahl für Kurztrips.',
+      networkMap: { url: 'https://www.rtm.fr/sites/default/files/Plans/plan-reseau-rtm.pdf', label: 'RTM Marseille Netzplan (PDF)' },
     },
     'rotterdam': {
       operator: 'RET Rotterdam',
@@ -2145,6 +2164,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['📱 RET App', '💳 OVpay (Bankkarte/Apple Pay direkt)', '🏪 RET Service Points', '🏧 Automaten'],
       tip: '💡 OVpay: einfach Bankkarte antappen — automatischer Tageslimit, kein Ticket nötig!',
+      networkMap: { url: 'https://www.ret.nl/en/home/travelling-with-the-ret/maps.html', label: 'RET Rotterdam Netzplan' },
     },
     'oslo': {
       operator: 'Ruter Oslo',
@@ -2159,6 +2179,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['📱 Ruter App (empfohlen)', '🏧 Automaten (T-Bane)', '🏪 Kioske (Narvesen, 7-Eleven)', '🌐 ruter.no'],
       tip: '💡 Ruter App nutzen — Tickets sofort verfügbar, keine Warteschlange.',
+      networkMap: { url: 'https://ruter.no/en/plan-journey/timetables-and-route-maps/', label: 'Ruter Oslo Netzplan' },
     },
     'copenhagen': {
       operator: 'DOT — Din Offentlige Transport (Movia / Metro / DSB)',
@@ -2175,6 +2196,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['📱 Rejsebillet App (empfohlen)', '🏧 Automaten (Metro/S-Tog)', '💳 Rejsekort-Karte', '🌐 publictransport.dk'],
       tip: '💡 Kinder unter 11 Jahren fahren kostenlos (mit Erwachsenem). 20% Rabatt außerhalb der Stoßzeiten.',
+      networkMap: { url: 'https://dinoffentligetransport.dk/en/plan-your-journey/zone-and-line-maps', label: 'DOT København Netzplan' },
     },
     'hamburg': {
       operator: 'HVV — Hamburger Verkehrsverbund',
@@ -2193,6 +2215,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['📱 hvv switch App (7% Rabatt)', '🏧 Automaten (U/S-Bahn)', '🏪 Einzelhandel', '🌐 hvv.de'],
       tip: '💡 hvv switch App nutzen — 7% günstiger als am Automaten. Tageskarte ab 2 Fahrten rentabel.',
+      networkMap: { url: 'https://www.hvv.de/en/timetables/overview', label: 'HVV Hamburg Netzplan' },
     },
     'singapore': {
       operator: 'SMRT / TransitLink',
@@ -2209,6 +2232,7 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (MRT)', '📱 SimplyGo App', '🏪 7-Eleven / Cheers', '💳 Bankkarte antappen'],
       tip: '💡 SimplyGo: Kreditkarte direkt nutzen, automatisch günstigster Tarif.',
+      networkMap: { url: 'https://www.lta.gov.sg/content/dam/ltagov/getting_around/public_transport/rail_network/pdf/SM_Eng_(Ver280225)_Hume.pdf', label: 'LTA Singapore Rail Map (PDF)' },
     },
   },
 };
@@ -2256,7 +2280,10 @@ function openTicketSheet() {
       ${data.tip ? `<div class="ticket-tip">${data.tip}</div>` : ''}
       <a href="${data.website}" target="_blank" class="ticket-website-btn">
         🌐 Offizielle Website →
-      </a>`;
+      </a>
+      ${data.networkMap ? `<a href="${data.networkMap.url}" target="_blank" class="ticket-website-btn" style="margin-top:8px;background:var(--bg3);border:1.5px solid var(--border);color:var(--text);">
+        🗺️ ${data.networkMap.label} →
+      </a>` : ''}`;
   }
 
   document.getElementById('ticketSheet').classList.add('open');
