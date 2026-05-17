@@ -63,19 +63,19 @@
     header {
       background: linear-gradient(135deg, #0a0f1e 0%, #111827 100%);
       border-bottom: 1px solid var(--border);
-      padding: 20px 16px 0;
+      padding: 12px 16px 12px;
       position: sticky;
       top: 0;
       z-index: 100;
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .header-top {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 0;
-      padding-bottom: 12px;
+      margin-bottom: 10px;
     }
     .header-city {
       font-size: 13px;
@@ -113,6 +113,7 @@
       display: flex;
       gap: 8px;
       margin-bottom: 0;
+      width: 100%;
     }
 
     .search-input-wrap {
@@ -1091,10 +1092,9 @@
 
     /* Header: auf kleinen Screens 2 Zeilen */
     @media (max-width: 480px) {
-      header { padding: 10px 12px 10px; }
+      header { padding: 10px 12px 8px; }
 
       .header-top {
-        flex-wrap: wrap;
         gap: 6px;
         padding-bottom: 8px;
       }
@@ -1102,24 +1102,21 @@
       .app-name { font-size: 17px; }
 
       .header-city {
-        order: 3;
-        width: 100%;
-        max-width: 100%;
         font-size: 12px;
-        padding-top: 0;
-        margin-top: -4px;
-        margin-bottom: 2px;
+        max-width: 90px;
       }
 
-      /* Suche nimmt volle Breite der zweiten Zeile */
       .search-wrap {
-        order: 2;
-        flex: 0 0 100%;
-        width: 100%;
-        margin: 0;
+        margin-bottom: 8px;
       }
 
-      #cityInput { padding: 10px 10px 10px 36px; }
+      #cityInput {
+        padding: 10px 10px 10px 36px;
+        font-size: 16px !important;
+        background: var(--bg3) !important;
+        -webkit-appearance: none;
+        border-radius: 10px;
+      }
 
       #searchBtn {
         padding: 0 14px;
@@ -1228,21 +1225,21 @@
     <div class="header-top">
       <div class="logo">🧭</div>
       <div class="app-name">CityGuide</div>
-      <div class="search-wrap" style="flex:1;margin:0;">
-        <div class="search-input-wrap">
-          <span class="search-icon">🔍</span>
-          <input
-            type="text"
-            id="cityInput"
-            placeholder="Stadt suchen…"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-          />
-        </div>
-        <button id="searchBtn" onclick="searchCity()">Suchen</button>
-      </div>
       <div class="header-city" id="headerCity"></div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Stadt suchen…"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        />
+      </div>
+      <button id="searchBtn" onclick="searchCity()">Suchen</button>
     </div>
   </header>
 
