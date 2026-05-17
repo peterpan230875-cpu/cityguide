@@ -775,6 +775,49 @@
     }
     .ticket-backdrop.open { display: block; }
 
+    /* ── Place Filter Pills ── */
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .filter-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .filter-pill.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold2);
+    }
+    .filter-pill:active { transform: scale(.95); }
+    .insider-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(16,185,129,.15);
+      border: 1px solid rgba(16,185,129,.4);
+      color: #10b981;
+      border-radius: 8px;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
     .stop-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
     .stop-item {
       display: flex;
@@ -1279,6 +1322,7 @@ function normGooglePlace(p) {
     priceLevel:  p.price_level ?? null,
     open:        p.opening_hours?.open_now ?? null,
     icon:        googleIcon(p.types || []),
+    types:       p.types || [],
     lat:         loc ? loc.lat() : currentLat,
     lng:         loc ? loc.lng() : currentLng,
     photoRef:    p.photos?.[0]?.photo_reference || null,
@@ -1328,15 +1372,20 @@ function normOverpassPlace(el) {
   const lat = el.lat ?? el.center?.lat;
   const lng = el.lon ?? el.center?.lon;
   const street = [t['addr:street'], t['addr:housenumber']].filter(Boolean).join(' ');
+  const amenity = t.amenity || '';
+  const tourism = t.tourism || '';
+  const leisure = t.leisure || '';
   return {
-    name:     t.name || t['name:de'] || 'Unbekannt',
-    address:  street || t['addr:city'] || t.description || '',
-    rating:   null,
+    name:       t['name:de'] || t['name:en'] || t.name || 'Unbekannt',
+    address:    street || t['addr:city'] || t.description || '',
+    rating:     null,
+    ratingCount:null,
     priceLevel: null,
-    open:     null,
-    icon:     overpassIcon(t),
+    open:       null,
+    icon:       overpassIcon(t),
+    types:      [amenity, tourism, leisure, t.historic || ''].filter(Boolean),
     lat, lng,
-    demo:     false,
+    demo:       false,
   };
 }
 
@@ -1425,7 +1474,12 @@ async function searchCity() {
       const [er, tr, kr] = await Promise.all([
         searchGooglePlaces(geo.lat, geo.lng, 'restaurant'),
         searchGooglePlaces(geo.lat, geo.lng, 'bar'),
-        searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
+        Promise.all([
+          searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
+          searchGooglePlaces(geo.lat, geo.lng, 'museum'),
+          searchGooglePlaces(geo.lat, geo.lng, 'zoo'),
+          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park'),
+        ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
       ]);
       essenPlaces   = er.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
       trinkenPlaces = tr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
@@ -1440,7 +1494,7 @@ async function searchCity() {
       const [er, tr, kr] = await Promise.all([
         searchOverpass(geo.lat, geo.lng, ['node["amenity"~"restaurant|cafe|fast_food|bakery"]','way["amenity"~"restaurant|cafe|fast_food|bakery"]']),
         searchOverpass(geo.lat, geo.lng, ['node["amenity"~"bar|pub|biergarten|nightclub"]','way["amenity"~"bar|pub|biergarten|nightclub"]']),
-        searchOverpass(geo.lat, geo.lng, ['node["tourism"~"museum|attraction|gallery|viewpoint"]','way["tourism"~"museum|attraction|gallery|viewpoint"]','node["historic"]','node["amenity"~"theatre|cinema"]'], 3500),
+        searchOverpass(geo.lat, geo.lng, ['node["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','way["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','node["historic"]','node["amenity"~"theatre|cinema"]','node["leisure"~"zoo|park|nature_reserve|garden"]','way["leisure"~"zoo|nature_reserve"]'], 3500),
       ]);
       essenPlaces   = er.map(normOverpassPlace);
       trinkenPlaces = tr.map(normOverpassPlace);
@@ -1450,7 +1504,10 @@ async function searchCity() {
       if (!kulturPlaces.length)  kulturPlaces   = getDemoData(currentCity, 'kultur');
     }
 
-    // Reset transport map + store state
+    // Reset filters + transport map
+    activeEssenFilter = 'alle';
+    activeTrinkenFilter = 'alle';
+    activeKulturFilter = 'alle';
     transportMapReady = false;
     if (leafletMap) { leafletMap.remove(); leafletMap = null; }
     statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
@@ -2174,7 +2231,7 @@ function dirLink(lat, lng, label) {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit`;
 }
 
-function renderPlaceCard(p, includeBook = false) {
+function renderPlaceCard(p, includeBook = false, insider = false) {
   const links = navLink(p);
   const gmDir = dirLink(p.lat, p.lng, p.name);
   const gygUrl = gygLink(currentCity, p.name);
@@ -2184,7 +2241,7 @@ function renderPlaceCard(p, includeBook = false) {
     <div class="place-top">
       <div class="place-icon-wrap">${p.icon}</div>
       <div class="place-info">
-        <div class="place-name">${esc(p.name)}</div>
+        <div class="place-name">${esc(p.name)}${insider ? '<span class="insider-badge">🔍 Geheimtipp</span>' : ''}</div>
         <div class="place-address">📍 ${esc(p.address || 'Adresse nicht verfügbar')}</div>
         <div class="place-badges">
           ${starBadge(p.rating, p.ratingCount)}
@@ -2202,24 +2259,101 @@ function renderPlaceCard(p, includeBook = false) {
   </div>`;
 }
 
+let activeEssenFilter = 'alle';
+let activeTrinkenFilter = 'alle';
+let activeKulturFilter = 'alle';
+
+function isInsider(p) {
+  if (p.demo) return false;
+  if (p.rating && p.ratingCount) return p.rating >= 4.2 && p.ratingCount < 500;
+  return false;
+}
+
+function applyFilter(places, filter, typeMap) {
+  if (filter === 'alle') return places;
+  if (filter === 'insider') return places.filter(isInsider);
+  if (filter === 'guenstig') return places.filter(p => p.priceLevel !== null && p.priceLevel <= 1);
+  if (filter === 'normal') return places.filter(p => p.priceLevel !== null && p.priceLevel === 2);
+  if (filter === 'gehoben') return places.filter(p => p.priceLevel !== null && p.priceLevel >= 3);
+  const keywords = typeMap[filter] || [];
+  return places.filter(p => keywords.some(k => (p.types || []).includes(k) || p.icon === k));
+}
+
+function pillsHtml(filters, active, onclickFn) {
+  return `<div class="filter-pills">${filters.map(f =>
+    `<button class="filter-pill${f.id === active ? ' active' : ''}" onclick="${onclickFn}('${f.id}')">${f.icon} ${f.label}</button>`
+  ).join('')}</div>`;
+}
+
+const ESSEN_FILTERS = [
+  { id: 'alle',     icon: '🍽️', label: 'Alle' },
+  { id: 'guenstig', icon: '💚', label: 'Günstig' },
+  { id: 'normal',   icon: '🍴', label: 'Normal' },
+  { id: 'gehoben',  icon: '💎', label: 'Gehoben' },
+  { id: 'insider',  icon: '🔍', label: 'Geheimtipp' },
+];
+const ESSEN_TYPE_MAP = {};
+
+const TRINKEN_FILTERS = [
+  { id: 'alle',      icon: '🍺', label: 'Alle' },
+  { id: 'pub',       icon: '🍻', label: 'Pub & Kneipe' },
+  { id: 'bar',       icon: '🍸', label: 'Bar' },
+  { id: 'cafe',      icon: '☕', label: 'Café' },
+  { id: 'nacht',     icon: '🎶', label: 'Nachtleben' },
+  { id: 'insider',   icon: '🔍', label: 'Geheimtipp' },
+];
+const TRINKEN_TYPE_MAP = {
+  pub:   ['pub','biergarten','🍻','🥨'],
+  bar:   ['bar','cocktail_bar','wine_bar','🍺'],
+  cafe:  ['cafe','coffee_shop','☕'],
+  nacht: ['nightclub','🎶'],
+};
+
+const KULTUR_FILTERS = [
+  { id: 'alle',       icon: '🏛️', label: 'Alle' },
+  { id: 'museum',     icon: '🖼️', label: 'Museen' },
+  { id: 'sehens',     icon: '📸', label: 'Sehenswürdigkeit' },
+  { id: 'zoo',        icon: '🦁', label: 'Zoo & Tierpark' },
+  { id: 'natur',      icon: '🌿', label: 'Parks & Natur' },
+  { id: 'theater',    icon: '🎭', label: 'Theater & Shows' },
+  { id: 'historisch', icon: '🏰', label: 'Historisch' },
+  { id: 'insider',    icon: '🔍', label: 'Geheimtipp' },
+];
+const KULTUR_TYPE_MAP = {
+  museum:     ['museum','🏛️','🎨'],
+  sehens:     ['tourist_attraction','attraction','viewpoint','⭐'],
+  zoo:        ['zoo','🦁','🎢','amusement_park'],
+  natur:      ['park','nature_reserve','garden','🌿'],
+  theater:    ['theatre','cinema','🎭'],
+  historisch: ['castle','monument','ruins','memorial','historic','🏰','⛪'],
+};
+
 function renderEssen(places) {
   const el = document.getElementById('panel-essen');
-  if (!places.length) {
-    el.innerHTML = noResults('Keine Restaurants gefunden.');
-    return;
-  }
-  el.innerHTML = `<p class="section-title">🍽️ Restaurants & Cafés (${places.length})</p>`
-    + places.map(p => renderPlaceCard(p)).join('');
+  if (!places.length) { el.innerHTML = noResults('Keine Restaurants gefunden.'); return; }
+  const filtered = applyFilter(places, activeEssenFilter, ESSEN_TYPE_MAP);
+  const insiderNote = activeEssenFilter === 'insider'
+    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), aber wenig bekannt (&lt;500 Bewertungen). Wo Einheimische hingehen.</div>`
+    : '';
+  el.innerHTML = pillsHtml(ESSEN_FILTERS, activeEssenFilter, 'setEssenFilter')
+    + insiderNote
+    + (filtered.length
+        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
+        : noResults('Keine Treffer für diesen Filter.'));
 }
 
 function renderTrinken(places) {
   const el = document.getElementById('panel-trinken');
-  if (!places.length) {
-    el.innerHTML = noResults('Keine Bars/Cafés gefunden.');
-    return;
-  }
-  el.innerHTML = `<p class="section-title">🍺 Bars & Drinks (${places.length})</p>`
-    + places.map(p => renderPlaceCard(p)).join('');
+  if (!places.length) { el.innerHTML = noResults('Keine Bars/Cafés gefunden.'); return; }
+  const filtered = applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP);
+  const insiderNote = activeTrinkenFilter === 'insider'
+    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
+    : '';
+  el.innerHTML = pillsHtml(TRINKEN_FILTERS, activeTrinkenFilter, 'setTrinkenFilter')
+    + insiderNote
+    + (filtered.length
+        ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
+        : noResults('Keine Treffer für diesen Filter.'));
 }
 
 function renderKultur(places) {
@@ -2228,9 +2362,20 @@ function renderKultur(places) {
     el.innerHTML = noResults('Keine Sehenswürdigkeiten gefunden.');
     return;
   }
-  el.innerHTML = `<p class="section-title">🏛️ Sehenswürdigkeiten (${places.length})</p>`
-    + places.map(p => renderPlaceCard(p, true)).join('');
+  const filtered = applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP);
+  const insiderNote = activeKulturFilter === 'insider'
+    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
+    : '';
+  el.innerHTML = pillsHtml(KULTUR_FILTERS, activeKulturFilter, 'setKulturFilter')
+    + insiderNote
+    + (filtered.length
+        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('')
+        : noResults('Keine Treffer für diesen Filter.'));
 }
+
+function setEssenFilter(f)   { activeEssenFilter   = f; renderEssen(statePlaces.essen); }
+function setTrinkenFilter(f) { activeTrinkenFilter  = f; renderTrinken(statePlaces.trinken); }
+function setKulturFilter(f)  { activeKulturFilter   = f; renderKultur(statePlaces.kultur); }
 
 function renderTransport(geo) {
   const catBtns = TRANSPORT_CATS.map(c => `
