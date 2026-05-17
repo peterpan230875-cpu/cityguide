@@ -1479,6 +1479,9 @@ function normGooglePlace(p) {
     lng:         loc ? loc.lng() : currentLng,
     photoRef:    p.photos?.[0]?.photo_reference || null,
     searchTag:   p._tag || null,
+    placeId:     p.place_id || null,
+    city:        currentCity,
+    weekdayText: p.opening_hours?.weekday_text || null,
     demo:        false,
   };
 }
@@ -2634,8 +2637,30 @@ function isFav(p) { return !!getFavs()[favKey(p)]; }
 function toggleFav(p) {
   const favs = getFavs();
   const k = favKey(p);
-  if (favs[k]) delete favs[k]; else favs[k] = p;
-  localStorage.setItem('cg_favs', JSON.stringify(favs));
+  if (favs[k]) {
+    delete favs[k];
+    localStorage.setItem('cg_favs', JSON.stringify(favs));
+  } else {
+    // Speichern mit aktueller Stadt
+    const entry = { ...p, city: p.city || currentCity };
+    favs[k] = entry;
+    localStorage.setItem('cg_favs', JSON.stringify(favs));
+    // Öffnungszeiten via Place Details nachladen (falls placeId vorhanden)
+    if (entry.placeId && placesService && !entry.weekdayText) {
+      placesService.getDetails(
+        { placeId: entry.placeId, fields: ['opening_hours'] },
+        (result, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && result?.opening_hours?.weekday_text) {
+            const updated = getFavs();
+            if (updated[k]) {
+              updated[k].weekdayText = result.opening_hours.weekday_text;
+              localStorage.setItem('cg_favs', JSON.stringify(updated));
+            }
+          }
+        }
+      );
+    }
+  }
 }
 
 // ── Sort ──────────────────────────────────────────────────────
@@ -2933,6 +2958,53 @@ function setSortEssen(s)     { activeEssenSort     = s; renderEssen(statePlaces.
 function setSortTrinken(s)   { activeTrinkenSort   = s; renderTrinken(statePlaces.trinken); }
 function setSortKultur(s)    { activeKulturSort    = s; renderKultur(statePlaces.kultur); }
 
+function renderFavCard(p) {
+  const gygUrl = gygLink(p.city || currentCity, p.name);
+  const pJson = esc(JSON.stringify(p));
+  const nameE = esc(p.name).replace(/'/g,"&#39;");
+  const cityBadge = p.city ? `<span style="background:var(--gold);color:#000;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:700;">🏙️ ${esc(p.city)}</span>` : '';
+  let hoursHtml = '';
+  if (p.weekdayText && p.weekdayText.length) {
+    const uid = 'fh_' + Math.random().toString(36).slice(2);
+    const rows = p.weekdayText.map(line => {
+      const parts = line.split(': ');
+      const day = parts[0] || '';
+      const time = parts.slice(1).join(': ') || '';
+      return `<tr><td style="padding:2px 8px 2px 0;color:var(--text2);white-space:nowrap;">${esc(day)}</td><td style="padding:2px 0;color:var(--text);">${esc(time)}</td></tr>`;
+    }).join('');
+    hoursHtml = `
+      <div style="margin-top:8px;">
+        <button onclick="document.getElementById('${uid}').style.display=document.getElementById('${uid}').style.display==='none'?'block':'none'"
+          style="background:none;border:none;color:var(--gold2);font-size:12px;cursor:pointer;padding:0;">🕐 Öffnungszeiten anzeigen</button>
+        <div id="${uid}" style="display:none;margin-top:6px;"><table style="font-size:12px;border-collapse:collapse;">${rows}</table></div>
+      </div>`;
+  }
+  return `
+  <div class="place-card fade-in">
+    <div class="place-top">
+      <div class="place-icon-wrap">${p.icon}</div>
+      <div class="place-info">
+        <div class="place-name" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span>${esc(p.name)}</span>
+          <button onclick='handleFavToggle(${pJson})' style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;" title="Favorit entfernen">❤️</button>
+        </div>
+        <div style="margin:4px 0;">${cityBadge}</div>
+        <div class="place-address">📍 ${esc(p.address || 'Adresse nicht verfügbar')}</div>
+        <div class="place-badges">
+          ${starBadge(p.rating, p.ratingCount)}
+          ${openBadge(p.open)}
+          ${priceBadge(p.priceLevel)}
+        </div>
+        ${hoursHtml}
+      </div>
+    </div>
+    <div class="place-actions">
+      <button onclick="openInAppMap(${p.lat},${p.lng},'${nameE}')" class="btn btn-nav">📍 Google Maps</button>
+      <button onclick="openInAppTransit(${p.lat},${p.lng},'${nameE}')" class="btn btn-maps">🚇 ÖPNV-Route</button>
+    </div>
+  </div>`;
+}
+
 function renderFavs() {
   const el = document.getElementById('panel-favs');
   if (!el) return;
@@ -2947,7 +3019,7 @@ function renderFavs() {
   }
   const sorted = sortPlaces(favs, 'rating');
   el.innerHTML = `<p class="section-title">❤️ Meine Favoriten (${sorted.length})</p><div class="cards-grid">`
-    + sorted.map(p => renderPlaceCard(p, false, false)).join('') + '</div>';
+    + sorted.map(p => renderFavCard(p)).join('') + '</div>';
 }
 function setTrinkenFilter(f) { activeTrinkenFilter  = f; renderTrinken(statePlaces.trinken); }
 function setKulturFilter(f)  { activeKulturFilter   = f; renderKultur(statePlaces.kultur); }
