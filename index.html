@@ -1711,22 +1711,19 @@ async function searchCity() {
       // Kultur: separate pools per category so zoo can never be displaced
       const [krZoo, krAquarium, krAmusement, krSehens, krMuseum, krGallery, krNatur, krHistorisch] = kr;
       const kulturPools = {
-        zoo:        dedup([...krZoo, ...krAquarium, ...krAmusement])
+        zoo:        dedup([...krZoo, ...krAquarium])
                       .filter(p => {
                         const types = p.types || [];
                         const name = (p.name || '').toLowerCase();
                         const ratings = p.user_ratings_total || 0;
+                        // Nur echte Zoos/Aquarien: muss zoo oder aquarium als Google-Type haben
                         const isRealZoo = types.includes('zoo') || types.includes('aquarium');
-                        const zooKw = ['zoo','tierpark','wildpark','safari','aquarium','meeresmuseum','reptilien','vogelpark','naturschutz','wildlife','tiergehege','farmpark','farm park'];
-                        const hasZooName = zooKw.some(k => name.includes(k));
-                        // Einzelne Tiergehege / Tiere im Zoo ausschließen
+                        if (!isRealZoo) return false;
+                        // Einzelne Tiergehege / Tiere ausschließen (haben zwar zoo-type, sind aber sub-attractions)
                         const animalKw = ['löwe','tiger','elefant','giraffe','pinguin','gorilla','orang','schimpanse','zebra','nashorn','nilpferd','krokodil','schlange','papagei','erdmännchen','flamingo','gepard','leopard','wolf','bär','panda','koala','känguru','gehege','enclosure','paddock','streichelzoo','streichel'];
-                        const isAnimalExhibit = animalKw.some(k => name.includes(k));
-                        const excludeKw = ['camping','schwimmbad','freibad','hallenbad','pool','steinpark','kletterpark','spielplatz','minigolf','kart'];
-                        const isExcluded = excludeKw.some(k => name.includes(k));
-                        // Mindestanzahl Bewertungen: echte Zoos haben i.d.R. viele Bewertungen
-                        const hasSufficientRatings = ratings >= 50;
-                        return !isExcluded && !isAnimalExhibit && (isRealZoo || hasZooName) && hasSufficientRatings;
+                        if (animalKw.some(k => name.includes(k))) return false;
+                        // Mindestanzahl Bewertungen: echte Zoos haben viele, Tiergehege kaum
+                        return ratings >= 50;
                       })
                       .map(normGooglePlace),
         museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
@@ -2482,18 +2479,17 @@ function dirLink(lat, lng, label) {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit`;
 }
 
-function renderPlaceCard(p, includeBook = false, insider = false, overrideIcon = null) {
+function renderPlaceCard(p, includeBook = false, insider = false) {
   const links = navLink(p);
   const gmDir = dirLink(p.lat, p.lng, p.name);
   const gygUrl = gygLink(currentCity, p.name);
   const fav = isFav(p);
   const pJson = esc(JSON.stringify(p));
-  const displayIcon = overrideIcon || p.icon;
 
   return `
   <div class="place-card fade-in" id="card-${favKey(p).replace(/[^a-z0-9]/g,'_')}">
     <div class="place-top">
-      <div class="place-icon-wrap">${displayIcon}</div>
+      <div class="place-icon-wrap">${p.icon}</div>
       <div class="place-info">
         <div class="place-name" style="display:flex;align-items:center;gap:6px;">
           <span>${esc(p.name)}</span>
@@ -2825,13 +2821,11 @@ function renderKultur(places) {
       ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
     </button>`;
   }).join('');
-  const activeFilterDef = KULTUR_FILTERS.find(f => f.id === activeKulturFilter);
-  const filterIcon = activeFilterDef ? activeFilterDef.icon : null;
   el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
     + sortBarHtml(activeKulturSort, 'setSortKultur')
     + insiderNote
     + (filtered.length
-        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p), filterIcon)).join('') + '</div>'
+        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
