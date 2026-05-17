@@ -2577,6 +2577,17 @@ function openTransitNetworkMap() {
     frame.parentNode.insertBefore(container, frame);
   }
   container.style.display = 'block';
+  // Stop-Detail-Panel
+  let stopPanel = document.getElementById('stopDetailPanel');
+  if (!stopPanel) {
+    stopPanel = document.createElement('div');
+    stopPanel.id = 'stopDetailPanel';
+    stopPanel.style.cssText = 'display:none;background:var(--bg2);border-top:1px solid var(--border);padding:12px 14px;max-height:40vh;overflow-y:auto;flex-shrink:0;';
+    frame.parentNode.appendChild(stopPanel);
+  } else {
+    stopPanel.style.display = 'none';
+    stopPanel.innerHTML = '';
+  }
   document.getElementById('mapModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   setTimeout(async () => {
@@ -2610,6 +2621,54 @@ function closeTransitNetMap() {
   const c = document.getElementById('transitNetMap');
   if (c) c.style.display = 'none';
   document.getElementById('mapEmbed').style.display = 'block';
+}
+
+async function showStopDetail(nodeId, stopName, stopIcon) {
+  const panel = document.getElementById('stopDetailPanel');
+  if (!panel) return;
+  panel.style.display = 'block';
+  panel.innerHTML = `<div style="color:var(--text2);font-size:13px;">⏳ Lade Linien für <b>${stopName}</b>…</div>`;
+
+  const query = `[out:json][timeout:15];
+node(${nodeId});
+rel(bn)["type"="route"]["route"~"bus|tram|subway|train|monorail|ferry|light_rail"];
+out body;`;
+  try {
+    const res = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST', body: 'data=' + encodeURIComponent(query),
+    });
+    const data = await res.json();
+    const routes = data.elements || [];
+    if (!routes.length) {
+      panel.innerHTML = `<div style="color:var(--text2);font-size:13px;">${stopIcon} <b>${stopName}</b><br>Keine Linieninformationen verfügbar.</div>`;
+      return;
+    }
+    const routeIcons = { subway:'🚇', tram:'🚋', bus:'🚌', train:'🚆', light_rail:'🚈', monorail:'🚝', ferry:'⛴️' };
+    const rows = routes.map(r => {
+      const t = r.tags || {};
+      const icon = routeIcons[t.route] || '🚏';
+      const line = t.ref || t.name || '?';
+      const from = t.from || '';
+      const to   = t.to   || '';
+      const dir  = from && to ? `${from} → ${to}` : (t.name || '');
+      const color = t.colour ? `background:${t.colour};color:#fff;` : 'background:var(--bg3);color:var(--text);';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:18px;">${icon}</span>
+        <span style="font-size:13px;font-weight:800;min-width:36px;text-align:center;padding:2px 7px;border-radius:8px;${color}">${line}</span>
+        <span style="font-size:13px;color:var(--text);flex:1;">${dir}</span>
+      </div>`;
+    }).join('');
+    panel.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:20px;">${stopIcon}</span>
+        <span style="font-weight:700;font-size:15px;color:var(--text);">${stopName}</span>
+        <span style="color:var(--text2);font-size:12px;margin-left:auto;">${routes.length} Linie${routes.length!==1?'n':''}</span>
+        <button onclick="document.getElementById('stopDetailPanel').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0;">✕</button>
+      </div>
+      ${rows}`;
+  } catch(e) {
+    panel.innerHTML = `<div style="color:var(--text2);font-size:13px;">Fehler beim Laden der Linien.</div>`;
+  }
 }
 
 async function loadTransitStops(map, lat, lng) {
@@ -2648,13 +2707,15 @@ out body ${250};`;
       const ic = stopIcons[type];
       const ref  = tags.ref  ? ` · Linie ${tags.ref}` : '';
       const network = tags.network ? ` (${tags.network})` : '';
-      L.marker([s.lat, s.lon], {
+      const marker = L.marker([s.lat, s.lon], {
         icon: L.divIcon({
           className: '',
           html: `<div style="font-size:16px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.7));">${ic.e}</div>`,
           iconAnchor: [8, 16],
         }),
-      }).bindPopup(`<b>${s.tags.name}</b>${ref}${network}`).addTo(layer);
+      });
+      marker.on('click', () => showStopDetail(s.id, s.tags.name || 'Haltestelle', ic.e));
+      marker.addTo(layer);
     });
     layer.addTo(map);
     // Info-Label
