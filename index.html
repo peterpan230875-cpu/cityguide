@@ -2283,20 +2283,29 @@ function isInsider(p) {
   return false;
 }
 
+const CHEAP_TYPES = ['fast_food','meal_takeaway','bakery','street_food','food_court','sandwich'];
+
 function applyFilter(places, filter, typeMap) {
   if (filter === 'alle') return places;
   if (filter === 'insider') return places.filter(isInsider);
-  if (filter === 'guenstig') return places.filter(p => p.priceLevel !== null && p.priceLevel <= 1);
-  if (filter === 'normal') return places.filter(p => p.priceLevel !== null && p.priceLevel === 2);
+  if (filter === 'guenstig') return places.filter(p =>
+    (p.priceLevel !== null && p.priceLevel <= 1) ||
+    (p.priceLevel === null && CHEAP_TYPES.some(t => (p.types||[]).includes(t)))
+  );
+  if (filter === 'normal') return places.filter(p => p.priceLevel === 2 ||
+    (p.priceLevel === null && !CHEAP_TYPES.some(t => (p.types||[]).includes(t))));
   if (filter === 'gehoben') return places.filter(p => p.priceLevel !== null && p.priceLevel >= 3);
   const keywords = typeMap[filter] || [];
   return places.filter(p => keywords.some(k => (p.types || []).includes(k) || p.icon === k));
 }
 
-function pillsHtml(filters, active, onclickFn) {
-  return `<div class="filter-pills">${filters.map(f =>
-    `<button class="filter-pill${f.id === active ? ' active' : ''}" onclick="${onclickFn}('${f.id}')">${f.icon} ${f.label}</button>`
-  ).join('')}</div>`;
+function pillsHtml(filters, active, onclickFn, places, typeMap) {
+  return `<div class="filter-pills">${filters.map(f => {
+    const count = f.id === 'alle' ? places.length : applyFilter(places, f.id, typeMap || {}).length;
+    return `<button class="filter-pill${f.id === active ? ' active' : ''}" onclick="${onclickFn}('${f.id}')">
+      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
+    </button>`;
+  }).join('')}</div>`;
 }
 
 const ESSEN_FILTERS = [
@@ -2349,7 +2358,7 @@ function renderEssen(places) {
   const insiderNote = activeEssenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), aber wenig bekannt (&lt;500 Bewertungen). Wo Einheimische hingehen.</div>`
     : '';
-  el.innerHTML = pillsHtml(ESSEN_FILTERS, activeEssenFilter, 'setEssenFilter')
+  el.innerHTML = pillsHtml(ESSEN_FILTERS, activeEssenFilter, 'setEssenFilter', places, ESSEN_TYPE_MAP)
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
@@ -2363,7 +2372,7 @@ function renderTrinken(places) {
   const insiderNote = activeTrinkenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
     : '';
-  el.innerHTML = pillsHtml(TRINKEN_FILTERS, activeTrinkenFilter, 'setTrinkenFilter')
+  el.innerHTML = pillsHtml(TRINKEN_FILTERS, activeTrinkenFilter, 'setTrinkenFilter', places, TRINKEN_TYPE_MAP)
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
@@ -2380,7 +2389,7 @@ function renderKultur(places) {
   const insiderNote = activeKulturFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
     : '';
-  el.innerHTML = pillsHtml(KULTUR_FILTERS, activeKulturFilter, 'setKulturFilter')
+  el.innerHTML = pillsHtml(KULTUR_FILTERS, activeKulturFilter, 'setKulturFilter', places, KULTUR_TYPE_MAP)
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('')
