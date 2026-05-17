@@ -2579,7 +2579,7 @@ function openTransitNetworkMap() {
   container.style.display = 'block';
   document.getElementById('mapModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  setTimeout(() => {
+  setTimeout(async () => {
     if (window._transitMap) { window._transitMap.invalidateSize(); return; }
     const lat = currentLat || 48.2;
     const lng = currentLng || 16.37;
@@ -2588,17 +2588,20 @@ function openTransitNetworkMap() {
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: '© Esri', maxZoom: 19,
     }).addTo(m);
-    // OpenPTMap als Overlay — zeigt alle ÖPNV-Linien mit Nummern aus OSM
+    // OpenPTMap als Overlay
     L.tileLayer('https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://memomaps.de">MemoMaps</a> / OpenPTMap © OSM',
+      attribution: '© <a href="https://memomaps.de">MemoMaps</a> / OSM',
       maxZoom: 17, opacity: 0.85,
     }).addTo(m);
+    // Eigener Standort
     if (userGpsLat && userGpsLng) {
       L.marker([userGpsLat, userGpsLng], {
-        icon: L.divIcon({ className: '', html: '<div style="font-size:22px;line-height:1;">📍</div>', iconAnchor: [11,22] })
+        icon: L.divIcon({ className:'', html:'<div style="font-size:22px;line-height:1;">📍</div>', iconAnchor:[11,22] })
       }).addTo(m).bindPopup('Dein Standort');
     }
     window._transitMap = m;
+    // Haltestellen via Overpass laden
+    loadTransitStops(m, lat, lng);
   }, 100);
 }
 
@@ -2607,6 +2610,59 @@ function closeTransitNetMap() {
   const c = document.getElementById('transitNetMap');
   if (c) c.style.display = 'none';
   document.getElementById('mapEmbed').style.display = 'block';
+}
+
+async function loadTransitStops(map, lat, lng) {
+  const stopIcons = {
+    subway:    { e: '🚇', color: '#E53935' },
+    tram:      { e: '🚋', color: '#FB8C00' },
+    bus:       { e: '🚌', color: '#1E88E5' },
+    train:     { e: '🚆', color: '#43A047' },
+    ferry:     { e: '⛴️', color: '#00ACC1' },
+    monorail:  { e: '🚝', color: '#8E24AA' },
+    default:   { e: '🚏', color: '#757575' },
+  };
+  const radius = 6000;
+  const query = `[out:json][timeout:25];
+(
+  node["public_transport"="stop_position"](around:${radius},${lat},${lng});
+  node["highway"="bus_stop"](around:${radius},${lat},${lng});
+  node["railway"~"station|halt|tram_stop|subway_entrance"](around:${radius},${lat},${lng});
+);
+out body ${250};`;
+  try {
+    const res = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST', body: 'data=' + encodeURIComponent(query),
+    });
+    const data = await res.json();
+    const stops = (data.elements || []).filter(e => e.tags?.name);
+    const layer = L.layerGroup();
+    stops.forEach(s => {
+      const tags = s.tags || {};
+      const type = tags.subway === 'yes' ? 'subway'
+                 : tags.tram === 'yes' || tags.railway === 'tram_stop' ? 'tram'
+                 : tags.railway === 'station' || tags.railway === 'halt' ? 'train'
+                 : tags.ferry === 'yes' ? 'ferry'
+                 : tags.monorail === 'yes' ? 'monorail'
+                 : 'bus';
+      const ic = stopIcons[type];
+      const ref  = tags.ref  ? ` · Linie ${tags.ref}` : '';
+      const network = tags.network ? ` (${tags.network})` : '';
+      L.marker([s.lat, s.lon], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div style="font-size:16px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.7));">${ic.e}</div>`,
+          iconAnchor: [8, 16],
+        }),
+      }).bindPopup(`<b>${s.tags.name}</b>${ref}${network}`).addTo(layer);
+    });
+    layer.addTo(map);
+    // Info-Label
+    const info = document.getElementById('transitStopInfo');
+    if (info) info.textContent = `${stops.length} Haltestellen geladen`;
+  } catch(e) {
+    console.warn('Haltestellen konnten nicht geladen werden', e);
+  }
 }
 
 function closeMapModal() {
