@@ -1167,45 +1167,88 @@
       .section-title { font-size: 13px; }
     }
 
-    /* iPad / Tablet */
+    /* ── Tablet & Desktop (≥768px) ── */
     @media (min-width: 768px) {
-      #app { max-width: 720px; margin: 0 auto; }
 
-      header { padding: 16px 24px 0; }
+      /* Viewport: kein Zoom-Lock auf Desktop */
+      body { overflow-x: unset; }
 
-      .header-top { gap: 12px; }
-
-      .app-name { font-size: 22px; }
-
-      #cityInput { font-size: 16px; padding: 11px 12px 11px 40px; }
-
-      #searchBtn { padding: 0 24px; font-size: 16px; }
-
-      /* 2-spaltige Karten auf Tablet */
-      #panel-essen .place-card,
-      #panel-trinken .place-card,
-      #panel-kultur .place-card,
-      #panel-favs .place-card {
-        display: inline-flex;
-        flex-direction: column;
-        width: calc(50% - 8px);
-        vertical-align: top;
-        margin-right: 8px;
-        margin-bottom: 12px;
-        box-sizing: border-box;
+      /* Zentrierter Container */
+      #app {
+        max-width: 1100px;
+        margin: 0 auto;
+        min-height: 100vh;
       }
 
-      .filter-pill { padding: 7px 14px; font-size: 13px; }
+      header {
+        padding: 14px 32px;
+        border-radius: 0;
+      }
 
-      .nav-icon { font-size: 24px; }
-      .nav-label { font-size: 11px; }
+      .app-name { font-size: 22px; }
+      #cityInput { font-size: 16px; padding: 11px 14px 11px 42px; }
+      #searchBtn  { padding: 0 28px; font-size: 15px; height: 44px; border-radius: 12px; }
 
-      #transportMap { height: 400px; max-height: 400px; }
+      /* Bottom Nav ausblenden — stattdessen Desktop-Tab-Leiste */
+      #bottomNav { display: none; }
+
+      /* Desktop Tab-Leiste direkt unter Header */
+      #desktopNav {
+        display: flex;
+        gap: 4px;
+        padding: 0 32px;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 69px;
+        z-index: 99;
+      }
+      .dtab {
+        padding: 12px 20px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: var(--text2);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color .15s, border-color .15s;
+        white-space: nowrap;
+      }
+      .dtab:hover  { color: var(--text); }
+      .dtab.active { color: var(--gold2); border-bottom-color: var(--gold); }
+
+      /* Main ohne Bottom-Nav-Abstand */
+      #mainContent { padding-bottom: 40px; }
+
+      /* Karten-Grid: 2 Spalten auf Tablet, 3 auf Desktop */
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      /* Filter Pills wrappen normal */
+      .filter-pills { flex-wrap: wrap; }
+      .filter-pill  { padding: 7px 14px; font-size: 13px; }
+
+      /* Transport Karte */
+      #transportMap { height: 420px; max-height: 420px; }
+
+      /* Panels bekommen Padding */
+      .tab-panel { padding: 20px 32px; }
     }
 
-    /* Großes iPad / Desktop */
     @media (min-width: 1024px) {
-      #app { max-width: 900px; }
+      #app { max-width: 1200px; }
+      .cards-grid { grid-template-columns: repeat(3, 1fr); }
+      #desktopNav { top: 69px; padding: 0 40px; }
+      .tab-panel  { padding: 24px 40px; }
+      header      { padding: 14px 40px; }
     }
 
   </style>
@@ -1256,6 +1299,16 @@
       <button id="searchBtn" onclick="searchCity()">Suchen</button>
     </div>
   </header>
+
+  <!-- ══ DESKTOP NAV ══ (nur auf ≥768px sichtbar) -->
+  <nav id="desktopNav" style="display:none;">
+    <button class="dtab active" id="dtab-essen"     onclick="switchTab('essen')">🍽️ Essen</button>
+    <button class="dtab"        id="dtab-trinken"   onclick="switchTab('trinken')">🍺 Trinken</button>
+    <button class="dtab"        id="dtab-kultur"    onclick="switchTab('kultur')">🏛️ Kultur</button>
+    <button class="dtab"        id="dtab-transport" onclick="switchTab('transport')">🚇 Transport</button>
+    <button class="dtab"        id="dtab-buchen"    onclick="switchTab('buchen')">🎟️ Buchen</button>
+    <button class="dtab"        id="dtab-favs"      onclick="switchTab('favs')">❤️ Favoriten</button>
+  </nav>
 
   <!-- ══ MAIN ══ -->
   <main id="mainContent">
@@ -2725,7 +2778,7 @@ function renderEssen(places) {
     + sortBarHtml(activeEssenSort, 'setSortEssen')
     + insiderNote
     + (filtered.length
-        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('')
+        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
@@ -2756,7 +2809,7 @@ function renderTrinken(places) {
     + sortBarHtml(activeTrinkenSort, 'setSortTrinken')
     + insiderNote
     + (filtered.length
-        ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('')
+        ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
@@ -2792,7 +2845,7 @@ function renderKultur(places) {
     + sortBarHtml(activeKulturSort, 'setSortKultur')
     + insiderNote
     + (filtered.length
-        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('')
+        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
@@ -2814,8 +2867,8 @@ function renderFavs() {
     return;
   }
   const sorted = sortPlaces(favs, 'rating');
-  el.innerHTML = `<p class="section-title">❤️ Meine Favoriten (${sorted.length})</p>`
-    + sorted.map(p => renderPlaceCard(p, false, false)).join('');
+  el.innerHTML = `<p class="section-title">❤️ Meine Favoriten (${sorted.length})</p><div class="cards-grid">`
+    + sorted.map(p => renderPlaceCard(p, false, false)).join('') + '</div>';
 }
 function setTrinkenFilter(f) { activeTrinkenFilter  = f; renderTrinken(statePlaces.trinken); }
 function setKulturFilter(f)  { activeKulturFilter   = f; renderKultur(statePlaces.kultur); }
@@ -2990,16 +3043,22 @@ function gygLink(query, subQuery = '') {
 // ══════════════════════════════════════════════════════════
 //  UI HELPERS
 // ══════════════════════════════════════════════════════════
+function isDesktop() { return window.innerWidth >= 768; }
+
 function switchTab(tab) {
   currentTab = tab;
 
-
-  // Update bottom nav
+  // Bottom Nav (Mobile)
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const nb = document.getElementById(`nav-${tab}`);
   if (nb) nb.classList.add('active');
 
-  // Switch panel
+  // Desktop Tab-Leiste
+  document.querySelectorAll('.dtab').forEach(b => b.classList.remove('active'));
+  const dt = document.getElementById(`dtab-${tab}`);
+  if (dt) dt.classList.add('active');
+
+  // Panel anzeigen
   document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
   const panel = document.getElementById(`panel-${tab}`);
   if (panel) panel.style.display = 'block';
@@ -3010,6 +3069,9 @@ function switchTab(tab) {
 
 function showResults() {
   setLoading(false);
+  // Desktop-Nav einblenden (CSS zeigt sie nur auf ≥768px)
+  const dn = document.getElementById('desktopNav');
+  if (dn) dn.style.display = '';
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   // tabsRow removed — navigation via bottom nav only
