@@ -2286,7 +2286,7 @@ function isInsider(p) {
 const CHEAP_TYPES = ['fast_food','meal_takeaway','bakery','street_food','food_court','sandwich'];
 
 function applyFilter(places, filter, typeMap) {
-  if (filter === 'alle') return places;
+  if (filter === 'alle') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food') && !(p.types||[]).includes('meal_takeaway'));
   if (filter === 'insider') return places.filter(isInsider);
   if (filter === 'lokal') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
   if (filter === 'fastfood') return places.filter(p => isChain(p) || (p.types||[]).includes('fast_food') || (p.types||[]).includes('meal_takeaway'));
