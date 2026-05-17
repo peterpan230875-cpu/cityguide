@@ -1684,7 +1684,10 @@ function renderBuchen(geo) {
       }).join('')
     : '';
 
-  // GYG Widget direkt eingebettet (zeigt Preise, Fotos, Bewertungen)
+  const viatorCity = encodeURIComponent(city);
+  const pid = CONFIG.getYourGuidePartnerId;
+  const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
+
   const gygWidget = `
   <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
        data-gyg-locale-code="de-DE"
@@ -1695,22 +1698,21 @@ function renderBuchen(geo) {
        data-gyg-q="${esc(city)}">
   </div>`;
 
+  const priceNote = pid
+    ? `<div class="demo-banner" style="margin-bottom:10px;">💡 Preise, Fotos & Bewertungen direkt in der App</div>`
+    : `<div class="api-warning" style="margin-bottom:10px;">
+        <strong>💶 Preise</strong> werden sichtbar sobald eine GYG Partner-ID in <code>config.js</code> eingetragen ist.<br>
+        Kostenlose Registrierung: <a href="https://partner.getyourguide.com/en-us/signup" target="_blank" style="color:var(--gold2);">partner.getyourguide.com →</a>
+       </div>`;
+
   document.getElementById('panel-buchen').innerHTML = `
   ${places.length ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${places.length})</p>${cardsHtml}` : ''}
-  <p class="section-title" style="margin-top:${places.length ? 20 : 0}px;">🎟️ Aktivitäten & Preise in ${esc(city)}</p>
-  <div class="demo-banner" style="margin-bottom:10px;">
-    💡 Preise, Fotos & Bewertungen — direkt in der App. Zum Buchen einmal antippen.
-  </div>
-  <div id="gygTabWidget">${gygWidget}</div>`;
-
-  // GYG Script laden
-  const old = document.getElementById('gygTabScript');
-  if (old) old.remove();
-  const s = document.createElement('script');
-  s.id = 'gygTabScript';
-  s.src = 'https://widget.getyourguide.com/dist/pa.umd.production.min.js';
-  s.async = true;
-  document.body.appendChild(s);
+  <p class="section-title" style="margin-top:${places.length ? 20 : 0}px;">🎟️ Aktivitäten in ${esc(city)}</p>
+  ${priceNote}
+  <div id="gygTabWidget">${gygWidget}</div>
+  <a href="https://www.viator.com/de-DE/tours/${viatorCity}/" target="_blank" class="map-toggle-btn" style="margin-top:12px; text-decoration:none;">
+    🌐 Alternativ: Viator Preise ansehen →
+  </a>`;
 }
 
 // ── Booking Sheet (GetYourGuide Widget in-app) ──
