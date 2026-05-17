@@ -2240,8 +2240,16 @@ async function selectTransportCat(catId) {
 // ══════════════════════════════════════════════════════════
 function priceBadge(level) {
   if (level === null || level === undefined) return '';
-  const labels = ['Gratis', '€', '€€', '€€€', '€€€€'];
-  return `<span class="badge badge-price">${labels[level] || '?'}</span>`;
+  const labels = [
+    { sym: 'Gratis', range: '' },
+    { sym: '€',     range: 'bis 15€' },
+    { sym: '€€',    range: '15–30€' },
+    { sym: '€€€',   range: '30–60€' },
+    { sym: '€€€€',  range: 'über 60€' },
+  ];
+  const l = labels[level];
+  if (!l) return '';
+  return `<span class="badge badge-price">${l.sym}${l.range ? ` <span style="opacity:.75;font-size:10px;">${l.range}</span>` : ''}</span>`;
 }
 
 function starBadge(rating, count) {
