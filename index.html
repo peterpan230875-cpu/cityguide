@@ -11,6 +11,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Leaflet (Karte) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     /* ── Reset & Base ── */
@@ -578,6 +581,98 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── Transport Map ── */
+    #transportMap {
+      width: 100%;
+      height: 280px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 12px;
+      z-index: 1;
+      border: 1px solid var(--border);
+    }
+    .emoji-marker {
+      background: none !important;
+      border: none !important;
+      font-size: 22px;
+      line-height: 1;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,.5));
+    }
+    .leaflet-popup-content-wrapper {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+    .leaflet-popup-tip { background: var(--card); }
+    .leaflet-popup-content b { color: var(--gold2); }
+    .stop-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .stop-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+    .stop-item .si-icon { font-size: 20px; flex-shrink: 0; }
+    .stop-item .si-name { font-weight: 500; flex: 1; }
+    .stop-item .si-type { font-size: 11px; color: var(--text3); }
+
+    /* ── Photo Cards (Buchen) ── */
+    .photo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 12px;
+      transition: border-color .2s;
+    }
+    .photo-card-img {
+      width: 100%;
+      height: 180px;
+      background: var(--bg3);
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+    }
+    .photo-card-body { padding: 12px 14px; }
+    .photo-card-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .photo-card-rating {
+      font-size: 13px;
+      color: var(--gold2);
+      margin-bottom: 3px;
+    }
+    .photo-card-addr {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .photo-card-actions { display: flex; gap: 8px; }
+
     /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -844,6 +939,9 @@ let currentTab = 'essen';
 let currentCity = '';
 let currentLat = null;
 let currentLng = null;
+let statePlaces = { essen: [], trinken: [], kultur: [] };
+let leafletMap = null;
+let transportMapReady = false;
 
 // ══════════════════════════════════════════════════════════
 //  GEOCODING (Nominatim — kostenlos)
@@ -872,46 +970,63 @@ function loadGoogleMaps() {
   if (!key) return Promise.resolve(false);
   return new Promise((resolve) => {
     if (googleLoaded) { resolve(true); return; }
-    window._gmCallback = () => { googleLoaded = true; resolve(true); };
+    // Timeout-Fallback: nach 5s auf Overpass umschalten
+    const timer = setTimeout(() => resolve(false), 5000);
+    window._gmCallback = () => {
+      clearTimeout(timer);
+      googleLoaded = true;
+      resolve(true);
+    };
     const s = document.createElement('script');
     s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&callback=_gmCallback`;
     s.async = true;
-    s.onerror = () => resolve(false);
+    s.onerror = () => { clearTimeout(timer); resolve(false); };
     document.head.appendChild(s);
   });
 }
 
 function searchGooglePlaces(lat, lng, type) {
   return new Promise((resolve) => {
-    if (!placesService) {
-      const div = document.createElement('div');
-      const map = new google.maps.Map(div, { center: { lat, lng }, zoom: 13 });
-      placesService = new google.maps.places.PlacesService(map);
-    }
-    placesService.nearbySearch({
-      location: new google.maps.LatLng(lat, lng),
-      radius: 2000,
-      type,
-    }, (results, status) => {
-      resolve(status === google.maps.places.PlacesServiceStatus.OK ? results : []);
-    });
+    // Timeout: falls Places-API nicht antwortet (z.B. Key-Beschränkung), leeres Array
+    const timer = setTimeout(() => resolve([]), 6000);
+    try {
+      if (!placesService) {
+        const div = document.createElement('div');
+        const map = new google.maps.Map(div, { center: { lat, lng }, zoom: 13 });
+        placesService = new google.maps.places.PlacesService(map);
+      }
+      placesService.nearbySearch({
+        location: new google.maps.LatLng(lat, lng),
+        radius: 2000,
+        type,
+      }, (results, status) => {
+        clearTimeout(timer);
+        resolve(status === google.maps.places.PlacesServiceStatus.OK ? results : []);
+      });
+    } catch(e) { clearTimeout(timer); resolve([]); }
   });
 }
 
 function normGooglePlace(p) {
   const loc = p.geometry?.location;
   return {
-    name:       p.name,
-    address:    p.vicinity || '',
-    rating:     p.rating || null,
+    name:        p.name,
+    address:     p.vicinity || '',
+    rating:      p.rating || null,
     ratingCount: p.user_ratings_total || null,
-    priceLevel: p.price_level ?? null,
-    open:       p.opening_hours?.open_now ?? null,
-    icon:       googleIcon(p.types || []),
-    lat: loc ? loc.lat() : currentLat,
-    lng: loc ? loc.lng() : currentLng,
-    demo: false,
+    priceLevel:  p.price_level ?? null,
+    open:        p.opening_hours?.open_now ?? null,
+    icon:        googleIcon(p.types || []),
+    lat:         loc ? loc.lat() : currentLat,
+    lng:         loc ? loc.lng() : currentLng,
+    photoRef:    p.photos?.[0]?.photo_reference || null,
+    demo:        false,
   };
+}
+
+function getPhotoUrl(ref, maxWidth = 500) {
+  if (!ref || !CONFIG.googlePlacesApiKey) return null;
+  return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${ref}&key=${CONFIG.googlePlacesApiKey}`;
 }
 
 function googleIcon(types) {
@@ -1053,6 +1168,10 @@ async function searchCity() {
       essenPlaces   = er.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
       trinkenPlaces = tr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
       kulturPlaces  = kr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      // Fallback falls Key gesperrt (z.B. localhost)
+      if (!essenPlaces.length)   essenPlaces   = getDemoData(currentCity, 'essen');
+      if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
+      if (!kulturPlaces.length)  kulturPlaces   = getDemoData(currentCity, 'kultur');
     } else {
       setLoading(true, 'Lade Orte aus OpenStreetMap…');
       source = 'OpenStreetMap';
@@ -1068,6 +1187,11 @@ async function searchCity() {
       if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
       if (!kulturPlaces.length)  kulturPlaces   = getDemoData(currentCity, 'kultur');
     }
+
+    // Reset transport map + store state
+    transportMapReady = false;
+    if (leafletMap) { leafletMap.remove(); leafletMap = null; }
+    statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
 
     // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
@@ -1085,6 +1209,61 @@ async function searchCity() {
     showError(e.message || 'Unbekannter Fehler.');
     setLoading(false);
   }
+}
+
+// ══════════════════════════════════════════════════════════
+//  TRANSPORT MAP (Leaflet + Overpass)
+// ══════════════════════════════════════════════════════════
+async function initTransportMap() {
+  if (transportMapReady || !currentLat) return;
+  transportMapReady = true;
+
+  const mapEl = document.getElementById('transportMap');
+  if (!mapEl) return;
+
+  leafletMap = L.map('transportMap', { zoomControl: true, attributionControl: false })
+    .setView([currentLat, currentLng], 14);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
+
+  const mkIcon = (em) => L.divIcon({ html: em, className: 'emoji-marker', iconSize: [26, 26], iconAnchor: [13, 13] });
+
+  // Stadtzentrum
+  L.marker([currentLat, currentLng], { icon: mkIcon('📍') })
+    .addTo(leafletMap)
+    .bindPopup(`<b>${currentCity}</b><br>Stadtzentrum`);
+
+  // Haltestellen laden
+  const stopTypes = [
+    { filters: ['node["highway"="bus_stop"]'], icon: '🚌', label: 'Bushaltestelle' },
+    { filters: ['node["railway"~"station|subway_entrance|tram_stop"]'], icon: '🚇', label: 'Bahn / Metro' },
+  ];
+
+  const listEl = document.getElementById('stopList');
+
+  for (const type of stopTypes) {
+    try {
+      const stops = await searchOverpass(currentLat, currentLng, type.filters, 1500);
+      stops.filter(el => el.tags?.name).slice(0, 25).forEach(el => {
+        const lat = el.lat ?? el.center?.lat;
+        const lng = el.lon ?? el.center?.lon;
+        if (!lat || !lng) return;
+        const name = el.tags.name;
+        L.marker([lat, lng], { icon: mkIcon(type.icon) })
+          .addTo(leafletMap)
+          .bindPopup(`<b>${name}</b><br>${type.label}`);
+        if (listEl) {
+          listEl.insertAdjacentHTML('beforeend', `
+            <div class="stop-item">
+              <span class="si-icon">${type.icon}</span>
+              <span class="si-name">${esc(name)}</span>
+              <span class="si-type">${type.label}</span>
+            </div>`);
+        }
+      });
+    } catch(e) {}
+  }
+  setTimeout(() => leafletMap.invalidateSize(), 150);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1179,126 +1358,55 @@ function renderKultur(places) {
 }
 
 function renderTransport(geo) {
-  const city = encodeURIComponent(geo.displayName);
-  const lat = geo.lat, lng = geo.lng;
-  const q = encodeURIComponent(geo.displayName);
-
-  const html = `
-  <div class="demo-banner">
-    ℹ️ Tippe auf einen Link, um direkt in Google Maps oder einer Ticket-App weiterzumachen.
+  document.getElementById('panel-transport').innerHTML = `
+  <div class="demo-banner" style="margin-bottom:10px;">
+    🗺️ Karte direkt in der App — tippe auf eine Haltestelle für Details
   </div>
-
-  <div class="transport-card fade-in">
-    <div class="transport-header">
-      <span class="icon">🗺️</span>
-      <div>
-        <div class="label">ÖPNV-Navigation</div>
-        <div class="sublabel">Öffentliche Verkehrsmittel in ${geo.displayName}</div>
-      </div>
-    </div>
-    <div class="transport-links">
-      <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit" target="_blank" class="transport-link">
-        <span class="tl-icon">🚇</span>
-        <div class="tl-text">
-          <div class="tl-label">Google Maps — Transit</div>
-          <div class="tl-sub">Routen, Abfahrtszeiten & Preise</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-      <a href="https://www.google.com/maps/search/bus+stop/@${lat},${lng},14z" target="_blank" class="transport-link">
-        <span class="tl-icon">🚌</span>
-        <div class="tl-text">
-          <div class="tl-label">Bushaltestellen in der Nähe</div>
-          <div class="tl-sub">Alle Haltestellen auf der Karte</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-      <a href="https://www.google.com/maps/search/metro+station/@${lat},${lng},14z" target="_blank" class="transport-link">
-        <span class="tl-icon">🚊</span>
-        <div class="tl-text">
-          <div class="tl-label">U-Bahn / Metro-Stationen</div>
-          <div class="tl-sub">Nächste Stationen anzeigen</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-      <a href="https://www.google.com/maps/search/taxi/@${lat},${lng},14z" target="_blank" class="transport-link">
-        <span class="tl-icon">🚕</span>
-        <div class="tl-text">
-          <div class="tl-label">Taxi & Ride-Sharing</div>
-          <div class="tl-sub">Uber, Bolt & lokale Taxis</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-      <a href="https://www.google.com/maps/search/bike+rental/@${lat},${lng},14z" target="_blank" class="transport-link">
-        <span class="tl-icon">🚲</span>
-        <div class="tl-text">
-          <div class="tl-label">Fahrrad & E-Scooter</div>
-          <div class="tl-sub">Miet-Fahrräder in der Nähe</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-    </div>
-  </div>
-
-  <div class="transport-card fade-in">
-    <div class="transport-header">
-      <span class="icon">✈️</span>
-      <div>
-        <div class="label">Anreise & Fernverkehr</div>
-        <div class="sublabel">Züge, Busse, Flüge nach ${geo.displayName}</div>
-      </div>
-    </div>
-    <div class="transport-links">
-      <a href="https://www.google.com/travel/flights?q=Flüge+nach+${city}" target="_blank" class="transport-link">
-        <span class="tl-icon">🛫</span>
-        <div class="tl-text">
-          <div class="tl-label">Flüge vergleichen</div>
-          <div class="tl-sub">Google Flights</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-      <a href="https://www.rome2rio.com/de/s/${city}" target="_blank" class="transport-link">
-        <span class="tl-icon">🚆</span>
-        <div class="tl-text">
-          <div class="tl-label">Zug, Bus & Fähre</div>
-          <div class="tl-sub">Rome2Rio — alle Verbindungen</div>
-        </div>
-        <span class="tl-arrow">›</span>
-      </a>
-    </div>
+  <div id="transportMap"></div>
+  <p class="section-title">🚌 Haltestellen in der Nähe</p>
+  <div id="stopList" class="stop-list">
+    <div class="stop-item"><span class="si-icon">⏳</span><span class="si-name">Lade Haltestellen…</span></div>
   </div>`;
-
-  document.getElementById('panel-transport').innerHTML = html;
 }
 
 function renderBuchen(geo) {
   const city = geo.displayName;
-  const gygMain = gygLink(city);
+  const places = statePlaces.kultur;
 
-  const categories = [
-    { icon: '🏛️', label: 'Museen & Kultur', q: `${city} museum` },
-    { icon: '🚶', label: 'Stadtführungen', q: `${city} tour` },
-    { icon: '🍷', label: 'Food & Wein', q: `${city} food wine` },
-    { icon: '🎢', label: 'Abenteuer', q: `${city} adventure` },
-    { icon: '🚢', label: 'Bootstouren', q: `${city} boat` },
-    { icon: '🎭', label: 'Shows & Events', q: `${city} show` },
-  ];
-
-  const catHtml = categories.map(c => `
-    <a href="${gygLink(c.q)}" target="_blank" class="gyg-cat-btn">
-      <span class="cat-icon">${c.icon}</span>
-      <span>${c.label}</span>
-    </a>`).join('');
+  const cardsHtml = places.length
+    ? places.map(p => {
+        const photoUrl = getPhotoUrl(p.photoRef);
+        const gygUrl   = gygLink(`${city} ${p.name}`);
+        const navQ     = encodeURIComponent(`${p.name} ${p.address}`);
+        return `
+        <div class="photo-card fade-in">
+          <div class="photo-card-img">
+            ${photoUrl
+              ? `<img src="${photoUrl}" alt="${esc(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>${p.icon}</div>'" />`
+              : `<div class="photo-placeholder">${p.icon}</div>`}
+          </div>
+          <div class="photo-card-body">
+            <div class="photo-card-name">${esc(p.name)}</div>
+            ${p.rating ? `<div class="photo-card-rating">⭐ ${p.rating.toFixed(1)}${p.ratingCount ? ` (${p.ratingCount})` : ''}</div>` : ''}
+            <div class="photo-card-addr">📍 ${esc(p.address || '')}</div>
+            <div class="photo-card-actions">
+              <a href="${gygUrl}" target="_blank" class="btn btn-book">🎟️ Buchen</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=${navQ}" target="_blank" class="btn btn-nav">📍 Karte</a>
+            </div>
+          </div>
+        </div>`;
+      }).join('')
+    : `<div class="no-results"><div class="nr-icon">🔍</div>Zuerst eine Stadt suchen.</div>`;
 
   document.getElementById('panel-buchen').innerHTML = `
-  <div class="gyg-card fade-in">
+  <p class="section-title">🏛️ Sehenswürdigkeiten & Erlebnisse (${places.length})</p>
+  ${cardsHtml}
+  <div class="gyg-card fade-in" style="margin-top:8px;">
     <div class="gyg-icon">🎟️</div>
-    <div class="gyg-title">Erlebnisse in ${esc(city)}</div>
-    <div class="gyg-sub">Tickets, Touren und Aktivitäten direkt buchen — kuratiert von GetYourGuide.</div>
-    <a href="${gygMain}" target="_blank" class="gyg-btn">Alle Erlebnisse entdecken →</a>
-  </div>
-  <p class="section-title">Nach Kategorie</p>
-  <div class="gyg-categories">${catHtml}</div>`;
+    <div class="gyg-title">Mehr in ${esc(city)}</div>
+    <div class="gyg-sub">Alle Touren & Tickets auf GetYourGuide</div>
+    <a href="${gygLink(city)}" target="_blank" class="gyg-btn">Alle Erlebnisse →</a>
+  </div>`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1331,6 +1439,11 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
   const panel = document.getElementById(`panel-${tab}`);
   if (panel) panel.style.display = 'block';
+
+  // Init transport map lazily when tab is opened
+  if (tab === 'transport' && currentLat) {
+    setTimeout(initTransportMap, 100);
+  }
 }
 
 function showResults() {
