@@ -2534,29 +2534,28 @@ function loadMapEmbed(transitMode) {
                   b.textContent.includes('Tram') ? 'tram' : 'rail';
     b.classList.toggle('active', bMode === transitMode);
   });
-  const key = CONFIG.googlePlacesApiKey;
   const dest = `${_mapModalDest.lat},${_mapModalDest.lng}`;
   let url;
   if (_mapModalIsTransit) {
+    const doLoad = (oLat, oLng) => {
+      // dirflg=r = transit; kein API-Key nötig
+      url = `https://maps.google.com/maps?saddr=${oLat},${oLng}&daddr=${dest}&dirflg=r&output=embed&hl=de`;
+      document.getElementById('mapEmbed').src = url;
+    };
     const originLat = userGpsLat || currentLat;
     const originLng = userGpsLng || currentLng;
     if (originLat && originLng) {
-      url = `https://www.google.com/maps/embed/v1/directions?key=${key}&origin=${originLat},${originLng}&destination=${dest}&mode=transit&language=de`;
-      if (transitMode) url += `&transit_mode=${transitMode}`;
+      doLoad(originLat, originLng);
     } else {
-      // Kein Standort — GPS abfragen dann laden
       navigator.geolocation.getCurrentPosition(
-        pos => { userGpsLat = pos.coords.latitude; userGpsLng = pos.coords.longitude; loadMapEmbed(transitMode); },
-        () => {
-          url = `https://www.google.com/maps/embed/v1/place?key=${key}&q=${dest}&language=de`;
-          document.getElementById('mapEmbed').src = url;
-        },
+        pos => { userGpsLat = pos.coords.latitude; userGpsLng = pos.coords.longitude; doLoad(userGpsLat, userGpsLng); },
+        () => { document.getElementById('mapEmbed').src = `https://maps.google.com/maps?q=${dest}&output=embed&hl=de`; },
         { timeout: 8000 }
       );
-      return;
     }
+    return;
   } else {
-    url = `https://www.google.com/maps/embed/v1/place?key=${key}&q=${dest}&language=de`;
+    url = `https://maps.google.com/maps?q=${dest}&output=embed&hl=de`;
   }
   document.getElementById('mapEmbed').src = url;
 }
