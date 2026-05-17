@@ -1368,8 +1368,16 @@ const TRANSPORT_CATS = [
   },
   {
     id: 'metro', icon: '🚇', label: 'Metro',
-    filters: ['node["station"="subway"]','node["railway"="subway_entrance"]','node["public_transport"="stop_position"]["subway"="yes"]','node["metro"="yes"]'],
-    radius: 5000, osmLabel: 'Metro-Station',
+    filters: [
+      'node["station"="subway"]',
+      'node["railway"="subway_entrance"]',
+      'node["public_transport"="stop_position"]["subway"="yes"]',
+      'node["public_transport"="station"]["subway"="yes"]',
+      'node["railway"="station"]["station"="subway"]',
+      'node["metro"="yes"]',
+      'node["railway"="station"]["network"~"[Mm]etro|[Uu]bahn|[Ss]ubway|MRT|MTR|Dubai"]',
+    ],
+    radius: 8000, osmLabel: 'Metro-Station',
   },
   {
     id: 'tram', icon: '🚊', label: 'Tram',
@@ -1427,7 +1435,9 @@ async function initTransportMap() {
 
   leafletMap = L.map('transportMap', { zoomControl: true, attributionControl: false })
     .setView([currentLat, currentLng], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+  }).addTo(leafletMap);
 
   const mkIcon = em => L.divIcon({ html: em, className: 'emoji-marker', iconSize: [26,26], iconAnchor:[13,13] });
   L.marker([currentLat, currentLng], { icon: mkIcon('📍') })
@@ -1488,7 +1498,7 @@ async function selectTransportCat(catId) {
   // Fetch stops
   try {
     const stops = await searchOverpass(currentLat, currentLng, cat.filters, cat.radius);
-    const named = stops.filter(el => el.tags?.name).slice(0, 30);
+    const named = stops.filter(el => el.tags?.name || el.tags?.['name:en'] || el.tags?.['name:de']).slice(0, 30);
 
     if (!named.length) {
       listEl.innerHTML = `<div class="stop-item"><span class="si-icon">❌</span><span class="si-name">Keine ${cat.label}-Stationen in OSM gefunden</span></div>`;
@@ -1501,7 +1511,7 @@ async function selectTransportCat(catId) {
     named.forEach(el => {
       const lat = el.lat ?? el.center?.lat;
       const lng = el.lon ?? el.center?.lon;
-      const name = el.tags.name;
+      const name = el.tags['name:de'] || el.tags['name:en'] || el.tags.name;
       if (lat && lng) {
         const m = L.marker([lat, lng], { icon: mkIcon(cat.icon) })
           .addTo(leafletMap)
