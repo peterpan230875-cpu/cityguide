@@ -1219,6 +1219,7 @@
         />
       </div>
       <button id="searchBtn" onclick="searchCity()">Suchen</button>
+      <button id="locBtn" onclick="useMyLocation()" title="Meinen Standort verwenden" style="background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:0 12px;font-size:20px;cursor:pointer;flex-shrink:0;transition:border-color .2s;" onmouseenter="this.style.borderColor='var(--gold)'" onmouseleave="this.style.borderColor='var(--border)'">📍</button>
     </div>
   </header>
 
@@ -1571,6 +1572,49 @@ function getDemoData(city, category) {
     lng: currentLng + (Math.random() - 0.5) * 0.02,
     demo: true,
   }));
+}
+
+// ══════════════════════════════════════════════════════════
+//  STANDORT-ERKENNUNG
+// ══════════════════════════════════════════════════════════
+function useMyLocation() {
+  if (!navigator.geolocation) {
+    showError('Dein Browser unterstützt keine Standorterkennung.');
+    return;
+  }
+  const btn = document.getElementById('locBtn');
+  btn.textContent = '⏳';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      try {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        // Reverse geocoding via Nominatim
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=de`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'de' } });
+        const data = await res.json();
+        const city = data.address?.city || data.address?.town || data.address?.village || data.address?.county || '';
+        if (city) {
+          document.getElementById('cityInput').value = city;
+          searchCity();
+        } else {
+          showError('Dein Standort konnte keiner Stadt zugeordnet werden.');
+        }
+      } catch {
+        showError('Standort konnte nicht ermittelt werden.');
+      } finally {
+        btn.textContent = '📍';
+        btn.disabled = false;
+      }
+    },
+    (err) => {
+      btn.textContent = '📍';
+      btn.disabled = false;
+      if (err.code === 1) showError('Standort-Zugriff verweigert. Bitte in den Browser-Einstellungen erlauben.');
+      else showError('Standort konnte nicht ermittelt werden.');
+    },
+    { timeout: 10000, maximumAge: 60000 }
+  );
 }
 
 // ══════════════════════════════════════════════════════════
