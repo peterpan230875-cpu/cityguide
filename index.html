@@ -2289,6 +2289,7 @@ function applyFilter(places, filter, typeMap) {
   if (filter === 'alle') return places;
   if (filter === 'insider') return places.filter(isInsider);
   if (filter === 'lokal') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
+  if (filter === 'fastfood') return places.filter(p => isChain(p) || (p.types||[]).includes('fast_food') || (p.types||[]).includes('meal_takeaway'));
   if (filter === 'guenstig') return places.filter(p =>
     (p.priceLevel !== null && p.priceLevel <= 1) ||
     (p.priceLevel === null && CHEAP_TYPES.some(t => (p.types||[]).includes(t)))
@@ -2370,10 +2371,11 @@ function cuisineBadge(p) {
 }
 
 const ESSEN_FILTERS = [
-  { id: 'alle',     icon: '🍽️', label: 'Alle' },
-  { id: 'lokal',    icon: '🏠', label: 'Lokal & Traditionell' },
-  { id: 'guenstig', icon: '💚', label: 'Günstig' },
-  { id: 'normal',   icon: '🍴', label: 'Normal' },
+  { id: 'alle',      icon: '🍽️', label: 'Alle' },
+  { id: 'lokal',     icon: '🏠', label: 'Lokal & Traditionell' },
+  { id: 'fastfood',  icon: '🍔', label: 'Fast Food & Ketten' },
+  { id: 'guenstig',  icon: '💚', label: 'Günstig' },
+  { id: 'normal',    icon: '🍴', label: 'Normal' },
   { id: 'gehoben',  icon: '💎', label: 'Gehoben' },
   { id: 'insider',  icon: '🔍', label: 'Geheimtipp' },
 ];
