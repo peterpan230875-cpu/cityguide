@@ -1293,7 +1293,7 @@ function loadGoogleMaps() {
 function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null, pages = 3) {
   return new Promise((resolve) => {
     const allResults = [];
-    const timer = setTimeout(() => resolve(allResults), 15000);
+    const timer = setTimeout(() => resolve(allResults), 25000);
     try {
       if (!placesService) {
         const div = document.createElement('div');
@@ -1309,7 +1309,7 @@ function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null, page
           allResults.push(...results);
         }
         if (pagination && pagination.hasNextPage && allResults.length < pages * 20) {
-          setTimeout(() => pagination.nextPage(), 300);
+          setTimeout(() => pagination.nextPage(), 2000);
         } else {
           clearTimeout(timer);
           resolve(allResults);
@@ -1335,6 +1335,7 @@ function normGooglePlace(p) {
     lat:         loc ? loc.lat() : currentLat,
     lng:         loc ? loc.lng() : currentLng,
     photoRef:    p.photos?.[0]?.photo_reference || null,
+    searchTag:   p._tag || null,
     demo:        false,
   };
 }
@@ -1482,14 +1483,14 @@ async function searchCity() {
       source = 'Google';
       const [er, tr, kr] = await Promise.all([
         Promise.all([
-          searchGooglePlaces(geo.lat, geo.lng, 'restaurant'),
-          searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
-          searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway'),
-          searchGooglePlaces(geo.lat, geo.lng, 'bakery'),
-          searchGooglePlaces(geo.lat, geo.lng, 'fast_food'),
-          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'buffet'),
-          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 5000, 'kantine mensa'),
-          searchGooglePlaces(geo.lat, geo.lng, null, 10000, 'restaurant essen'),
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant').then(r => r.map(p => (p._tag='restaurant',p))),
+          searchGooglePlaces(geo.lat, geo.lng, 'cafe').then(r => r.map(p => (p._tag='cafe',p))),
+          searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway').then(r => r.map(p => (p._tag='meal_takeaway',p))),
+          searchGooglePlaces(geo.lat, geo.lng, 'bakery').then(r => r.map(p => (p._tag='bakery',p))),
+          searchGooglePlaces(geo.lat, geo.lng, 'fast_food').then(r => r.map(p => (p._tag='fast_food',p))),
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'buffet').then(r => r.map(p => (p._tag=p._tag||'buffet',p))),
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 5000, 'kantine mensa').then(r => r.map(p => (p._tag=p._tag||'kantine',p))),
+          searchGooglePlaces(geo.lat, geo.lng, null, 10000, 'restaurant').then(r => r.map(p => (p._tag=p._tag||'restaurant',p))),
         ]).then(([a,b,c,d,e,f,g,h]) => [...a,...b,...c,...d,...e,...f,...g,...h]),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'bar'),
@@ -2337,24 +2338,25 @@ function sortByRating(places) {
   });
 }
 
-function noFastFood(p) {
-  if (isChain(p)) return false;
-  const primary = (p.types||[])[0];
-  return primary !== 'fast_food';
-}
+const FAST_FOOD_TAGS = ['fast_food','meal_takeaway'];
+const BUFFET_TAGS = ['buffet','kantine'];
+const BUFFET_KW = ['buffet','kantine','mensa','self-service','all you can eat','ayce'];
+
+function isFastFood(p) { return isChain(p) || FAST_FOOD_TAGS.includes(p.searchTag) || (p.types||[]).includes('fast_food'); }
+function isBuffet(p)   { return BUFFET_TAGS.includes(p.searchTag) || BUFFET_KW.some(k => (p.name||'').toLowerCase().includes(k)); }
+function noFastFood(p) { return !isFastFood(p); }
 
 function applyFilter(places, filter, typeMap) {
-  if (filter === 'fastfood') return places.filter(p => isChain(p) || (p.types||[]).includes('fast_food') || (p.types||[]).includes('meal_takeaway'));
+  if (filter === 'fastfood') return places.filter(isFastFood);
   // Alle anderen Filter: Fast Food & Ketten grundsätzlich ausblenden
   const base = places.filter(noFastFood);
   if (filter === 'alle') return base;
   if (filter === 'insider') return base.filter(isInsider);
-  if (filter === 'lokal') return base.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
-  const BUFFET_KW = ['buffet','kantine','mensa','self-service','all you can eat','ayce','smorgasbord'];
-  if (filter === 'buffet') return base.filter(p => BUFFET_KW.some(k => (p.name||'').toLowerCase().includes(k)));
+  if (filter === 'lokal') return base.filter(p => !isChain(p));
+  if (filter === 'buffet') return places.filter(isBuffet); // buffet darf meal_takeaway enthalten
   if (filter === 'guenstig') return base.filter(p =>
     (p.priceLevel !== null && p.priceLevel <= 1) ||
-    (p.priceLevel === null && CHEAP_TYPES.some(t => (p.types||[]).includes(t)))
+    (p.priceLevel === null && (CHEAP_TYPES.some(t => (p.types||[]).includes(t)) || ['bakery','meal_takeaway'].includes(p.searchTag)))
   );
   if (filter === 'normal') return base.filter(p => p.priceLevel === 2 ||
     (p.priceLevel === null && !CHEAP_TYPES.some(t => (p.types||[]).includes(t))));
