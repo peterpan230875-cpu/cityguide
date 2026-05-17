@@ -2324,7 +2324,11 @@ function sortByRating(places) {
   });
 }
 
-function noFastFood(p) { return !isChain(p) && !(p.types||[]).includes('fast_food') && !(p.types||[]).includes('meal_takeaway'); }
+function noFastFood(p) {
+  if (isChain(p)) return false;
+  const primary = (p.types||[])[0];
+  return primary !== 'fast_food' && primary !== 'meal_takeaway';
+}
 
 function applyFilter(places, filter, typeMap) {
   if (filter === 'fastfood') return places.filter(p => isChain(p) || (p.types||[]).includes('fast_food') || (p.types||[]).includes('meal_takeaway'));
