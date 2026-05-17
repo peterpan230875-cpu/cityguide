@@ -1299,7 +1299,8 @@ function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null) {
         const map = new google.maps.Map(div, { center: { lat, lng }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
       }
-      const req = { location: new google.maps.LatLng(lat, lng), radius, type };
+      const req = { location: new google.maps.LatLng(lat, lng), radius };
+      if (type) req.type = type;
       if (keyword) req.keyword = keyword;
       placesService.nearbySearch(req, (results, status) => {
         clearTimeout(timer);
@@ -1477,7 +1478,8 @@ async function searchCity() {
           searchGooglePlaces(geo.lat, geo.lng, 'fast_food'),
           searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'buffet'),
           searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 5000, 'kantine mensa'),
-        ]).then(([a,b,c,d,e,f,g]) => [...a,...b,...c,...d,...e,...f,...g]),
+          searchGooglePlaces(geo.lat, geo.lng, null, 10000, 'restaurant essen'),
+        ]).then(([a,b,c,d,e,f,g,h]) => [...a,...b,...c,...d,...e,...f,...g,...h]),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'bar'),
           searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
