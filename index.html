@@ -1302,7 +1302,7 @@ function searchGooglePlaces(lat, lng, type) {
       }
       placesService.nearbySearch({
         location: new google.maps.LatLng(lat, lng),
-        radius: 2000,
+        radius: 10000,
         type,
       }, (results, status) => {
         clearTimeout(timer);
@@ -1481,9 +1481,14 @@ async function searchCity() {
           searchGooglePlaces(geo.lat, geo.lng, 'amusement_park'),
         ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
       ]);
-      essenPlaces   = er.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
-      trinkenPlaces = tr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
-      kulturPlaces  = kr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      // Deduplicate by place_id, then limit
+      const dedup = arr => {
+        const seen = new Set();
+        return arr.filter(p => { if (seen.has(p.place_id)) return false; seen.add(p.place_id); return true; });
+      };
+      essenPlaces   = dedup(er).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      trinkenPlaces = dedup(tr).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      kulturPlaces  = dedup(kr).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
       // Fallback falls Key gesperrt (z.B. localhost)
       if (!essenPlaces.length)   essenPlaces   = getDemoData(currentCity, 'essen');
       if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
@@ -1492,9 +1497,9 @@ async function searchCity() {
       setLoading(true, 'Lade Orte aus OpenStreetMap…');
       source = 'OpenStreetMap';
       const [er, tr, kr] = await Promise.all([
-        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"restaurant|cafe|fast_food|bakery"]','way["amenity"~"restaurant|cafe|fast_food|bakery"]']),
-        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"bar|pub|biergarten|nightclub"]','way["amenity"~"bar|pub|biergarten|nightclub"]']),
-        searchOverpass(geo.lat, geo.lng, ['node["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','way["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','node["historic"]','node["amenity"~"theatre|cinema"]','node["leisure"~"zoo|park|nature_reserve|garden"]','way["leisure"~"zoo|nature_reserve"]'], 3500),
+        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"restaurant|cafe|fast_food|bakery"]','way["amenity"~"restaurant|cafe|fast_food|bakery"]'], 5000, CONFIG.resultsPerCategory),
+        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"bar|pub|biergarten|nightclub"]','way["amenity"~"bar|pub|biergarten|nightclub"]'], 5000, CONFIG.resultsPerCategory),
+        searchOverpass(geo.lat, geo.lng, ['node["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','way["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','node["historic"]','node["amenity"~"theatre|cinema"]','node["leisure"~"zoo|park|nature_reserve|garden"]','way["leisure"~"zoo|nature_reserve"]'], 8000, CONFIG.resultsPerCategory),
       ]);
       essenPlaces   = er.map(normOverpassPlace);
       trinkenPlaces = tr.map(normOverpassPlace);

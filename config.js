@@ -16,5 +16,5 @@ const CONFIG = {
   defaultCity: "Wien",
 
   // Anzahl der Ergebnisse pro Kategorie
-  resultsPerCategory: 12,
+  resultsPerCategory: 30,
 };
