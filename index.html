@@ -118,10 +118,10 @@
       width: 100%;
       background: var(--bg3);
       border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 12px 12px 40px;
+      border-radius: 10px;
+      padding: 9px 10px 9px 36px;
       color: var(--text);
-      font-size: 16px;
+      font-size: 14px;
       font-family: inherit;
       outline: none;
       transition: border-color .2s;
@@ -1074,14 +1074,7 @@
       <button id="searchBtn" onclick="searchCity()">Suchen</button>
     </div>
 
-    <!-- Category tabs — only visible when results are shown -->
-    <div class="tabs-scroll" id="tabsRow" style="display:none; padding-bottom: 12px;">
-      <button class="tab-btn active" onclick="switchTab('essen')" id="tab-essen">🍽️ Essen</button>
-      <button class="tab-btn" onclick="switchTab('trinken')" id="tab-trinken">🍺 Trinken</button>
-      <button class="tab-btn" onclick="switchTab('kultur')" id="tab-kultur">🏛️ Kultur</button>
-      <button class="tab-btn" onclick="switchTab('transport')" id="tab-transport">🚇 Transport</button>
-      <button class="tab-btn" onclick="switchTab('buchen')" id="tab-buchen">🎟️ Buchen</button>
-    </div>
+    <!-- Top tabs removed — navigation only via bottom nav -->
   </header>
 
   <!-- ══ MAIN ══ -->
@@ -2413,10 +2406,6 @@ function gygLink(query, subQuery = '') {
 function switchTab(tab) {
   currentTab = tab;
 
-  // Update tab buttons in header
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const tb = document.getElementById(`tab-${tab}`);
-  if (tb) { tb.classList.add('active'); tb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
 
   // Update bottom nav
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -2440,7 +2429,7 @@ function showResults() {
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('cityHero').style.display = 'block';
   document.getElementById('results').style.display = 'block';
-  document.getElementById('tabsRow').style.display = 'flex';
+  // tabsRow removed — navigation via bottom nav only
   switchTab('essen');
 }
 
