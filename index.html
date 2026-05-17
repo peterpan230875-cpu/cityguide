@@ -1483,13 +1483,15 @@ async function searchCity() {
           searchGooglePlaces(geo.lat, geo.lng, 'night_club'),
         ]).then(([a,b]) => [...a,...b]),
         Promise.all([
-          searchGooglePlaces(geo.lat, geo.lng, 'zoo', 40000),
-          searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 30000),
-          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 30000),
+          searchGooglePlaces(geo.lat, geo.lng, 'zoo', 50000),
+          searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 40000),
+          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 35000),
           searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
           searchGooglePlaces(geo.lat, geo.lng, 'museum'),
+          searchGooglePlaces(geo.lat, geo.lng, 'art_gallery'),
           searchGooglePlaces(geo.lat, geo.lng, 'park', 15000),
-        ]).then(([a,b,c,d,e,f]) => [...a,...b,...c,...d,...e,...f]),
+          searchGooglePlaces(geo.lat, geo.lng, 'church', 5000),
+        ]).then(r => r),
       ]);
       // Deduplicate by place_id, then limit
       const dedup = arr => {
@@ -1498,7 +1500,16 @@ async function searchCity() {
       };
       essenPlaces   = dedup(er).slice(0, CONFIG.resultsPerCategory * 2).map(normGooglePlace);
       trinkenPlaces = dedup(tr).slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
-      kulturPlaces  = dedup(kr).slice(0, CONFIG.resultsPerCategory * 2).map(normGooglePlace);
+      // Kultur: separate pools per category so zoo can never be displaced
+      const [krZoo, krAquarium, krAmusement, krSehens, krMuseum, krGallery, krNatur, krHistorisch] = kr;
+      const kulturPools = {
+        zoo:        dedup([...krZoo, ...krAquarium, ...krAmusement]).map(normGooglePlace),
+        museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
+        sehens:     dedup(krSehens).map(normGooglePlace),
+        natur:      dedup(krNatur).map(normGooglePlace),
+        historisch: dedup(krHistorisch).map(normGooglePlace),
+      };
+      kulturPlaces = dedup([...krZoo,...krAquarium,...krAmusement,...krSehens,...krMuseum,...krGallery,...krNatur,...krHistorisch]).map(normGooglePlace);
       // Fallback falls Key gesperrt (z.B. localhost)
       if (!essenPlaces.length)   essenPlaces   = getDemoData(currentCity, 'essen');
       if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
@@ -1525,7 +1536,7 @@ async function searchCity() {
     activeKulturFilter = 'alle';
     transportMapReady = false;
     if (leafletMap) { leafletMap.remove(); leafletMap = null; }
-    statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
+    statePlaces = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces, kulturPools: kulturPools || {} };
 
     // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
@@ -2452,11 +2463,29 @@ function renderKultur(places) {
     el.innerHTML = noResults('Keine Sehenswürdigkeiten gefunden.');
     return;
   }
-  const filtered = applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP);
+  // Use dedicated pool if available for this filter category
+  const pools = statePlaces.kulturPools || {};
+  const poolFilters = ['zoo','museum','sehens','natur','historisch'];
+  let filtered;
+  if (poolFilters.includes(activeKulturFilter) && pools[activeKulturFilter] && pools[activeKulturFilter].length) {
+    filtered = pools[activeKulturFilter];
+  } else {
+    filtered = applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP);
+  }
   const insiderNote = activeKulturFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
     : '';
-  el.innerHTML = pillsHtml(KULTUR_FILTERS, activeKulturFilter, 'setKulturFilter', places, KULTUR_TYPE_MAP)
+  // For pills count: use pool sizes where available
+  const pillsWithCount = KULTUR_FILTERS.map(f => {
+    let count;
+    if (f.id === 'alle') count = places.length;
+    else if (poolFilters.includes(f.id) && pools[f.id]) count = pools[f.id].length;
+    else count = applyFilter(places, f.id, KULTUR_TYPE_MAP).length;
+    return `<button class="filter-pill${f.id === activeKulturFilter ? ' active' : ''}" onclick="setKulturFilter('${f.id}')">
+      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
+    </button>`;
+  }).join('');
+  el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
     + insiderNote
     + (filtered.length
         ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p>` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('')
