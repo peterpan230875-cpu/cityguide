@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>CityGuide</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0f1e;
+      --bg2:       #111827;
+      --bg3:       #1a2235;
+      --card:      #141c2e;
+      --border:    #1e2d45;
+      --gold:      #f59e0b;
+      --gold2:     #fbbf24;
+      --gold-dim:  rgba(245,158,11,0.15);
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #64748b;
+      --green:     #10b981;
+      --blue:      #3b82f6;
+      --red:       #ef4444;
+      --radius:    14px;
+      --shadow:    0 4px 24px rgba(0,0,0,0.4);
+      --tab-h:     64px;
+      --safe-bot:  env(safe-area-inset-bottom, 0px);
+    }
+
+    html { height: 100%; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100%;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Layout Shell ── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #0a0f1e 0%, #111827 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .app-name {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold2), #fde68a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Search Bar ── */
+    .search-wrap {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    #cityInput {
+      width: 100%;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 12px 12px 40px;
+      color: var(--text);
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    #cityInput::placeholder { color: var(--text3); }
+    #cityInput:focus { border-color: var(--gold); }
+
+    #searchBtn {
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      border: none;
+      border-radius: 12px;
+      padding: 0 18px;
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .2s, transform .1s;
+    }
+    #searchBtn:active { opacity: .85; transform: scale(.97); }
+
+    /* ── Category Tabs ── */
+    .tabs-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 1px;
+    }
+    .tabs-scroll::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .tab-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold2);
+    }
+
+    /* ── Main Content ── */
+    main {
+      flex: 1;
+      padding: 16px;
+      padding-bottom: calc(var(--tab-h) + var(--safe-bot) + 16px);
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Welcome Screen ── */
+    #welcome {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .welcome-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    #welcome h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    #welcome p {
+      color: var(--text2);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .feature-pill {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    /* ── Loading Spinner ── */
+    #loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+      gap: 16px;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { color: var(--text2); font-size: 15px; }
+
+    /* ── Error Banner ── */
+    #error {
+      display: none;
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      color: #fca5a5;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── City Hero ── */
+    #cityHero {
+      display: none;
+      margin-bottom: 16px;
+    }
+    .city-hero-inner {
+      background: linear-gradient(135deg, var(--bg3), var(--card));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .city-hero-inner .icon { font-size: 32px; }
+    .city-name { font-size: 20px; font-weight: 700; }
+    .city-meta { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+    /* ── Place Cards ── */
+    #results { display: none; }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 20px 0 10px;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    .place-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: border-color .2s, transform .15s;
+    }
+    .place-card:active { transform: scale(.99); }
+    .place-card:hover { border-color: #2d3f5e; }
+
+    .place-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .place-icon-wrap {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .place-info { flex: 1; min-width: 0; }
+
+    .place-name {
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .place-address {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .place-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .badge-stars {
+      background: rgba(245,158,11,.15);
+      color: var(--gold2);
+    }
+    .badge-open {
+      background: rgba(16,185,129,.15);
+      color: #34d399;
+    }
+    .badge-closed {
+      background: rgba(239,68,68,.1);
+      color: #f87171;
+    }
+    .badge-price {
+      background: var(--bg3);
+      color: var(--text2);
+    }
+
+    /* ── Action Buttons ── */
+    .place-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn:active { opacity: .8; transform: scale(.97); }
+
+    .btn-nav {
+      background: rgba(59,130,246,.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59,130,246,.25);
+    }
+    .btn-maps {
+      background: rgba(16,185,129,.12);
+      color: #34d399;
+      border: 1px solid rgba(16,185,129,.2);
+    }
+    .btn-book {
+      background: var(--gold-dim);
+      color: var(--gold2);
+      border: 1px solid rgba(245,158,11,.25);
+    }
+
+    /* ── Transport Panel ── */
+    .transport-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .transport-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .transport-header .icon { font-size: 24px; }
+    .transport-header .label { font-size: 15px; font-weight: 600; }
+    .transport-header .sublabel { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+    .transport-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .transport-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 14px;
+      transition: border-color .2s;
+    }
+    .transport-link:hover { border-color: #2d3f5e; }
+    .transport-link .tl-icon { font-size: 20px; }
+    .transport-link .tl-text { flex: 1; }
+    .transport-link .tl-label { font-weight: 500; }
+    .transport-link .tl-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+    .transport-link .tl-arrow { color: var(--text3); font-size: 14px; }
+
+    /* ── GetYourGuide Panel ── */
+    .gyg-card {
+      background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(251,191,36,.04));
+      border: 1px solid rgba(245,158,11,.2);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .gyg-icon { font-size: 40px; margin-bottom: 10px; }
+    .gyg-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .gyg-sub { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+    .gyg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: inherit;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 24px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .gyg-btn:active { opacity: .85; }
+
+    .gyg-categories {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .gyg-cat-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color .2s;
+    }
+    .gyg-cat-btn:hover { border-color: rgba(245,158,11,.4); }
+    .gyg-cat-btn .cat-icon { font-size: 20px; }
+
+    /* ── No Results ── */
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text3);
+      font-size: 14px;
+    }
+    .no-results .nr-icon { font-size: 36px; margin-bottom: 10px; }
+
+    /* ── Bottom Nav (mobile) ── */
+    #bottomNav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: calc(var(--tab-h) + var(--safe-bot));
+      background: rgba(10,15,30,.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+      z-index: 200;
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .nav-icon { font-size: 22px; line-height: 1; }
+    .nav-label { font-size: 10px; font-weight: 500; color: var(--text3); }
+    .nav-btn.active .nav-icon { filter: drop-shadow(0 0 6px var(--gold)); }
+    .nav-btn.active .nav-label { color: var(--gold2); }
+
+    /* ── API Key Warning ── */
+    .api-warning {
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.2);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #93c5fd;
+      line-height: 1.6;
+    }
+    .api-warning strong { color: #bfdbfe; }
+    .api-warning a { color: var(--gold2); }
+
+    /* ── Demo Mode Banner ── */
+    .demo-banner {
+      background: rgba(16,185,129,.08);
+      border: 1px solid rgba(16,185,129,.2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #6ee7b7;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Animations ── */
+    .fade-in {
+      animation: fadeIn .3s ease both;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <div class="header-top">
+      <div class="logo">🧭</div>
+      <div class="app-name">CityGuide</div>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Stadt eingeben… z.B. Wien, Barcelona"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        />
+      </div>
+      <button id="searchBtn" onclick="searchCity()">Suchen</button>
+    </div>
+
+    <!-- Category tabs — only visible when results are shown -->
+    <div class="tabs-scroll" id="tabsRow" style="display:none; padding-bottom: 12px;">
+      <button class="tab-btn active" onclick="switchTab('essen')" id="tab-essen">🍽️ Essen</button>
+      <button class="tab-btn" onclick="switchTab('trinken')" id="tab-trinken">🍺 Trinken</button>
+      <button class="tab-btn" onclick="switchTab('kultur')" id="tab-kultur">🏛️ Kultur</button>
+      <button class="tab-btn" onclick="switchTab('transport')" id="tab-transport">🚇 Transport</button>
+      <button class="tab-btn" onclick="switchTab('buchen')" id="tab-buchen">🎟️ Buchen</button>
+    </div>
+  </header>
+
+  <!-- ══ MAIN ══ -->
+  <main id="mainContent">
+
+    <!-- Welcome State -->
+    <div id="welcome">
+      <span class="welcome-icon">🌍</span>
+      <h2>Entdecke deine Stadt</h2>
+      <p>Gib einfach einen Städtenamen ein und entdecke die besten Orte — zum Essen, Trinken, für Kultur und Transport.</p>
+      <div class="feature-pills">
+        <span class="feature-pill">🍽️ Restaurants</span>
+        <span class="feature-pill">🍺 Bars &amp; Drinks</span>
+        <span class="feature-pill">🏛️ Sehenswürdigkeiten</span>
+        <span class="feature-pill">🚇 ÖPNV-Navigation</span>
+        <span class="feature-pill">🎟️ Erlebnisse buchen</span>
+        <span class="feature-pill">📍 Navigation</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <p id="loadingText">Suche Orte…</p>
+    </div>
+
+    <!-- Error Banner -->
+    <div id="error"></div>
+
+    <!-- API Key Warning (shown when no key configured) -->
+    <div class="api-warning" id="apiWarning" style="display:none;">
+      <strong>📋 Google API Key fehlt</strong><br/>
+      Ohne API Key werden Demo-Daten angezeigt. Trage deinen Key in
+      <code>config.js</code> ein (<a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a>).
+      Die App funktioniert aber vollständig mit Demo-Daten!
+    </div>
+
+    <!-- City Hero -->
+    <div id="cityHero">
+      <div class="city-hero-inner">
+        <span class="icon">📍</span>
+        <div>
+          <div class="city-name" id="heroCity">—</div>
+          <div class="city-meta" id="heroCityMeta">Ergebnisse geladen</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Panels -->
+    <div id="results">
+
+      <!-- ESSEN -->
+      <div id="panel-essen" class="tab-panel"></div>
+
+      <!-- TRINKEN -->
+      <div id="panel-trinken" class="tab-panel" style="display:none;"></div>
+
+      <!-- KULTUR -->
+      <div id="panel-kultur" class="tab-panel" style="display:none;"></div>
+
+      <!-- TRANSPORT -->
+      <div id="panel-transport" class="tab-panel" style="display:none;"></div>
+
+      <!-- BUCHEN -->
+      <div id="panel-buchen" class="tab-panel" style="display:none;"></div>
+
+    </div>
+
+  </main>
+
+  <!-- ══ BOTTOM NAV ══ -->
+  <nav id="bottomNav">
+    <button class="nav-btn active" onclick="switchTab('essen')" id="nav-essen">
+      <span class="nav-icon">🍽️</span>
+      <span class="nav-label">Essen</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('trinken')" id="nav-trinken">
+      <span class="nav-icon">🍺</span>
+      <span class="nav-label">Trinken</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('kultur')" id="nav-kultur">
+      <span class="nav-icon">🏛️</span>
+      <span class="nav-label">Kultur</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('transport')" id="nav-transport">
+      <span class="nav-icon">🚇</span>
+      <span class="nav-label">Transport</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('buchen')" id="nav-buchen">
+      <span class="nav-icon">🎟️</span>
+      <span class="nav-label">Buchen</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- Load config first -->
+<script src="config.js"></script>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+let currentTab = 'essen';
+let currentCity = '';
+let currentLat = null;
+let currentLng = null;
+let placesService = null;
+let googleLoaded = false;
+
+// ══════════════════════════════════════════════════════════
+//  GOOGLE MAPS LOADER
+// ══════════════════════════════════════════════════════════
+function loadGoogleMaps() {
+  if (!CONFIG.googlePlacesApiKey || CONFIG.googlePlacesApiKey === 'DEIN_GOOGLE_API_KEY_HIER') {
+    document.getElementById('apiWarning').style.display = 'block';
+    return Promise.resolve(false);
+  }
+  return new Promise((resolve) => {
+    if (googleLoaded) { resolve(true); return; }
+    window._gmCallback = () => { googleLoaded = true; resolve(true); };
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${CONFIG.googlePlacesApiKey}&libraries=places&callback=_gmCallback`;
+    s.async = true;
+    s.onerror = () => resolve(false);
+    document.head.appendChild(s);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  GEOCODING (Nominatim — free, no key)
+// ══════════════════════════════════════════════════════════
+async function geocodeCity(cityName) {
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityName)}&format=json&limit=1`;
+  const res = await fetch(url, { headers: { 'Accept-Language': 'de' } });
+  const data = await res.json();
+  if (!data.length) throw new Error('Stadt nicht gefunden. Bitte prüfe die Schreibweise.');
+  return {
+    lat: parseFloat(data[0].lat),
+    lng: parseFloat(data[0].lon),
+    displayName: data[0].display_name.split(',')[0],
+    country: data[0].display_name.split(',').slice(-1)[0].trim(),
+  };
+}
+
+// ══════════════════════════════════════════════════════════
+//  GOOGLE PLACES SEARCH
+// ══════════════════════════════════════════════════════════
+function searchPlaces(lat, lng, types, keyword = '') {
+  return new Promise((resolve) => {
+    if (!placesService) {
+      const mapDiv = document.createElement('div');
+      const map = new google.maps.Map(mapDiv, { center: { lat, lng }, zoom: 13 });
+      placesService = new google.maps.places.PlacesService(map);
+    }
+    const request = {
+      location: new google.maps.LatLng(lat, lng),
+      radius: 2000,
+      type: types,
+      ...(keyword ? { keyword } : {}),
+    };
+    placesService.nearbySearch(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) resolve(results || []);
+      else resolve([]);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  DEMO DATA (shown when no API key)
+// ══════════════════════════════════════════════════════════
+function getDemoData(city, category) {
+  const demos = {
+    essen: [
+      { name: 'Zum Goldenen Hirschen', address: 'Hauptstraße 12', rating: 4.5, priceLevel: 2, open: true, icon: '🍽️' },
+      { name: 'Trattoria Bella Vista', address: 'Marktplatz 3', rating: 4.8, priceLevel: 2, open: true, icon: '🍝' },
+      { name: 'Sushi Garden', address: 'Bahnhofstraße 44', rating: 4.3, priceLevel: 3, open: false, icon: '🍱' },
+      { name: 'Café Central', address: 'Ringstraße 1', rating: 4.6, priceLevel: 1, open: true, icon: '☕' },
+      { name: 'Biergarten am See', address: 'Uferweg 7', rating: 4.4, priceLevel: 1, open: true, icon: '🥨' },
+      { name: 'La Brasserie', address: 'Mozartgasse 9', rating: 4.2, priceLevel: 3, open: true, icon: '🥐' },
+    ],
+    trinken: [
+      { name: 'Zum Fass', address: 'Altstadtgasse 5', rating: 4.6, priceLevel: 1, open: true, icon: '🍺' },
+      { name: 'Rooftop Bar Sky', address: 'Hochhausstraße 20', rating: 4.7, priceLevel: 3, open: true, icon: '🍹' },
+      { name: 'Weinbar Vinothek', address: 'Weingasse 2', rating: 4.5, priceLevel: 2, open: true, icon: '🍷' },
+      { name: 'Craft Beer Corner', address: 'Brauerei Allee 8', rating: 4.4, priceLevel: 2, open: false, icon: '🍻' },
+      { name: 'Espresso Bar', address: 'Stadtmitte 15', rating: 4.3, priceLevel: 1, open: true, icon: '☕' },
+    ],
+    kultur: [
+      { name: 'Stadtmuseum', address: 'Museumsplatz 1', rating: 4.5, priceLevel: 1, open: true, icon: '🏛️' },
+      { name: 'Kunsthalle', address: 'Kulturring 3', rating: 4.7, priceLevel: 2, open: true, icon: '🎨' },
+      { name: 'Historisches Rathaus', address: 'Rathausplatz 1', rating: 4.4, priceLevel: 0, open: true, icon: '🏰' },
+      { name: 'Botanischer Garten', address: 'Parkstraße 22', rating: 4.8, priceLevel: 1, open: true, icon: '🌿' },
+      { name: 'Theater am Ring', address: 'Ringstraße 5', rating: 4.6, priceLevel: 2, open: false, icon: '🎭' },
+    ],
+  };
+  return (demos[category] || []).map(p => ({
+    ...p,
+    lat: currentLat + (Math.random() - 0.5) * 0.02,
+    lng: currentLng + (Math.random() - 0.5) * 0.02,
+    demo: true,
+  }));
+}
+
+// ══════════════════════════════════════════════════════════
+//  MAIN SEARCH
+// ══════════════════════════════════════════════════════════
+async function searchCity() {
+  const cityRaw = document.getElementById('cityInput').value.trim();
+  if (!cityRaw) {
+    shake(document.getElementById('cityInput'));
+    return;
+  }
+
+  setLoading(true, 'Suche Stadt…');
+  hideError();
+
+  try {
+    // 1. Geocode
+    const geo = await geocodeCity(cityRaw);
+    currentCity = geo.displayName;
+    currentLat = geo.lat;
+    currentLng = geo.lng;
+
+    // 2. Update hero
+    document.getElementById('heroCity').textContent = geo.displayName;
+
+    // 3. Try Google Maps
+    setLoading(true, 'Lade Orte…');
+    const gmLoaded = await loadGoogleMaps();
+
+    // 4. Fetch places per category
+    let essenPlaces, trinkenPlaces, kulturPlaces;
+
+    if (gmLoaded) {
+      [essenPlaces, trinkenPlaces, kulturPlaces] = await Promise.all([
+        searchPlaces(geo.lat, geo.lng, 'restaurant'),
+        searchPlaces(geo.lat, geo.lng, 'bar'),
+        searchPlaces(geo.lat, geo.lng, 'tourist_attraction'),
+      ]);
+      // normalize Google Places format
+      essenPlaces  = essenPlaces.map(normGooglePlace);
+      trinkenPlaces = trinkenPlaces.map(normGooglePlace);
+      kulturPlaces  = kulturPlaces.map(normGooglePlace);
+    } else {
+      essenPlaces  = getDemoData(currentCity, 'essen');
+      trinkenPlaces = getDemoData(currentCity, 'trinken');
+      kulturPlaces  = getDemoData(currentCity, 'kultur');
+    }
+
+    // 5. Limit
+    essenPlaces  = essenPlaces.slice(0, CONFIG.resultsPerCategory);
+    trinkenPlaces = trinkenPlaces.slice(0, CONFIG.resultsPerCategory);
+    kulturPlaces  = kulturPlaces.slice(0, CONFIG.resultsPerCategory);
+
+    // 6. Count
+    const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
+    document.getElementById('heroCityMeta').textContent = `${total} Orte gefunden`;
+
+    // 7. Render panels
+    renderEssen(essenPlaces);
+    renderTrinken(trinkenPlaces);
+    renderKultur(kulturPlaces);
+    renderTransport(geo);
+    renderBuchen(geo);
+
+    // 8. Show UI
+    showResults();
+
+  } catch (e) {
+    showError(e.message || 'Unbekannter Fehler.');
+    setLoading(false);
+  }
+}
+
+// ── Normalize Google Places result ──
+function normGooglePlace(p) {
+  const loc = p.geometry?.location;
+  return {
+    name: p.name,
+    address: p.vicinity || '',
+    rating: p.rating || null,
+    priceLevel: p.price_level ?? null,
+    open: p.opening_hours?.open_now ?? null,
+    icon: categoryIcon(p.types),
+    lat: loc ? loc.lat() : currentLat,
+    lng: loc ? loc.lng() : currentLng,
+    placeId: p.place_id,
+    demo: false,
+  };
+}
+
+function categoryIcon(types = []) {
+  if (types.includes('restaurant'))     return '🍽️';
+  if (types.includes('cafe'))           return '☕';
+  if (types.includes('bakery'))         return '🥐';
+  if (types.includes('bar'))            return '🍺';
+  if (types.includes('night_club'))     return '🎶';
+  if (types.includes('museum'))         return '🏛️';
+  if (types.includes('art_gallery'))    return '🎨';
+  if (types.includes('park'))           return '🌿';
+  if (types.includes('church'))         return '⛪';
+  if (types.includes('zoo'))            return '🦁';
+  if (types.includes('amusement_park')) return '🎢';
+  return '📍';
+}
+
+// ══════════════════════════════════════════════════════════
+//  RENDER HELPERS
+// ══════════════════════════════════════════════════════════
+function priceBadge(level) {
+  if (level === null || level === undefined) return '';
+  const labels = ['Gratis', '€', '€€', '€€€', '€€€€'];
+  return `<span class="badge badge-price">${labels[level] || '?'}</span>`;
+}
+
+function starBadge(rating) {
+  if (!rating) return '';
+  return `<span class="badge badge-stars">⭐ ${rating.toFixed(1)}</span>`;
+}
+
+function openBadge(open) {
+  if (open === null) return '';
+  return open
+    ? `<span class="badge badge-open">● Geöffnet</span>`
+    : `<span class="badge badge-closed">● Geschlossen</span>`;
+}
+
+function navLink(place) {
+  const q = encodeURIComponent(`${place.name} ${place.address}`);
+  const gm = `https://www.google.com/maps/search/?api=1&query=${q}`;
+  const am = `https://maps.apple.com/?q=${q}`;
+  return { gm, am };
+}
+
+function dirLink(lat, lng, label) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit`;
+}
+
+function renderPlaceCard(p, includeBook = false) {
+  const links = navLink(p);
+  const gmDir = dirLink(p.lat, p.lng, p.name);
+  const gygUrl = gygLink(currentCity, p.name);
+
+  return `
+  <div class="place-card fade-in">
+    <div class="place-top">
+      <div class="place-icon-wrap">${p.icon}</div>
+      <div class="place-info">
+        <div class="place-name">${esc(p.name)}</div>
+        <div class="place-address">📍 ${esc(p.address || 'Adresse nicht verfügbar')}</div>
+        <div class="place-badges">
+          ${starBadge(p.rating)}
+          ${openBadge(p.open)}
+          ${priceBadge(p.priceLevel)}
+          ${p.demo ? '<span class="badge badge-price">Demo</span>' : ''}
+        </div>
+      </div>
+    </div>
+    <div class="place-actions">
+      <a href="${links.gm}" target="_blank" class="btn btn-nav">📍 Google Maps</a>
+      <a href="${gmDir}" target="_blank" class="btn btn-maps">🚇 ÖPNV-Route</a>
+      ${includeBook ? `<a href="${gygUrl}" target="_blank" class="btn btn-book">🎟️ Buchen</a>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderEssen(places) {
+  const el = document.getElementById('panel-essen');
+  if (!places.length) {
+    el.innerHTML = noResults('Keine Restaurants gefunden.');
+    return;
+  }
+  el.innerHTML = `<p class="section-title">🍽️ Restaurants & Cafés (${places.length})</p>`
+    + places.map(p => renderPlaceCard(p)).join('');
+}
+
+function renderTrinken(places) {
+  const el = document.getElementById('panel-trinken');
+  if (!places.length) {
+    el.innerHTML = noResults('Keine Bars/Cafés gefunden.');
+    return;
+  }
+  el.innerHTML = `<p class="section-title">🍺 Bars & Drinks (${places.length})</p>`
+    + places.map(p => renderPlaceCard(p)).join('');
+}
+
+function renderKultur(places) {
+  const el = document.getElementById('panel-kultur');
+  if (!places.length) {
+    el.innerHTML = noResults('Keine Sehenswürdigkeiten gefunden.');
+    return;
+  }
+  el.innerHTML = `<p class="section-title">🏛️ Sehenswürdigkeiten (${places.length})</p>`
+    + places.map(p => renderPlaceCard(p, true)).join('');
+}
+
+function renderTransport(geo) {
+  const city = encodeURIComponent(geo.displayName);
+  const lat = geo.lat, lng = geo.lng;
+  const q = encodeURIComponent(geo.displayName);
+
+  const html = `
+  <div class="demo-banner">
+    ℹ️ Tippe auf einen Link, um direkt in Google Maps oder einer Ticket-App weiterzumachen.
+  </div>
+
+  <div class="transport-card fade-in">
+    <div class="transport-header">
+      <span class="icon">🗺️</span>
+      <div>
+        <div class="label">ÖPNV-Navigation</div>
+        <div class="sublabel">Öffentliche Verkehrsmittel in ${geo.displayName}</div>
+      </div>
+    </div>
+    <div class="transport-links">
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit" target="_blank" class="transport-link">
+        <span class="tl-icon">🚇</span>
+        <div class="tl-text">
+          <div class="tl-label">Google Maps — Transit</div>
+          <div class="tl-sub">Routen, Abfahrtszeiten & Preise</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+      <a href="https://www.google.com/maps/search/bus+stop/@${lat},${lng},14z" target="_blank" class="transport-link">
+        <span class="tl-icon">🚌</span>
+        <div class="tl-text">
+          <div class="tl-label">Bushaltestellen in der Nähe</div>
+          <div class="tl-sub">Alle Haltestellen auf der Karte</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+      <a href="https://www.google.com/maps/search/metro+station/@${lat},${lng},14z" target="_blank" class="transport-link">
+        <span class="tl-icon">🚊</span>
+        <div class="tl-text">
+          <div class="tl-label">U-Bahn / Metro-Stationen</div>
+          <div class="tl-sub">Nächste Stationen anzeigen</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+      <a href="https://www.google.com/maps/search/taxi/@${lat},${lng},14z" target="_blank" class="transport-link">
+        <span class="tl-icon">🚕</span>
+        <div class="tl-text">
+          <div class="tl-label">Taxi & Ride-Sharing</div>
+          <div class="tl-sub">Uber, Bolt & lokale Taxis</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+      <a href="https://www.google.com/maps/search/bike+rental/@${lat},${lng},14z" target="_blank" class="transport-link">
+        <span class="tl-icon">🚲</span>
+        <div class="tl-text">
+          <div class="tl-label">Fahrrad & E-Scooter</div>
+          <div class="tl-sub">Miet-Fahrräder in der Nähe</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="transport-card fade-in">
+    <div class="transport-header">
+      <span class="icon">✈️</span>
+      <div>
+        <div class="label">Anreise & Fernverkehr</div>
+        <div class="sublabel">Züge, Busse, Flüge nach ${geo.displayName}</div>
+      </div>
+    </div>
+    <div class="transport-links">
+      <a href="https://www.google.com/travel/flights?q=Flüge+nach+${city}" target="_blank" class="transport-link">
+        <span class="tl-icon">🛫</span>
+        <div class="tl-text">
+          <div class="tl-label">Flüge vergleichen</div>
+          <div class="tl-sub">Google Flights</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+      <a href="https://www.rome2rio.com/de/s/${city}" target="_blank" class="transport-link">
+        <span class="tl-icon">🚆</span>
+        <div class="tl-text">
+          <div class="tl-label">Zug, Bus & Fähre</div>
+          <div class="tl-sub">Rome2Rio — alle Verbindungen</div>
+        </div>
+        <span class="tl-arrow">›</span>
+      </a>
+    </div>
+  </div>`;
+
+  document.getElementById('panel-transport').innerHTML = html;
+}
+
+function renderBuchen(geo) {
+  const city = geo.displayName;
+  const gygMain = gygLink(city);
+
+  const categories = [
+    { icon: '🏛️', label: 'Museen & Kultur', q: `${city} museum` },
+    { icon: '🚶', label: 'Stadtführungen', q: `${city} tour` },
+    { icon: '🍷', label: 'Food & Wein', q: `${city} food wine` },
+    { icon: '🎢', label: 'Abenteuer', q: `${city} adventure` },
+    { icon: '🚢', label: 'Bootstouren', q: `${city} boat` },
+    { icon: '🎭', label: 'Shows & Events', q: `${city} show` },
+  ];
+
+  const catHtml = categories.map(c => `
+    <a href="${gygLink(c.q)}" target="_blank" class="gyg-cat-btn">
+      <span class="cat-icon">${c.icon}</span>
+      <span>${c.label}</span>
+    </a>`).join('');
+
+  document.getElementById('panel-buchen').innerHTML = `
+  <div class="gyg-card fade-in">
+    <div class="gyg-icon">🎟️</div>
+    <div class="gyg-title">Erlebnisse in ${esc(city)}</div>
+    <div class="gyg-sub">Tickets, Touren und Aktivitäten direkt buchen — kuratiert von GetYourGuide.</div>
+    <a href="${gygMain}" target="_blank" class="gyg-btn">Alle Erlebnisse entdecken →</a>
+  </div>
+  <p class="section-title">Nach Kategorie</p>
+  <div class="gyg-categories">${catHtml}</div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+//  GetYourGuide URL Builder
+// ══════════════════════════════════════════════════════════
+function gygLink(query, subQuery = '') {
+  const q = encodeURIComponent(subQuery || query);
+  const base = `https://www.getyourguide.de/s/?q=${q}`;
+  const pid = CONFIG.getYourGuidePartnerId;
+  return pid ? `${base}&partner_id=${encodeURIComponent(pid)}` : base;
+}
+
+// ══════════════════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════════════════
+function switchTab(tab) {
+  currentTab = tab;
+
+  // Update tab buttons in header
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const tb = document.getElementById(`tab-${tab}`);
+  if (tb) { tb.classList.add('active'); tb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+
+  // Update bottom nav
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const nb = document.getElementById(`nav-${tab}`);
+  if (nb) nb.classList.add('active');
+
+  // Switch panel
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  const panel = document.getElementById(`panel-${tab}`);
+  if (panel) panel.style.display = 'block';
+}
+
+function showResults() {
+  setLoading(false);
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('cityHero').style.display = 'block';
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('tabsRow').style.display = 'flex';
+  switchTab('essen');
+}
+
+function setLoading(show, text = 'Suche…') {
+  document.getElementById('loading').style.display = show ? 'flex' : 'none';
+  document.getElementById('loadingText').textContent = text;
+  if (show) {
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('cityHero').style.display = 'none';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.style.display = 'block';
+  el.innerHTML = `⚠️ ${esc(msg)}`;
+}
+
+function hideError() {
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('error').innerHTML = '';
+}
+
+function noResults(msg) {
+  return `<div class="no-results"><div class="nr-icon">🔍</div>${esc(msg)}</div>`;
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function shake(el) {
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = 'shake .3s ease';
+  setTimeout(() => el.style.animation = '', 400);
+}
+
+// ── Shake keyframes ──
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-6px)}
+    40%{transform:translateX(6px)}
+    60%{transform:translateX(-4px)}
+    80%{transform:translateX(4px)}
+  }`;
+document.head.appendChild(shakeStyle);
+
+// ── Enter key on search input ──
+document.getElementById('cityInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchCity();
+});
+
+// ── Pre-fill default city ──
+document.getElementById('cityInput').value = CONFIG.defaultCity || '';
+
+// ── Show API warning if no key ──
+if (!CONFIG.googlePlacesApiKey || CONFIG.googlePlacesApiKey === 'DEIN_GOOGLE_API_KEY_HIER') {
+  document.getElementById('apiWarning').style.display = 'block';
+}
+</script>
+</body>
+</html>
