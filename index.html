@@ -1513,7 +1513,8 @@ async function searchCity() {
         const seen = new Set();
         return arr.filter(p => { if (seen.has(p.place_id)) return false; seen.add(p.place_id); return true; });
       };
-      essenPlaces   = dedup(er).slice(0, CONFIG.resultsPerCategory * 2).map(normGooglePlace);
+      // Essen: alle Ergebnisse normalisieren ohne slice, Filter entscheiden was angezeigt wird
+      essenPlaces = dedup(er).map(normGooglePlace);
       // Trinken: separate pools pro Kategorie
       const PUB_KW = ['pub','kneipe','wirtshaus','beisl','gasthaus','tavern','taverna','inn','brauhaus','pinte','bodega'];
       const isPub = p => PUB_KW.some(k => (p.name||'').toLowerCase().includes(k));
