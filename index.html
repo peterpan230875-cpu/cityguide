@@ -2297,6 +2297,14 @@ function isInsider(p) {
 
 const CHEAP_TYPES = ['fast_food','meal_takeaway','bakery','street_food','food_court','sandwich'];
 
+function sortByRating(places) {
+  return [...places].sort((a, b) => {
+    const ra = a.rating ?? 0, rb = b.rating ?? 0;
+    if (rb !== ra) return rb - ra;
+    return (b.ratingCount ?? 0) - (a.ratingCount ?? 0);
+  });
+}
+
 function applyFilter(places, filter, typeMap) {
   if (filter === 'alle') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food') && !(p.types||[]).includes('meal_takeaway'));
   if (filter === 'insider') return places.filter(isInsider);
@@ -2430,7 +2438,7 @@ const KULTUR_TYPE_MAP = {
 function renderEssen(places) {
   const el = document.getElementById('panel-essen');
   if (!places.length) { el.innerHTML = noResults('Keine Restaurants gefunden.'); return; }
-  const filtered = applyFilter(places, activeEssenFilter, ESSEN_TYPE_MAP);
+  const filtered = sortByRating(applyFilter(places, activeEssenFilter, ESSEN_TYPE_MAP));
   const insiderNote = activeEssenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), aber wenig bekannt (&lt;500 Bewertungen). Wo Einheimische hingehen.</div>`
     : activeEssenFilter === 'lokal'
@@ -2446,7 +2454,7 @@ function renderEssen(places) {
 function renderTrinken(places) {
   const el = document.getElementById('panel-trinken');
   if (!places.length) { el.innerHTML = noResults('Keine Bars/Cafés gefunden.'); return; }
-  const filtered = applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP);
+  const filtered = sortByRating(applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP));
   const insiderNote = activeTrinkenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
     : '';
@@ -2468,9 +2476,9 @@ function renderKultur(places) {
   const poolFilters = ['zoo','museum','sehens','natur','historisch'];
   let filtered;
   if (poolFilters.includes(activeKulturFilter) && pools[activeKulturFilter] && pools[activeKulturFilter].length) {
-    filtered = pools[activeKulturFilter];
+    filtered = sortByRating(pools[activeKulturFilter]);
   } else {
-    filtered = applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP);
+    filtered = sortByRating(applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP));
   }
   const insiderNote = activeKulturFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
