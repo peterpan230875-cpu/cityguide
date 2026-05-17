@@ -1711,7 +1711,9 @@ async function searchCity() {
       // Kultur: separate pools per category so zoo can never be displaced
       const [krZoo, krAquarium, krAmusement, krSehens, krMuseum, krGallery, krNatur, krHistorisch] = kr;
       const kulturPools = {
-        zoo:        dedup([...krZoo, ...krAquarium, ...krAmusement]).map(normGooglePlace),
+        zoo:        dedup([...krZoo, ...krAquarium, ...krAmusement])
+                      .filter(p => ['zoo','aquarium','amusement_park'].some(t => (p.types||[]).includes(t)))
+                      .map(normGooglePlace),
         museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
         sehens:     dedup(krSehens).map(normGooglePlace),
         natur:      dedup(krNatur).map(normGooglePlace),
