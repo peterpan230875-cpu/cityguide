@@ -590,7 +590,28 @@
       margin-bottom: 12px;
       z-index: 1;
       border: 1px solid var(--border);
+      transition: height .3s ease;
     }
+    #transportMap.collapsed { height: 0; margin-bottom: 0; border: none; }
+    .map-toggle-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: border-color .2s;
+    }
+    .map-toggle-btn:active { opacity: .8; }
     .emoji-marker {
       background: none !important;
       border: none !important;
@@ -1359,14 +1380,30 @@ function renderKultur(places) {
 
 function renderTransport(geo) {
   document.getElementById('panel-transport').innerHTML = `
-  <div class="demo-banner" style="margin-bottom:10px;">
-    🗺️ Karte direkt in der App — tippe auf eine Haltestelle für Details
-  </div>
-  <div id="transportMap"></div>
+  <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMap()">
+    🗺️ Karte anzeigen
+  </button>
+  <div id="transportMap" class="collapsed"></div>
   <p class="section-title">🚌 Haltestellen in der Nähe</p>
   <div id="stopList" class="stop-list">
     <div class="stop-item"><span class="si-icon">⏳</span><span class="si-name">Lade Haltestellen…</span></div>
   </div>`;
+}
+
+let mapVisible = false;
+function toggleMap() {
+  mapVisible = !mapVisible;
+  const mapEl = document.getElementById('transportMap');
+  const btn   = document.getElementById('mapToggleBtn');
+  if (mapVisible) {
+    mapEl.classList.remove('collapsed');
+    btn.textContent = '✕ Karte schließen';
+    initTransportMap();
+    setTimeout(() => leafletMap && leafletMap.invalidateSize(), 350);
+  } else {
+    mapEl.classList.add('collapsed');
+    btn.textContent = '🗺️ Karte anzeigen';
+  }
 }
 
 function renderBuchen(geo) {
@@ -1440,9 +1477,9 @@ function switchTab(tab) {
   const panel = document.getElementById(`panel-${tab}`);
   if (panel) panel.style.display = 'block';
 
-  // Init transport map lazily when tab is opened
-  if (tab === 'transport' && currentLat) {
-    setTimeout(initTransportMap, 100);
+  // Reset map toggle when switching to transport
+  if (tab === 'transport') {
+    mapVisible = false;
   }
 }
 
