@@ -2324,18 +2324,22 @@ function sortByRating(places) {
   });
 }
 
+function noFastFood(p) { return !isChain(p) && !(p.types||[]).includes('fast_food') && !(p.types||[]).includes('meal_takeaway'); }
+
 function applyFilter(places, filter, typeMap) {
-  if (filter === 'alle') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food') && !(p.types||[]).includes('meal_takeaway'));
-  if (filter === 'insider') return places.filter(isInsider);
-  if (filter === 'lokal') return places.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
   if (filter === 'fastfood') return places.filter(p => isChain(p) || (p.types||[]).includes('fast_food') || (p.types||[]).includes('meal_takeaway'));
+  // Alle anderen Filter: Fast Food & Ketten grundsätzlich ausblenden
+  const base = places.filter(noFastFood);
+  if (filter === 'alle') return base;
+  if (filter === 'insider') return base.filter(isInsider);
+  if (filter === 'lokal') return base.filter(p => !isChain(p) && !(p.types||[]).includes('fast_food'));
   const BUFFET_KW = ['buffet','kantine','mensa','self-service','all you can eat','ayce','smorgasbord'];
-  if (filter === 'buffet') return places.filter(p => BUFFET_KW.some(k => (p.name||'').toLowerCase().includes(k)));
-  if (filter === 'guenstig') return places.filter(p =>
+  if (filter === 'buffet') return base.filter(p => BUFFET_KW.some(k => (p.name||'').toLowerCase().includes(k)));
+  if (filter === 'guenstig') return base.filter(p =>
     (p.priceLevel !== null && p.priceLevel <= 1) ||
     (p.priceLevel === null && CHEAP_TYPES.some(t => (p.types||[]).includes(t)))
   );
-  if (filter === 'normal') return places.filter(p => p.priceLevel === 2 ||
+  if (filter === 'normal') return base.filter(p => p.priceLevel === 2 ||
     (p.priceLevel === null && !CHEAP_TYPES.some(t => (p.types||[]).includes(t))));
   if (filter === 'gehoben') return places.filter(p => p.priceLevel !== null && p.priceLevel >= 3);
   const keywords = typeMap[filter] || [];
