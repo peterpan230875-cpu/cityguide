@@ -4,6 +4,10 @@
 // ============================================================
 
 const CONFIG = {
+  // Google Places API Key — hier eintragen für echte Bewertungen & Fotos
+  // Leer lassen = OpenStreetMap wird verwendet (kostenlos, keine Bewertungen)
+  googlePlacesApiKey: "AIzaSyDks5kfDGILM9-mg1kY2SD-AmqD-1ibkK0",
+
   // GetYourGuide Partner-ID (optional)
   // Leer lassen wenn nicht vorhanden — Links funktionieren trotzdem
   getYourGuidePartnerId: "",

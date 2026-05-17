@@ -739,6 +739,75 @@ async function geocodeCity(cityName) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  GOOGLE MAPS LOADER
+// ══════════════════════════════════════════════════════════
+let googleLoaded = false;
+let placesService = null;
+
+function loadGoogleMaps() {
+  const key = CONFIG.googlePlacesApiKey;
+  if (!key) return Promise.resolve(false);
+  return new Promise((resolve) => {
+    if (googleLoaded) { resolve(true); return; }
+    window._gmCallback = () => { googleLoaded = true; resolve(true); };
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&callback=_gmCallback`;
+    s.async = true;
+    s.onerror = () => resolve(false);
+    document.head.appendChild(s);
+  });
+}
+
+function searchGooglePlaces(lat, lng, type) {
+  return new Promise((resolve) => {
+    if (!placesService) {
+      const div = document.createElement('div');
+      const map = new google.maps.Map(div, { center: { lat, lng }, zoom: 13 });
+      placesService = new google.maps.places.PlacesService(map);
+    }
+    placesService.nearbySearch({
+      location: new google.maps.LatLng(lat, lng),
+      radius: 2000,
+      type,
+    }, (results, status) => {
+      resolve(status === google.maps.places.PlacesServiceStatus.OK ? results : []);
+    });
+  });
+}
+
+function normGooglePlace(p) {
+  const loc = p.geometry?.location;
+  return {
+    name:       p.name,
+    address:    p.vicinity || '',
+    rating:     p.rating || null,
+    ratingCount: p.user_ratings_total || null,
+    priceLevel: p.price_level ?? null,
+    open:       p.opening_hours?.open_now ?? null,
+    icon:       googleIcon(p.types || []),
+    lat: loc ? loc.lat() : currentLat,
+    lng: loc ? loc.lng() : currentLng,
+    demo: false,
+  };
+}
+
+function googleIcon(types) {
+  if (types.includes('restaurant'))     return '🍽️';
+  if (types.includes('cafe'))           return '☕';
+  if (types.includes('bakery'))         return '🥐';
+  if (types.includes('bar'))            return '🍺';
+  if (types.includes('night_club'))     return '🎶';
+  if (types.includes('museum'))         return '🏛️';
+  if (types.includes('art_gallery'))    return '🎨';
+  if (types.includes('park'))           return '🌿';
+  if (types.includes('church'))         return '⛪';
+  if (types.includes('zoo'))            return '🦁';
+  if (types.includes('amusement_park')) return '🎢';
+  if (types.includes('tourist_attraction')) return '⭐';
+  return '📍';
+}
+
+// ══════════════════════════════════════════════════════════
 //  OVERPASS API (OpenStreetMap — kostenlos, kein Key)
 // ══════════════════════════════════════════════════════════
 async function searchOverpass(lat, lng, filters, radius = 2500) {
@@ -846,38 +915,41 @@ async function searchCity() {
     currentLng = geo.lng;
     document.getElementById('heroCity').textContent = geo.displayName;
 
-    // 2. Overpass Queries parallel
-    setLoading(true, 'Lade Orte aus OpenStreetMap…');
-    const [essenRaw, trinkenRaw, kulturRaw] = await Promise.all([
-      searchOverpass(geo.lat, geo.lng, [
-        'node["amenity"~"restaurant|cafe|fast_food|bakery"]',
-        'way["amenity"~"restaurant|cafe|fast_food|bakery"]',
-      ]),
-      searchOverpass(geo.lat, geo.lng, [
-        'node["amenity"~"bar|pub|biergarten|nightclub"]',
-        'way["amenity"~"bar|pub|biergarten|nightclub"]',
-      ]),
-      searchOverpass(geo.lat, geo.lng, [
-        'node["tourism"~"museum|attraction|gallery|viewpoint"]',
-        'way["tourism"~"museum|attraction|gallery|viewpoint"]',
-        'node["historic"]',
-        'node["amenity"~"theatre|cinema"]',
-      ], 3500),
-    ]);
+    // 2. Google Places oder Overpass
+    const gmLoaded = await loadGoogleMaps();
+    let essenPlaces, trinkenPlaces, kulturPlaces, source;
 
-    // 3. Normalize & fallback to demo if empty
-    let essenPlaces  = essenRaw.map(normOverpassPlace);
-    let trinkenPlaces = trinkenRaw.map(normOverpassPlace);
-    let kulturPlaces  = kulturRaw.map(normOverpassPlace);
+    if (gmLoaded) {
+      setLoading(true, 'Lade Orte mit Bewertungen…');
+      source = 'Google';
+      const [er, tr, kr] = await Promise.all([
+        searchGooglePlaces(geo.lat, geo.lng, 'restaurant'),
+        searchGooglePlaces(geo.lat, geo.lng, 'bar'),
+        searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
+      ]);
+      essenPlaces   = er.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      trinkenPlaces = tr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+      kulturPlaces  = kr.slice(0, CONFIG.resultsPerCategory).map(normGooglePlace);
+    } else {
+      setLoading(true, 'Lade Orte aus OpenStreetMap…');
+      source = 'OpenStreetMap';
+      const [er, tr, kr] = await Promise.all([
+        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"restaurant|cafe|fast_food|bakery"]','way["amenity"~"restaurant|cafe|fast_food|bakery"]']),
+        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"bar|pub|biergarten|nightclub"]','way["amenity"~"bar|pub|biergarten|nightclub"]']),
+        searchOverpass(geo.lat, geo.lng, ['node["tourism"~"museum|attraction|gallery|viewpoint"]','way["tourism"~"museum|attraction|gallery|viewpoint"]','node["historic"]','node["amenity"~"theatre|cinema"]'], 3500),
+      ]);
+      essenPlaces   = er.map(normOverpassPlace);
+      trinkenPlaces = tr.map(normOverpassPlace);
+      kulturPlaces  = kr.map(normOverpassPlace);
+      if (!essenPlaces.length)   essenPlaces   = getDemoData(currentCity, 'essen');
+      if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
+      if (!kulturPlaces.length)  kulturPlaces   = getDemoData(currentCity, 'kultur');
+    }
 
-    if (!essenPlaces.length)   essenPlaces  = getDemoData(currentCity, 'essen');
-    if (!trinkenPlaces.length) trinkenPlaces = getDemoData(currentCity, 'trinken');
-    if (!kulturPlaces.length)  kulturPlaces  = getDemoData(currentCity, 'kultur');
-
-    // 4. Render
+    // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
-    document.getElementById('heroCityMeta').textContent = `${total} Orte aus OpenStreetMap`;
-    document.getElementById('osmBanner').style.display = 'flex';
+    document.getElementById('heroCityMeta').textContent = `${total} Orte · ${source}`;
+    document.getElementById('osmBanner').style.display = gmLoaded ? 'none' : 'flex';
 
     renderEssen(essenPlaces);
     renderTrinken(trinkenPlaces);
@@ -901,9 +973,10 @@ function priceBadge(level) {
   return `<span class="badge badge-price">${labels[level] || '?'}</span>`;
 }
 
-function starBadge(rating) {
+function starBadge(rating, count) {
   if (!rating) return '';
-  return `<span class="badge badge-stars">⭐ ${rating.toFixed(1)}</span>`;
+  const cnt = count ? ` <span style="opacity:.7">(${count > 999 ? Math.round(count/1000)+'k' : count})</span>` : '';
+  return `<span class="badge badge-stars">⭐ ${rating.toFixed(1)}${cnt}</span>`;
 }
 
 function openBadge(open) {
@@ -937,7 +1010,7 @@ function renderPlaceCard(p, includeBook = false) {
         <div class="place-name">${esc(p.name)}</div>
         <div class="place-address">📍 ${esc(p.address || 'Adresse nicht verfügbar')}</div>
         <div class="place-badges">
-          ${starBadge(p.rating)}
+          ${starBadge(p.rating, p.ratingCount)}
           ${openBadge(p.open)}
           ${priceBadge(p.priceLevel)}
           ${p.demo ? '<span class="badge badge-price">Demo</span>' : ''}
