@@ -2482,17 +2482,18 @@ function dirLink(lat, lng, label) {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit`;
 }
 
-function renderPlaceCard(p, includeBook = false, insider = false) {
+function renderPlaceCard(p, includeBook = false, insider = false, overrideIcon = null) {
   const links = navLink(p);
   const gmDir = dirLink(p.lat, p.lng, p.name);
   const gygUrl = gygLink(currentCity, p.name);
   const fav = isFav(p);
   const pJson = esc(JSON.stringify(p));
+  const displayIcon = overrideIcon || p.icon;
 
   return `
   <div class="place-card fade-in" id="card-${favKey(p).replace(/[^a-z0-9]/g,'_')}">
     <div class="place-top">
-      <div class="place-icon-wrap">${p.icon}</div>
+      <div class="place-icon-wrap">${displayIcon}</div>
       <div class="place-info">
         <div class="place-name" style="display:flex;align-items:center;gap:6px;">
           <span>${esc(p.name)}</span>
@@ -2824,11 +2825,13 @@ function renderKultur(places) {
       ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
     </button>`;
   }).join('');
+  const activeFilterDef = KULTUR_FILTERS.find(f => f.id === activeKulturFilter);
+  const filterIcon = activeFilterDef ? activeFilterDef.icon : null;
   el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
     + sortBarHtml(activeKulturSort, 'setSortKultur')
     + insiderNote
     + (filtered.length
-        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('') + '</div>'
+        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p), filterIcon)).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
