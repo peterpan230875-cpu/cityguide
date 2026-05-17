@@ -661,6 +661,18 @@
       color: var(--gold2);
     }
     .tcat-btn:active { transform: scale(.95); }
+    .sat-toggle-btn {
+      background: rgba(20,24,40,.85);
+      color: var(--gold2);
+      border: 1.5px solid var(--gold);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
 
     .stop-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
     .stop-item {
@@ -1194,10 +1206,10 @@ function googleIcon(types) {
 // ══════════════════════════════════════════════════════════
 //  OVERPASS API (OpenStreetMap — kostenlos, kein Key)
 // ══════════════════════════════════════════════════════════
-async function searchOverpass(lat, lng, filters, radius = 2500) {
+async function searchOverpass(lat, lng, filters, radius = 2500, limit = CONFIG.resultsPerCategory) {
   const around = `(around:${radius},${lat},${lng})`;
   const parts = filters.map(f => `${f}${around};`).join('\n');
-  const query = `[out:json][timeout:25];\n(\n${parts}\n);\nout center ${CONFIG.resultsPerCategory};`;
+  const query = `[out:json][timeout:30];\n(\n${parts}\n);\nout center ${limit};`;
   const res = await fetch('https://overpass-api.de/api/interpreter', {
     method: 'POST',
     body: 'data=' + encodeURIComponent(query),
@@ -1375,19 +1387,25 @@ const TRANSPORT_CATS = [
       'node["public_transport"="station"]["subway"="yes"]',
       'node["railway"="station"]["station"="subway"]',
       'node["metro"="yes"]',
-      'node["railway"="station"]["network"~"[Mm]etro|[Uu]bahn|[Ss]ubway|MRT|MTR|Dubai"]',
+      'node["railway"="station"]["network"~"[Mm]etro|[Uu]bahn|[Ss]ubway|MRT|MTR|Dubai|RTA"]',
+      'node["railway"="station"]["operator"~"[Mm]etro|RTA|Keolis|DMRC|BMTC|SMRT"]',
     ],
-    radius: 8000, osmLabel: 'Metro-Station',
+    radius: 50000, osmLabel: 'Metro-Station',
   },
   {
     id: 'tram', icon: '🚊', label: 'Tram',
-    filters: ['node["railway"="tram_stop"]','node["public_transport"="stop_position"]["tram"="yes"]'],
-    radius: 3000, osmLabel: 'Straßenbahn',
+    filters: [
+      'node["railway"="tram_stop"]',
+      'node["public_transport"="stop_position"]["tram"="yes"]',
+      'node["public_transport"="platform"]["tram"="yes"]',
+      'node["railway"="station"]["route"="tram"]',
+    ],
+    radius: 20000, osmLabel: 'Straßenbahn',
   },
   {
     id: 'train', icon: '🚂', label: 'Zug',
     filters: ['node["railway"~"station|halt"]','way["railway"~"station|halt"]'],
-    radius: 8000, osmLabel: 'Bahnhof',
+    radius: 30000, osmLabel: 'Bahnhof',
   },
   {
     id: 'bike', icon: '🚲', label: 'Fahrrad',
@@ -1435,9 +1453,33 @@ async function initTransportMap() {
 
   leafletMap = L.map('transportMap', { zoomControl: true, attributionControl: false })
     .setView([currentLat, currentLng], 13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-  }).addTo(leafletMap);
+
+  const streetLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 });
+  const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 });
+  streetLayer.addTo(leafletMap);
+  window._mapLayers = { street: streetLayer, satellite: satelliteLayer, current: 'street' };
+
+  // Satellit-Toggle Button
+  const satBtn = L.control({ position: 'topright' });
+  satBtn.onAdd = () => {
+    const d = L.DomUtil.create('button', 'sat-toggle-btn');
+    d.textContent = '🛰️ Satellit';
+    L.DomEvent.on(d, 'click', () => {
+      if (window._mapLayers.current === 'street') {
+        leafletMap.removeLayer(streetLayer);
+        satelliteLayer.addTo(leafletMap);
+        d.textContent = '🗺️ Karte';
+        window._mapLayers.current = 'satellite';
+      } else {
+        leafletMap.removeLayer(satelliteLayer);
+        streetLayer.addTo(leafletMap);
+        d.textContent = '🛰️ Satellit';
+        window._mapLayers.current = 'street';
+      }
+    });
+    return d;
+  };
+  satBtn.addTo(leafletMap);
 
   const mkIcon = em => L.divIcon({ html: em, className: 'emoji-marker', iconSize: [26,26], iconAnchor:[13,13] });
   L.marker([currentLat, currentLng], { icon: mkIcon('📍') })
@@ -1497,8 +1539,8 @@ async function selectTransportCat(catId) {
 
   // Fetch stops
   try {
-    const stops = await searchOverpass(currentLat, currentLng, cat.filters, cat.radius);
-    const named = stops.filter(el => el.tags?.name || el.tags?.['name:en'] || el.tags?.['name:de']).slice(0, 30);
+    const stops = await searchOverpass(currentLat, currentLng, cat.filters, cat.radius, 200);
+    const named = stops.filter(el => el.tags?.name || el.tags?.['name:en'] || el.tags?.['name:de']).slice(0, 60);
 
     if (!named.length) {
       listEl.innerHTML = `<div class="stop-item"><span class="si-icon">❌</span><span class="si-name">Keine ${cat.label}-Stationen in OSM gefunden</span></div>`;
