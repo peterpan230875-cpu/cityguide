@@ -1685,8 +1685,6 @@ function renderBuchen(geo) {
     : '';
 
   const viatorCity = encodeURIComponent(city);
-  const pid = CONFIG.getYourGuidePartnerId;
-  const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
 
   const gygWidget = `
   <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
