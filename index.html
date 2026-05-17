@@ -2563,6 +2563,17 @@ function loadMapEmbed(transitMode) {
   document.getElementById('mapEmbed').src = url;
 }
 
+function openTransitNetworkMap() {
+  const cityQ = encodeURIComponent(currentCity);
+  document.getElementById('mapModalTitle').textContent = '🗺️ Liniennetz ' + currentCity;
+  document.getElementById('transitBar').style.display = 'none';
+  // Google Maps mit Transit-Layer — zeigt alle Bus/Metro/Tram-Linien
+  document.getElementById('mapEmbed').src =
+    `https://maps.google.com/maps?q=${cityQ}&layer=transit&output=embed&hl=de&t=m&z=13`;
+  document.getElementById('mapModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
 function closeMapModal() {
   document.getElementById('mapModal').style.display = 'none';
   document.getElementById('mapEmbed').src = '';
@@ -3035,6 +3046,11 @@ function renderTransport(geo) {
   <button class="ticket-info-btn" onclick="openTicketSheet()">
     <span class="tib-icon">🎫</span>
     Tickets &amp; Preise für ${esc(geo.displayName)}
+    <span style="margin-left:auto; opacity:.7;">›</span>
+  </button>
+  <button class="ticket-info-btn" onclick="openTransitNetworkMap()" style="margin-top:8px;">
+    <span class="tib-icon">🗺️</span>
+    Liniennetz anzeigen (Metro, Bus, Tram …)
     <span style="margin-left:auto; opacity:.7;">›</span>
   </button>
   <div class="transport-cats">${catBtns}</div>
