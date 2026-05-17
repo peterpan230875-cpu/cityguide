@@ -582,9 +582,132 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ── Login Overlay ── */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #loginOverlay.hidden { display: none; }
+
+    .login-box {
+      width: 100%;
+      max-width: 340px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: var(--shadow);
+      animation: fadeIn .4s ease;
+    }
+    .login-logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .login-logo .icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .login-logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold2), #fde68a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .login-logo p {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+    .login-field {
+      margin-bottom: 14px;
+    }
+    .login-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .login-field input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .login-field input:focus { border-color: var(--gold); }
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity .2s;
+    }
+    .login-btn:active { opacity: .85; }
+    .login-error {
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fca5a5;
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+<!-- ══ LOGIN OVERLAY ══ -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="icon">🧭</div>
+      <h1>CityGuide</h1>
+      <p>Bitte melde dich an</p>
+    </div>
+    <div class="login-field">
+      <label>Benutzername</label>
+      <input type="text" id="loginUser" placeholder="Benutzername" autocomplete="username" />
+    </div>
+    <div class="login-field">
+      <label>Passwort</label>
+      <input type="password" id="loginPass" placeholder="Passwort" autocomplete="current-password" />
+    </div>
+    <button class="login-btn" onclick="doLogin()">Anmelden</button>
+    <div class="login-error" id="loginError">❌ Benutzername oder Passwort falsch</div>
+  </div>
+</div>
+
 <div id="app">
 
   <!-- ══ HEADER ══ -->
@@ -1275,6 +1398,40 @@ document.head.appendChild(shakeStyle);
 document.getElementById('cityInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') searchCity();
 });
+
+// ══════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════
+const USERS = {
+  'Admin': 'Admin',
+};
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err  = document.getElementById('loginError');
+
+  if (USERS[user] && USERS[user] === pass) {
+    sessionStorage.setItem('cg_auth', '1');
+    document.getElementById('loginOverlay').classList.add('hidden');
+    err.style.display = 'none';
+  } else {
+    err.style.display = 'block';
+    shake(document.getElementById('loginPass'));
+  }
+}
+
+// Enter-Taste im Login
+['loginUser','loginPass'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+
+// Session prüfen — wenn schon eingeloggt, direkt öffnen
+if (sessionStorage.getItem('cg_auth') === '1') {
+  document.getElementById('loginOverlay').classList.add('hidden');
+}
 
 // ── Pre-fill default city ──
 document.getElementById('cityInput').value = CONFIG.defaultCity || '';
