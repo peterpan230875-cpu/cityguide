@@ -630,6 +630,42 @@
     }
     .leaflet-popup-tip { background: var(--card); }
     .leaflet-popup-content b { color: var(--gold2); }
+    /* ── Transport Categories ── */
+    .transport-cats {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+    }
+    .transport-cats::-webkit-scrollbar { display: none; }
+    .tcat-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      min-width: 60px;
+      transition: all .2s;
+    }
+    .tcat-btn .tcat-icon { font-size: 22px; }
+    .tcat-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold2);
+    }
+    .tcat-btn:active { transform: scale(.95); }
+
     .stop-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
     .stop-item {
       display: flex;
@@ -644,6 +680,27 @@
     .stop-item .si-icon { font-size: 20px; flex-shrink: 0; }
     .stop-item .si-name { font-weight: 500; flex: 1; }
     .stop-item .si-type { font-size: 11px; color: var(--text3); }
+
+    .provider-links { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .provider-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color .2s;
+    }
+    .provider-link:hover { border-color: var(--gold); }
+    .provider-link .pl-icon { font-size: 20px; }
+    .provider-link .pl-text { flex: 1; }
+    .provider-link .pl-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+    .provider-link .pl-arrow { color: var(--text3); }
 
     /* ── Photo Cards (Buchen) ── */
     .photo-card {
@@ -1305,7 +1362,65 @@ async function searchCity() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  TRANSPORT MAP (Leaflet + Overpass)
+//  TRANSPORT CATEGORIES
+// ══════════════════════════════════════════════════════════
+const TRANSPORT_CATS = [
+  {
+    id: 'bus', icon: '🚌', label: 'Bus',
+    filters: ['node["highway"="bus_stop"]','node["public_transport"="stop_position"]["bus"="yes"]'],
+    radius: 3000, osmLabel: 'Bushaltestelle',
+  },
+  {
+    id: 'metro', icon: '🚇', label: 'Metro',
+    filters: ['node["station"="subway"]','node["railway"="subway_entrance"]','node["public_transport"="stop_position"]["subway"="yes"]','node["metro"="yes"]'],
+    radius: 5000, osmLabel: 'Metro-Station',
+  },
+  {
+    id: 'tram', icon: '🚊', label: 'Tram',
+    filters: ['node["railway"="tram_stop"]','node["public_transport"="stop_position"]["tram"="yes"]'],
+    radius: 3000, osmLabel: 'Straßenbahn',
+  },
+  {
+    id: 'train', icon: '🚂', label: 'Zug',
+    filters: ['node["railway"~"station|halt"]','way["railway"~"station|halt"]'],
+    radius: 8000, osmLabel: 'Bahnhof',
+  },
+  {
+    id: 'bike', icon: '🚲', label: 'Fahrrad',
+    filters: ['node["amenity"="bicycle_rental"]','node["amenity"="bicycle_parking"]'],
+    radius: 2000, osmLabel: 'Fahrrad-Verleih',
+    providers: [
+      { icon: '🟢', name: 'nextbike', sub: 'Stadtrad-Verleih', url: 'https://www.nextbike.net/de/' },
+      { icon: '🔵', name: 'TIER Bikes', sub: 'E-Bike & Fahrrad', url: 'https://www.tier.app/' },
+    ],
+  },
+  {
+    id: 'scooter', icon: '🛴', label: 'E-Scooter',
+    filters: ['node["amenity"~"kick-scooter_rental|scooter_rental"]','node["rental"="scooter"]'],
+    radius: 2000, osmLabel: 'E-Scooter Station',
+    providers: [
+      { icon: '🟢', name: 'Lime', sub: 'E-Scooter & E-Bike', url: 'https://www.li.me/' },
+      { icon: '🟡', name: 'Bolt', sub: 'E-Scooter', url: 'https://bolt.eu/de/scooters/' },
+      { icon: '🔵', name: 'TIER', sub: 'E-Scooter', url: 'https://www.tier.app/' },
+      { icon: '⚫', name: 'Bird', sub: 'E-Scooter', url: 'https://www.bird.co/' },
+    ],
+  },
+  {
+    id: 'taxi', icon: '🚕', label: 'Taxi',
+    filters: ['node["amenity"="taxi"]'],
+    radius: 3000, osmLabel: 'Taxistand',
+    providers: [
+      { icon: '🟡', name: 'Uber', sub: 'Ride-Sharing', url: 'https://www.uber.com/' },
+      { icon: '🟢', name: 'Bolt', sub: 'Günstige Fahrten', url: 'https://bolt.eu/de/rides/' },
+    ],
+  },
+];
+
+let activeTransportCat = null;
+let transportMarkers = [];
+
+// ══════════════════════════════════════════════════════════
+//  TRANSPORT MAP (Leaflet)
 // ══════════════════════════════════════════════════════════
 async function initTransportMap() {
   if (transportMapReady || !currentLat) return;
@@ -1315,48 +1430,104 @@ async function initTransportMap() {
   if (!mapEl) return;
 
   leafletMap = L.map('transportMap', { zoomControl: true, attributionControl: false })
-    .setView([currentLat, currentLng], 14);
-
+    .setView([currentLat, currentLng], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
 
-  const mkIcon = (em) => L.divIcon({ html: em, className: 'emoji-marker', iconSize: [26, 26], iconAnchor: [13, 13] });
-
-  // Stadtzentrum
+  const mkIcon = em => L.divIcon({ html: em, className: 'emoji-marker', iconSize: [26,26], iconAnchor:[13,13] });
   L.marker([currentLat, currentLng], { icon: mkIcon('📍') })
-    .addTo(leafletMap)
-    .bindPopup(`<b>${currentCity}</b><br>Stadtzentrum`);
+    .addTo(leafletMap).bindPopup(`<b>${currentCity}</b>`);
 
-  // Haltestellen laden
-  const stopTypes = [
-    { filters: ['node["highway"="bus_stop"]'], icon: '🚌', label: 'Bushaltestelle' },
-    { filters: ['node["railway"~"station|subway_entrance|tram_stop"]'], icon: '🚇', label: 'Bahn / Metro' },
-  ];
-
-  const listEl = document.getElementById('stopList');
-
-  for (const type of stopTypes) {
-    try {
-      const stops = await searchOverpass(currentLat, currentLng, type.filters, 1500);
-      stops.filter(el => el.tags?.name).slice(0, 25).forEach(el => {
-        const lat = el.lat ?? el.center?.lat;
-        const lng = el.lon ?? el.center?.lon;
-        if (!lat || !lng) return;
-        const name = el.tags.name;
-        L.marker([lat, lng], { icon: mkIcon(type.icon) })
-          .addTo(leafletMap)
-          .bindPopup(`<b>${name}</b><br>${type.label}`);
-        if (listEl) {
-          listEl.insertAdjacentHTML('beforeend', `
-            <div class="stop-item">
-              <span class="si-icon">${type.icon}</span>
-              <span class="si-name">${esc(name)}</span>
-              <span class="si-type">${type.label}</span>
-            </div>`);
-        }
-      });
-    } catch(e) {}
-  }
   setTimeout(() => leafletMap.invalidateSize(), 150);
+}
+
+async function selectTransportCat(catId) {
+  const cat = TRANSPORT_CATS.find(c => c.id === catId);
+  if (!cat) return;
+  activeTransportCat = catId;
+
+  // Update buttons
+  document.querySelectorAll('.tcat-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`tcat-${catId}`);
+  if (btn) btn.classList.add('active');
+
+  // Show map if hidden
+  const mapEl = document.getElementById('transportMap');
+  const toggleBtn = document.getElementById('mapToggleBtn');
+  if (mapEl.classList.contains('collapsed')) {
+    mapEl.classList.remove('collapsed');
+    if (toggleBtn) toggleBtn.textContent = '✕ Karte schließen';
+    mapVisible = true;
+  }
+  await initTransportMap();
+
+  // Clear old markers
+  transportMarkers.forEach(m => leafletMap.removeLayer(m));
+  transportMarkers = [];
+
+  // Update list
+  const listEl = document.getElementById('stopList');
+  listEl.innerHTML = `<div class="stop-item"><span class="si-icon">⏳</span><span class="si-name">Lade ${cat.label}-Stationen…</span></div>`;
+
+  // Show provider links if available
+  const providerEl = document.getElementById('providerLinks');
+  if (providerEl) {
+    if (cat.providers?.length) {
+      providerEl.style.display = 'block';
+      providerEl.innerHTML = `<p class="section-title" style="margin-top:16px;">📱 Apps & Anbieter</p><div class="provider-links">`
+        + cat.providers.map(p => `
+          <a href="${p.url}" target="_blank" class="provider-link">
+            <span class="pl-icon">${p.icon}</span>
+            <div class="pl-text">
+              <div>${p.name}</div>
+              <div class="pl-sub">${p.sub}</div>
+            </div>
+            <span class="pl-arrow">›</span>
+          </a>`).join('')
+        + `</div>`;
+    } else {
+      providerEl.style.display = 'none';
+    }
+  }
+
+  // Fetch stops
+  try {
+    const stops = await searchOverpass(currentLat, currentLng, cat.filters, cat.radius);
+    const named = stops.filter(el => el.tags?.name).slice(0, 30);
+
+    if (!named.length) {
+      listEl.innerHTML = `<div class="stop-item"><span class="si-icon">❌</span><span class="si-name">Keine ${cat.label}-Stationen in OSM gefunden</span></div>`;
+      return;
+    }
+
+    listEl.innerHTML = '';
+    const mkIcon = em => L.divIcon({ html: em, className: 'emoji-marker', iconSize:[26,26], iconAnchor:[13,13] });
+
+    named.forEach(el => {
+      const lat = el.lat ?? el.center?.lat;
+      const lng = el.lon ?? el.center?.lon;
+      const name = el.tags.name;
+      if (lat && lng) {
+        const m = L.marker([lat, lng], { icon: mkIcon(cat.icon) })
+          .addTo(leafletMap)
+          .bindPopup(`<b>${name}</b><br>${cat.osmLabel}`);
+        transportMarkers.push(m);
+      }
+      listEl.insertAdjacentHTML('beforeend', `
+        <div class="stop-item">
+          <span class="si-icon">${cat.icon}</span>
+          <span class="si-name">${esc(name)}</span>
+          <span class="si-type">${cat.osmLabel}</span>
+        </div>`);
+    });
+
+    // Fit map to markers
+    if (transportMarkers.length) {
+      const group = L.featureGroup(transportMarkers);
+      leafletMap.fitBounds(group.getBounds().pad(0.2));
+    }
+  } catch(e) {
+    listEl.innerHTML = `<div class="stop-item"><span class="si-icon">⚠️</span><span class="si-name">Fehler beim Laden</span></div>`;
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1451,15 +1622,19 @@ function renderKultur(places) {
 }
 
 function renderTransport(geo) {
+  const catBtns = TRANSPORT_CATS.map(c => `
+    <button class="tcat-btn" id="tcat-${c.id}" onclick="selectTransportCat('${c.id}')">
+      <span class="tcat-icon">${c.icon}</span>
+      ${c.label}
+    </button>`).join('');
+
   document.getElementById('panel-transport').innerHTML = `
-  <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMap()">
-    🗺️ Karte anzeigen
-  </button>
+  <div class="transport-cats">${catBtns}</div>
+  <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMap()">🗺️ Karte anzeigen</button>
   <div id="transportMap" class="collapsed"></div>
-  <p class="section-title">🚌 Haltestellen in der Nähe</p>
-  <div id="stopList" class="stop-list">
-    <div class="stop-item"><span class="si-icon">⏳</span><span class="si-name">Lade Haltestellen…</span></div>
-  </div>`;
+  <p class="section-title" id="stopTitle">⬆️ Kategorie wählen</p>
+  <div id="stopList" class="stop-list"></div>
+  <div id="providerLinks"></div>`;
 }
 
 let mapVisible = false;
@@ -1582,9 +1757,10 @@ function switchTab(tab) {
   const panel = document.getElementById(`panel-${tab}`);
   if (panel) panel.style.display = 'block';
 
-  // Reset map toggle when switching to transport
+  // Reset on transport tab
   if (tab === 'transport') {
     mapVisible = false;
+    activeTransportCat = null;
   }
 }
 
