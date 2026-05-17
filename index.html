@@ -646,12 +646,9 @@
     <!-- Error Banner -->
     <div id="error"></div>
 
-    <!-- API Key Warning (shown when no key configured) -->
-    <div class="api-warning" id="apiWarning" style="display:none;">
-      <strong>📋 Google API Key fehlt</strong><br/>
-      Ohne API Key werden Demo-Daten angezeigt. Trage deinen Key in
-      <code>config.js</code> ein (<a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a>).
-      Die App funktioniert aber vollständig mit Demo-Daten!
+    <!-- OSM Banner -->
+    <div class="demo-banner" id="osmBanner" style="display:none;">
+      🗺️ Daten von <strong>OpenStreetMap</strong> — kostenlos &amp; aktuell
     </div>
 
     <!-- City Hero -->
@@ -724,30 +721,9 @@ let currentTab = 'essen';
 let currentCity = '';
 let currentLat = null;
 let currentLng = null;
-let placesService = null;
-let googleLoaded = false;
 
 // ══════════════════════════════════════════════════════════
-//  GOOGLE MAPS LOADER
-// ══════════════════════════════════════════════════════════
-function loadGoogleMaps() {
-  if (!CONFIG.googlePlacesApiKey || CONFIG.googlePlacesApiKey === 'DEIN_GOOGLE_API_KEY_HIER') {
-    document.getElementById('apiWarning').style.display = 'block';
-    return Promise.resolve(false);
-  }
-  return new Promise((resolve) => {
-    if (googleLoaded) { resolve(true); return; }
-    window._gmCallback = () => { googleLoaded = true; resolve(true); };
-    const s = document.createElement('script');
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${CONFIG.googlePlacesApiKey}&libraries=places&callback=_gmCallback`;
-    s.async = true;
-    s.onerror = () => resolve(false);
-    document.head.appendChild(s);
-  });
-}
-
-// ══════════════════════════════════════════════════════════
-//  GEOCODING (Nominatim — free, no key)
+//  GEOCODING (Nominatim — kostenlos)
 // ══════════════════════════════════════════════════════════
 async function geocodeCity(cityName) {
   const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityName)}&format=json&limit=1`;
@@ -763,26 +739,57 @@ async function geocodeCity(cityName) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  GOOGLE PLACES SEARCH
+//  OVERPASS API (OpenStreetMap — kostenlos, kein Key)
 // ══════════════════════════════════════════════════════════
-function searchPlaces(lat, lng, types, keyword = '') {
-  return new Promise((resolve) => {
-    if (!placesService) {
-      const mapDiv = document.createElement('div');
-      const map = new google.maps.Map(mapDiv, { center: { lat, lng }, zoom: 13 });
-      placesService = new google.maps.places.PlacesService(map);
-    }
-    const request = {
-      location: new google.maps.LatLng(lat, lng),
-      radius: 2000,
-      type: types,
-      ...(keyword ? { keyword } : {}),
-    };
-    placesService.nearbySearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK) resolve(results || []);
-      else resolve([]);
-    });
+async function searchOverpass(lat, lng, filters, radius = 2500) {
+  const around = `(around:${radius},${lat},${lng})`;
+  const parts = filters.map(f => `${f}${around};`).join('\n');
+  const query = `[out:json][timeout:25];\n(\n${parts}\n);\nout center ${CONFIG.resultsPerCategory};`;
+  const res = await fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    body: 'data=' + encodeURIComponent(query),
   });
+  if (!res.ok) throw new Error('OpenStreetMap nicht erreichbar. Bitte versuche es erneut.');
+  const data = await res.json();
+  return (data.elements || []).filter(el => el.tags && el.tags.name);
+}
+
+function normOverpassPlace(el) {
+  const t = el.tags || {};
+  const lat = el.lat ?? el.center?.lat;
+  const lng = el.lon ?? el.center?.lon;
+  const street = [t['addr:street'], t['addr:housenumber']].filter(Boolean).join(' ');
+  return {
+    name:     t.name || t['name:de'] || 'Unbekannt',
+    address:  street || t['addr:city'] || t.description || '',
+    rating:   null,
+    priceLevel: null,
+    open:     null,
+    icon:     overpassIcon(t),
+    lat, lng,
+    demo:     false,
+  };
+}
+
+function overpassIcon(t) {
+  const a = t.amenity || '', to = t.tourism || '', h = t.historic || '';
+  if (a === 'restaurant')  return '🍽️';
+  if (a === 'cafe')        return '☕';
+  if (a === 'fast_food')   return '🍔';
+  if (a === 'bar')         return '🍺';
+  if (a === 'pub')         return '🍻';
+  if (a === 'biergarten')  return '🥨';
+  if (a === 'nightclub')   return '🎶';
+  if (a === 'theatre')     return '🎭';
+  if (a === 'cinema')      return '🎬';
+  if (to === 'museum')     return '🏛️';
+  if (to === 'gallery')    return '🎨';
+  if (to === 'viewpoint')  return '🌄';
+  if (to === 'attraction') return '⭐';
+  if (h === 'castle')      return '🏰';
+  if (h === 'monument')    return '🗿';
+  if (h)                   return '🏛️';
+  return '📍';
 }
 
 // ══════════════════════════════════════════════════════════
@@ -826,10 +833,7 @@ function getDemoData(city, category) {
 // ══════════════════════════════════════════════════════════
 async function searchCity() {
   const cityRaw = document.getElementById('cityInput').value.trim();
-  if (!cityRaw) {
-    shake(document.getElementById('cityInput'));
-    return;
-  }
+  if (!cityRaw) { shake(document.getElementById('cityInput')); return; }
 
   setLoading(true, 'Suche Stadt…');
   hideError();
@@ -840,88 +844,52 @@ async function searchCity() {
     currentCity = geo.displayName;
     currentLat = geo.lat;
     currentLng = geo.lng;
-
-    // 2. Update hero
     document.getElementById('heroCity').textContent = geo.displayName;
 
-    // 3. Try Google Maps
-    setLoading(true, 'Lade Orte…');
-    const gmLoaded = await loadGoogleMaps();
+    // 2. Overpass Queries parallel
+    setLoading(true, 'Lade Orte aus OpenStreetMap…');
+    const [essenRaw, trinkenRaw, kulturRaw] = await Promise.all([
+      searchOverpass(geo.lat, geo.lng, [
+        'node["amenity"~"restaurant|cafe|fast_food|bakery"]',
+        'way["amenity"~"restaurant|cafe|fast_food|bakery"]',
+      ]),
+      searchOverpass(geo.lat, geo.lng, [
+        'node["amenity"~"bar|pub|biergarten|nightclub"]',
+        'way["amenity"~"bar|pub|biergarten|nightclub"]',
+      ]),
+      searchOverpass(geo.lat, geo.lng, [
+        'node["tourism"~"museum|attraction|gallery|viewpoint"]',
+        'way["tourism"~"museum|attraction|gallery|viewpoint"]',
+        'node["historic"]',
+        'node["amenity"~"theatre|cinema"]',
+      ], 3500),
+    ]);
 
-    // 4. Fetch places per category
-    let essenPlaces, trinkenPlaces, kulturPlaces;
+    // 3. Normalize & fallback to demo if empty
+    let essenPlaces  = essenRaw.map(normOverpassPlace);
+    let trinkenPlaces = trinkenRaw.map(normOverpassPlace);
+    let kulturPlaces  = kulturRaw.map(normOverpassPlace);
 
-    if (gmLoaded) {
-      [essenPlaces, trinkenPlaces, kulturPlaces] = await Promise.all([
-        searchPlaces(geo.lat, geo.lng, 'restaurant'),
-        searchPlaces(geo.lat, geo.lng, 'bar'),
-        searchPlaces(geo.lat, geo.lng, 'tourist_attraction'),
-      ]);
-      // normalize Google Places format
-      essenPlaces  = essenPlaces.map(normGooglePlace);
-      trinkenPlaces = trinkenPlaces.map(normGooglePlace);
-      kulturPlaces  = kulturPlaces.map(normGooglePlace);
-    } else {
-      essenPlaces  = getDemoData(currentCity, 'essen');
-      trinkenPlaces = getDemoData(currentCity, 'trinken');
-      kulturPlaces  = getDemoData(currentCity, 'kultur');
-    }
+    if (!essenPlaces.length)   essenPlaces  = getDemoData(currentCity, 'essen');
+    if (!trinkenPlaces.length) trinkenPlaces = getDemoData(currentCity, 'trinken');
+    if (!kulturPlaces.length)  kulturPlaces  = getDemoData(currentCity, 'kultur');
 
-    // 5. Limit
-    essenPlaces  = essenPlaces.slice(0, CONFIG.resultsPerCategory);
-    trinkenPlaces = trinkenPlaces.slice(0, CONFIG.resultsPerCategory);
-    kulturPlaces  = kulturPlaces.slice(0, CONFIG.resultsPerCategory);
-
-    // 6. Count
+    // 4. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
-    document.getElementById('heroCityMeta').textContent = `${total} Orte gefunden`;
+    document.getElementById('heroCityMeta').textContent = `${total} Orte aus OpenStreetMap`;
+    document.getElementById('osmBanner').style.display = 'flex';
 
-    // 7. Render panels
     renderEssen(essenPlaces);
     renderTrinken(trinkenPlaces);
     renderKultur(kulturPlaces);
     renderTransport(geo);
     renderBuchen(geo);
-
-    // 8. Show UI
     showResults();
 
   } catch (e) {
     showError(e.message || 'Unbekannter Fehler.');
     setLoading(false);
   }
-}
-
-// ── Normalize Google Places result ──
-function normGooglePlace(p) {
-  const loc = p.geometry?.location;
-  return {
-    name: p.name,
-    address: p.vicinity || '',
-    rating: p.rating || null,
-    priceLevel: p.price_level ?? null,
-    open: p.opening_hours?.open_now ?? null,
-    icon: categoryIcon(p.types),
-    lat: loc ? loc.lat() : currentLat,
-    lng: loc ? loc.lng() : currentLng,
-    placeId: p.place_id,
-    demo: false,
-  };
-}
-
-function categoryIcon(types = []) {
-  if (types.includes('restaurant'))     return '🍽️';
-  if (types.includes('cafe'))           return '☕';
-  if (types.includes('bakery'))         return '🥐';
-  if (types.includes('bar'))            return '🍺';
-  if (types.includes('night_club'))     return '🎶';
-  if (types.includes('museum'))         return '🏛️';
-  if (types.includes('art_gallery'))    return '🎨';
-  if (types.includes('park'))           return '🌿';
-  if (types.includes('church'))         return '⛪';
-  if (types.includes('zoo'))            return '🦁';
-  if (types.includes('amusement_park')) return '🎢';
-  return '📍';
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1237,11 +1205,6 @@ document.getElementById('cityInput').addEventListener('keydown', e => {
 
 // ── Pre-fill default city ──
 document.getElementById('cityInput').value = CONFIG.defaultCity || '';
-
-// ── Show API warning if no key ──
-if (!CONFIG.googlePlacesApiKey || CONFIG.googlePlacesApiKey === 'DEIN_GOOGLE_API_KEY_HIER') {
-  document.getElementById('apiWarning').style.display = 'block';
-}
 </script>
 </body>
 </html>
