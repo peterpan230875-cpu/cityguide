@@ -2564,19 +2564,52 @@ function loadMapEmbed(transitMode) {
 }
 
 function openTransitNetworkMap() {
-  const cityQ = encodeURIComponent(currentCity);
   document.getElementById('mapModalTitle').textContent = '🗺️ Liniennetz ' + currentCity;
   document.getElementById('transitBar').style.display = 'none';
-  // Google Maps mit Transit-Layer — zeigt alle Bus/Metro/Tram-Linien
-  document.getElementById('mapEmbed').src =
-    `https://maps.google.com/maps?q=${cityQ}&layer=transit&output=embed&hl=de&t=m&z=13`;
+  // iframe ausblenden, eigene Karte verwenden
+  const frame = document.getElementById('mapEmbed');
+  frame.style.display = 'none';
+  let container = document.getElementById('transitNetMap');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'transitNetMap';
+    container.style.cssText = 'flex:1;width:100%;min-height:0;';
+    frame.parentNode.insertBefore(container, frame);
+  }
+  container.style.display = 'block';
   document.getElementById('mapModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    if (window._transitMap) { window._transitMap.invalidateSize(); return; }
+    const lat = currentLat || 48.2;
+    const lng = currentLng || 16.37;
+    const m = L.map('transitNetMap', { zoomControl: true }).setView([lat, lng], 13);
+    // OpenPTMap — zeigt alle ÖPNV-Linien mit Nummern aus OSM
+    L.tileLayer('https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://memomaps.de">MemoMaps</a> / OpenPTMap © OSM',
+      maxZoom: 17,
+    }).addTo(m);
+    if (userGpsLat && userGpsLng) {
+      L.marker([userGpsLat, userGpsLng], {
+        icon: L.divIcon({ className: '', html: '<div style="font-size:22px;line-height:1;">📍</div>', iconAnchor: [11,22] })
+      }).addTo(m).bindPopup('Dein Standort');
+    }
+    window._transitMap = m;
+  }, 100);
+}
+
+function closeTransitNetMap() {
+  if (window._transitMap) { window._transitMap.remove(); window._transitMap = null; }
+  const c = document.getElementById('transitNetMap');
+  if (c) c.style.display = 'none';
+  document.getElementById('mapEmbed').style.display = 'block';
 }
 
 function closeMapModal() {
   document.getElementById('mapModal').style.display = 'none';
   document.getElementById('mapEmbed').src = '';
+  document.getElementById('mapEmbed').style.display = 'block';
+  closeTransitNetMap();
   document.body.style.overflow = '';
 }
 
