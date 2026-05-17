@@ -1081,6 +1081,122 @@
       display: none;
       text-align: center;
     }
+
+    /* ══════════════════════════════════════════
+       MOBILE OPTIMIERUNG
+       ══════════════════════════════════════════ */
+
+    /* iOS: verhindert Auto-Zoom beim Tippen auf Input */
+    #cityInput { font-size: 16px !important; }
+
+    /* Header: auf kleinen Screens 2 Zeilen */
+    @media (max-width: 480px) {
+      header { padding: 10px 12px 10px; }
+
+      .header-top {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding-bottom: 8px;
+      }
+
+      .app-name { font-size: 17px; }
+
+      .header-city {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        font-size: 12px;
+        padding-top: 0;
+        margin-top: -4px;
+        margin-bottom: 2px;
+      }
+
+      /* Suche nimmt volle Breite der zweiten Zeile */
+      .search-wrap {
+        order: 2;
+        flex: 0 0 100%;
+        width: 100%;
+        margin: 0;
+      }
+
+      #cityInput { padding: 10px 10px 10px 36px; }
+
+      #searchBtn {
+        padding: 0 14px;
+        font-size: 14px;
+        border-radius: 10px;
+        min-height: 44px;
+      }
+
+      /* Cards */
+      .place-card { padding: 12px; }
+      .place-actions { gap: 6px; }
+      .btn { font-size: 12px; padding: 7px 10px; }
+
+      /* Filter Pills: horizontal scroll statt wrap */
+      .filter-pills {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+        margin-bottom: 10px;
+      }
+      .filter-pills::-webkit-scrollbar { display: none; }
+      .filter-pill { flex-shrink: 0; padding: 6px 10px; font-size: 11px; }
+
+      /* Bottom Nav: kleinere Icons damit 6 Tabs passen */
+      .nav-icon { font-size: 18px; }
+      .nav-label { font-size: 9px; }
+
+      /* Transport Karte */
+      #transportMap { height: 55vw; max-height: 320px; }
+
+      /* Section Title */
+      .section-title { font-size: 13px; }
+    }
+
+    /* iPad / Tablet */
+    @media (min-width: 768px) {
+      #app { max-width: 720px; margin: 0 auto; }
+
+      header { padding: 16px 24px 0; }
+
+      .header-top { gap: 12px; }
+
+      .app-name { font-size: 22px; }
+
+      #cityInput { font-size: 16px; padding: 11px 12px 11px 40px; }
+
+      #searchBtn { padding: 0 24px; font-size: 16px; }
+
+      /* 2-spaltige Karten auf Tablet */
+      #panel-essen .place-card,
+      #panel-trinken .place-card,
+      #panel-kultur .place-card,
+      #panel-favs .place-card {
+        display: inline-flex;
+        flex-direction: column;
+        width: calc(50% - 8px);
+        vertical-align: top;
+        margin-right: 8px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+      }
+
+      .filter-pill { padding: 7px 14px; font-size: 13px; }
+
+      .nav-icon { font-size: 24px; }
+      .nav-label { font-size: 11px; }
+
+      #transportMap { height: 400px; max-height: 400px; }
+    }
+
+    /* Großes iPad / Desktop */
+    @media (min-width: 1024px) {
+      #app { max-width: 900px; }
+    }
+
   </style>
 </head>
 <body>
