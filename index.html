@@ -1472,8 +1472,16 @@ async function searchCity() {
       setLoading(true, 'Lade Orte mit Bewertungen…');
       source = 'Google';
       const [er, tr, kr] = await Promise.all([
-        searchGooglePlaces(geo.lat, geo.lng, 'restaurant'),
-        searchGooglePlaces(geo.lat, geo.lng, 'bar'),
+        Promise.all([
+          searchGooglePlaces(geo.lat, geo.lng, 'restaurant'),
+          searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
+          searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway'),
+          searchGooglePlaces(geo.lat, geo.lng, 'bakery'),
+        ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
+        Promise.all([
+          searchGooglePlaces(geo.lat, geo.lng, 'bar'),
+          searchGooglePlaces(geo.lat, geo.lng, 'night_club'),
+        ]).then(([a,b]) => [...a,...b]),
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
           searchGooglePlaces(geo.lat, geo.lng, 'museum'),
