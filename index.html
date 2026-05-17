@@ -1656,6 +1656,8 @@ function toggleMap() {
 function renderBuchen(geo) {
   const city = geo.displayName;
   const places = statePlaces.kultur;
+  const pid = CONFIG.getYourGuidePartnerId;
+  const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
 
   const cardsHtml = places.length
     ? places.map(p => {
@@ -1674,17 +1676,41 @@ function renderBuchen(geo) {
             ${p.rating ? `<div class="photo-card-rating">⭐ ${p.rating.toFixed(1)}${p.ratingCount ? ` (${p.ratingCount})` : ''}</div>` : ''}
             <div class="photo-card-addr">📍 ${esc(p.address || '')}</div>
             <div class="photo-card-actions">
-              <button class="btn btn-book" onclick="openBookingSheet('${pName}', '${esc(city)}')">🎟️ Buchen</button>
+              <button class="btn btn-book" onclick="openBookingSheet('${pName}', '${esc(city)}')">🎟️ Touren</button>
               <a href="https://www.google.com/maps/search/?api=1&query=${navQ}" target="_blank" class="btn btn-nav">📍 Karte</a>
             </div>
           </div>
         </div>`;
       }).join('')
-    : `<div class="no-results"><div class="nr-icon">🔍</div>Zuerst eine Stadt suchen.</div>`;
+    : '';
+
+  // GYG Widget direkt eingebettet (zeigt Preise, Fotos, Bewertungen)
+  const gygWidget = `
+  <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+       data-gyg-locale-code="de-DE"
+       data-gyg-widget="activities"
+       data-gyg-number-of-items="8"
+       data-gyg-currency="EUR"
+       ${pidAttr}
+       data-gyg-q="${esc(city)}">
+  </div>`;
 
   document.getElementById('panel-buchen').innerHTML = `
-  <p class="section-title">🏛️ Sehenswürdigkeiten & Erlebnisse (${places.length})</p>
-  ${cardsHtml}`;
+  ${places.length ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${places.length})</p>${cardsHtml}` : ''}
+  <p class="section-title" style="margin-top:${places.length ? 20 : 0}px;">🎟️ Aktivitäten & Preise in ${esc(city)}</p>
+  <div class="demo-banner" style="margin-bottom:10px;">
+    💡 Preise, Fotos & Bewertungen — direkt in der App. Zum Buchen einmal antippen.
+  </div>
+  <div id="gygTabWidget">${gygWidget}</div>`;
+
+  // GYG Script laden
+  const old = document.getElementById('gygTabScript');
+  if (old) old.remove();
+  const s = document.createElement('script');
+  s.id = 'gygTabScript';
+  s.src = 'https://widget.getyourguide.com/dist/pa.umd.production.min.js';
+  s.async = true;
+  document.body.appendChild(s);
 }
 
 // ── Booking Sheet (GetYourGuide Widget in-app) ──
