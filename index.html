@@ -73,9 +73,22 @@
     .header-top {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 0;
+      padding-bottom: 12px;
     }
+    .header-city {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 110px;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .header-city.visible { opacity: 1; }
 
     .logo {
       width: 36px; height: 36px;
@@ -99,7 +112,7 @@
     .search-wrap {
       display: flex;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 0;
     }
 
     .search-input-wrap {
@@ -1100,24 +1113,22 @@
     <div class="header-top">
       <div class="logo">🧭</div>
       <div class="app-name">CityGuide</div>
-    </div>
-
-    <div class="search-wrap">
-      <div class="search-input-wrap">
-        <span class="search-icon">🔍</span>
-        <input
-          type="text"
-          id="cityInput"
-          placeholder="Stadt eingeben… z.B. Wien, Barcelona"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-        />
+      <div class="search-wrap" style="flex:1;margin:0;">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="cityInput"
+            placeholder="Stadt suchen…"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+          />
+        </div>
+        <button id="searchBtn" onclick="searchCity()">Suchen</button>
       </div>
-      <button id="searchBtn" onclick="searchCity()">Suchen</button>
+      <div class="header-city" id="headerCity"></div>
     </div>
-
-    <!-- Top tabs removed — navigation only via bottom nav -->
   </header>
 
   <!-- ══ MAIN ══ -->
@@ -1478,6 +1489,8 @@ async function searchCity() {
     currentLat = geo.lat;
     currentLng = geo.lng;
     document.getElementById('heroCity').textContent = geo.displayName;
+    const hc = document.getElementById('headerCity');
+    if (hc) { hc.textContent = '📍 ' + geo.displayName; hc.classList.add('visible'); }
 
     // 2. Google Places oder Overpass
     const gmLoaded = await loadGoogleMaps();
@@ -2881,7 +2894,6 @@ function switchTab(tab) {
 function showResults() {
   setLoading(false);
   document.getElementById('welcome').style.display = 'none';
-  document.getElementById('cityHero').style.display = 'block';
   document.getElementById('results').style.display = 'block';
   // tabsRow removed — navigation via bottom nav only
   switchTab('essen');
