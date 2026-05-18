@@ -1745,10 +1745,13 @@ function useMyLocation() {
 // ══════════════════════════════════════════════════════════
 //  MAIN SEARCH
 // ══════════════════════════════════════════════════════════
+let _searchLock = false;
 async function searchCity() {
+  if (_searchLock) return; // verhindert mehrfache parallele Suchen
   const cityRaw = document.getElementById('cityInput').value.trim();
   if (!cityRaw) { shake(document.getElementById('cityInput')); return; }
 
+  _searchLock = true;
   setLoading(true, 'Suche Stadt…');
   hideError();
 
@@ -1954,6 +1957,8 @@ async function searchCity() {
   } catch (e) {
     showError(e.message || 'Unbekannter Fehler.');
     setLoading(false);
+  } finally {
+    _searchLock = false; // Lock immer freigeben
   }
 }
 
