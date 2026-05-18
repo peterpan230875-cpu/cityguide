@@ -565,6 +565,14 @@
     .nav-btn.active .nav-label { color: var(--gold2); }
     .tmode-btn { background:var(--bg3);border:1.5px solid var(--border);color:var(--text);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .2s; }
     .tmode-btn.active,.tmode-btn:hover { background:var(--gold);border-color:var(--gold);color:#000;font-weight:600; }
+    .filter-picker-btn { display:flex;align-items:center;gap:8px;background:var(--bg3);border:1.5px solid var(--gold);border-radius:12px;padding:8px 14px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;width:100%;margin-bottom:10px; }
+    .filter-picker-btn .fp-chevron { margin-left:auto;font-size:11px;opacity:.7; }
+    .filter-sheet-item { display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:12px;cursor:pointer;transition:background .15s;border:1.5px solid transparent; }
+    .filter-sheet-item:active { background:var(--bg3); }
+    .filter-sheet-item.active { background:var(--gold-dim);border-color:var(--gold); }
+    .filter-sheet-item .fsi-icon { font-size:22px;width:32px;text-align:center;flex-shrink:0; }
+    .filter-sheet-item .fsi-label { font-size:14px;font-weight:600;color:var(--text);flex:1; }
+    .filter-sheet-item .fsi-count { font-size:12px;color:var(--text2); }
 
     /* ── API Key Warning ── */
     .api-warning {
@@ -1287,6 +1295,16 @@
       <!-- TRINKEN -->
       <div id="panel-trinken" class="tab-panel" style="display:none;"></div>
       <div id="panel-favs" class="tab-panel" style="display:none;"></div>
+
+    <!-- Filter-Picker Sheet -->
+    <div id="filterSheetBackdrop" onclick="closeFilterSheet()" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.5);"></div>
+    <div id="filterSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:8001;background:var(--bg2);border-radius:20px 20px 0 0;border-top:2px solid var(--gold);max-height:75vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1;">
+        <span id="filterSheetTitle" style="font-weight:700;font-size:15px;color:var(--gold2);">Filter wählen</span>
+        <button onclick="closeFilterSheet()" style="background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;line-height:1;">✕</button>
+      </div>
+      <div id="filterSheetList" style="padding:8px 12px 16px;"></div>
+    </div>
 
     <!-- In-App Karten-Modal -->
     <div id="mapModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);flex-direction:column;">
@@ -3045,6 +3063,48 @@ const KULTUR_TYPE_MAP = {
   historisch:  ['castle','monument','ruins','memorial','historic','🏰','⛪'],
 };
 
+// ══════════════════════════════════════════════════════════
+//  FILTER PICKER SHEET
+// ══════════════════════════════════════════════════════════
+let _filterSheetCallback = null;
+
+function openFilterSheet(title, filters, activeId, countFn, onSelect) {
+  _filterSheetCallback = onSelect;
+  document.getElementById('filterSheetTitle').textContent = title;
+  const list = document.getElementById('filterSheetList');
+  list.innerHTML = filters.map(f => {
+    const count = countFn(f.id);
+    return `<div class="filter-sheet-item${f.id === activeId ? ' active' : ''}" onclick="pickFilter('${f.id}')">
+      <span class="fsi-icon">${f.icon}</span>
+      <span class="fsi-label">${f.label}</span>
+      <span class="fsi-count">${count > 0 ? count + ' Orte' : ''}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('filterSheet').style.display = 'block';
+  document.getElementById('filterSheetBackdrop').style.display = 'block';
+}
+
+function pickFilter(id) {
+  closeFilterSheet();
+  if (_filterSheetCallback) _filterSheetCallback(id);
+}
+
+function closeFilterSheet() {
+  document.getElementById('filterSheet').style.display = 'none';
+  document.getElementById('filterSheetBackdrop').style.display = 'none';
+}
+
+function filterPickerHtml(activeFilter, filters, title, countFn, openFn) {
+  const active = filters.find(f => f.id === activeFilter) || filters[0];
+  const count = countFn(activeFilter);
+  return `<button class="filter-picker-btn" onclick="${openFn}()">
+    <span>${active.icon}</span>
+    <span>${active.label}</span>
+    ${count > 0 ? `<span style="opacity:.6;font-size:11px;">(${count})</span>` : ''}
+    <span class="fp-chevron">▼</span>
+  </button>`;
+}
+
 function renderEssen(places) {
   const el = document.getElementById('panel-essen');
   if (!places.length) { el.innerHTML = noResults('Keine Restaurants gefunden.'); return; }
@@ -3061,16 +3121,9 @@ function renderEssen(places) {
     : activeEssenFilter === 'lokal'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🏠 <strong>Lokal & Traditionell</strong> — Keine internationalen Ketten. Echte lokale Küche.</div>`
     : '';
-  const pillsWithCount = ESSEN_FILTERS.map(f => {
-    let count;
-    if (f.id === 'alle') count = places.length;
-    else if (poolFilters.includes(f.id) && pools[f.id]) count = pools[f.id].length;
-    else count = 0;
-    return `<button class="filter-pill${f.id === activeEssenFilter ? ' active' : ''}" onclick="setEssenFilter('${f.id}')">
-      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
-    </button>`;
-  }).join('');
-  el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
+  const essenCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return 0; };
+  const pickerHtml = filterPickerHtml(activeEssenFilter, ESSEN_FILTERS, 'Essen filtern', essenCountFn, 'openEssenFilterSheet');
+  el.innerHTML = pickerHtml
     + sortBarHtml(activeEssenSort, 'setSortEssen')
     + insiderNote
     + (filtered.length
@@ -3092,16 +3145,9 @@ function renderTrinken(places) {
   const insiderNote = activeTrinkenFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
     : '';
-  const pillsWithCount = TRINKEN_FILTERS.map(f => {
-    let count;
-    if (f.id === 'alle') count = places.length;
-    else if (poolFilters.includes(f.id) && pools[f.id]) count = pools[f.id].length;
-    else count = applyFilter(places, f.id, TRINKEN_TYPE_MAP).length;
-    return `<button class="filter-pill${f.id === activeTrinkenFilter ? ' active' : ''}" onclick="setTrinkenFilter('${f.id}')">
-      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
-    </button>`;
-  }).join('');
-  el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
+  const trinkenCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(places,id,TRINKEN_TYPE_MAP).length; };
+  const pickerHtml = filterPickerHtml(activeTrinkenFilter, TRINKEN_FILTERS, 'Trinken filtern', trinkenCountFn, 'openTrinkenFilterSheet');
+  el.innerHTML = pickerHtml
     + sortBarHtml(activeTrinkenSort, 'setSortTrinken')
     + insiderNote
     + (filtered.length
@@ -3127,17 +3173,9 @@ function renderKultur(places) {
   const insiderNote = activeKulturFilter === 'insider'
     ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
     : '';
-  // For pills count: use pool sizes where available
-  const pillsWithCount = KULTUR_FILTERS.map(f => {
-    let count;
-    if (f.id === 'alle') count = places.length;
-    else if (poolFilters.includes(f.id) && pools[f.id]) count = pools[f.id].length;
-    else count = applyFilter(places, f.id, KULTUR_TYPE_MAP).length;
-    return `<button class="filter-pill${f.id === activeKulturFilter ? ' active' : ''}" onclick="setKulturFilter('${f.id}')">
-      ${f.icon} ${f.label}<span style="opacity:.6;font-size:10px;margin-left:3px;">${count}</span>
-    </button>`;
-  }).join('');
-  el.innerHTML = `<div class="filter-pills">${pillsWithCount}</div>`
+  const kulturCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(places,id,KULTUR_TYPE_MAP).length; };
+  const pickerHtml = filterPickerHtml(activeKulturFilter, KULTUR_FILTERS, 'Kultur filtern', kulturCountFn, 'openKulturFilterSheet');
+  el.innerHTML = pickerHtml
     + sortBarHtml(activeKulturSort, 'setSortKultur')
     + insiderNote
     + (filtered.length
@@ -3145,6 +3183,24 @@ function renderKultur(places) {
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
+function openEssenFilterSheet() {
+  const pools = statePlaces.essenPools || {};
+  const poolFilters = ['fastfood','buffet','lokal','guenstig','normal','gehoben','insider'];
+  const countFn = id => { if(id==='alle') return (statePlaces.essen||[]).length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return 0; };
+  openFilterSheet('Essen filtern', ESSEN_FILTERS, activeEssenFilter, countFn, id => setEssenFilter(id));
+}
+function openTrinkenFilterSheet() {
+  const pools = statePlaces.trinkenPools || {};
+  const poolFilters = ['pub','bar','cafe','nacht'];
+  const countFn = id => { if(id==='alle') return (statePlaces.trinken||[]).length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(statePlaces.trinken||[],id,TRINKEN_TYPE_MAP).length; };
+  openFilterSheet('Trinken filtern', TRINKEN_FILTERS, activeTrinkenFilter, countFn, id => setTrinkenFilter(id));
+}
+function openKulturFilterSheet() {
+  const pools = statePlaces.kulturPools || {};
+  const poolFilters = ['zoo','museum','sehens','natur','freizeitpark','historisch'];
+  const countFn = id => { if(id==='alle') return (statePlaces.kultur||[]).length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(statePlaces.kultur||[],id,KULTUR_TYPE_MAP).length; };
+  openFilterSheet('Kategorie wählen', KULTUR_FILTERS, activeKulturFilter, countFn, id => setKulturFilter(id));
+}
 function setEssenFilter(f)   { activeEssenFilter   = f; renderEssen(statePlaces.essen); }
 function setSortEssen(s)     { activeEssenSort     = s; renderEssen(statePlaces.essen); }
 function setSortTrinken(s)   { activeTrinkenSort   = s; renderTrinken(statePlaces.trinken); }
