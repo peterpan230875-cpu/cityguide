@@ -293,21 +293,45 @@
     .city-hero-inner .icon { font-size: 32px; }
     .city-name { font-size: 20px; font-weight: 700; }
     .city-meta { font-size: 13px; color: var(--text2); margin-top: 2px; }
-    /* ── API Badge (inline in City-Meta) ── */
-    #apiBadgeCorner { display: inline; }
-    .api-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 600;
-      padding: 2px 6px; border-radius: 20px;
-      cursor: pointer; opacity: 0.7;
-      transition: opacity .2s;
-      vertical-align: middle;
-      margin-left: 6px;
+    /* ── API Toast ── */
+    #apiToast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      white-space: nowrap;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
     }
-    .api-badge:hover { opacity: 1; }
-    .api-badge.fresh  { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
-    .api-badge.cached { background: rgba(96,165,250,.15); color: #93c5fd; border: 1px solid rgba(96,165,250,.3); }
-    .api-badge.warn   { background: rgba(251,191,36,.15); color: var(--gold2); border: 1px solid rgba(251,191,36,.3); }
+    #apiToast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    #apiToast .toast-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    #apiToast .toast-dot.fresh  { background: #4ade80; }
+    #apiToast .toast-dot.cached { background: #93c5fd; }
+    #apiToast .toast-dot.warn   { background: var(--gold2); }
+    @media (min-width: 768px) {
+      #apiToast { bottom: 24px; }
+    }
 
     /* ── Place Cards ── */
     #results { display: none; }
@@ -1361,7 +1385,7 @@
         <span class="icon">📍</span>
         <div>
           <div class="city-name" id="heroCity">—</div>
-          <div class="city-meta" id="heroCityMeta">Ergebnisse geladen<span id="apiBadgeCorner"></span></div>
+          <div class="city-meta" id="heroCityMeta">Ergebnisse geladen</div>
         </div>
       </div>
     </div>
@@ -3601,11 +3625,17 @@ function showResults() {
   switchTab('essen');
 }
 
+let _toastTimer = null;
 function setApiBadge(type, text) {
-  const el = document.getElementById('apiBadgeCorner');
+  const el = document.getElementById('apiToast');
   if (!el) return;
-  el.style.display = 'block';
-  el.innerHTML = `<span class="api-badge ${type}" title="Klicken zum Ausblenden" onclick="document.getElementById('apiBadgeCorner').style.display='none'">${text}</span>`;
+  if (_toastTimer) clearTimeout(_toastTimer);
+  el.innerHTML = `<span class="toast-dot ${type}"></span>${text}`;
+  el.classList.add('show');
+  // nach 4 Sekunden automatisch ausblenden
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+  // Antippen blendet es sofort aus
+  el.onclick = () => { el.classList.remove('show'); clearTimeout(_toastTimer); };
 }
 
 function setLoading(show, text = 'Suche…') {
@@ -3703,5 +3733,6 @@ if (sessionStorage.getItem('cg_auth') === '1') {
 document.getElementById('cityInput').value = CONFIG.defaultCity || '';
 </script>
 
+<div id="apiToast"></div>
 </body>
 </html>
