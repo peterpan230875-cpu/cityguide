@@ -662,29 +662,29 @@
     /* ── Transport & Buchen Categories ── */
     .transport-cats {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
       margin-bottom: 12px;
     }
     .tcat-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      padding: 7px 2px;
-      border-radius: 10px;
+      gap: 3px;
+      padding: 10px 4px;
+      border-radius: 12px;
       border: 1.5px solid var(--border);
       background: var(--bg3);
       color: var(--text2);
-      font-size: 9px;
+      font-size: 11px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
       transition: all .2s;
-      min-height: 44px;
+      min-height: 60px;
     }
-    .tcat-btn .tcat-icon { font-size: 18px; }
+    .tcat-btn .tcat-icon { font-size: 24px; }
     .tcat-btn.active {
       background: var(--gold-dim);
       border-color: var(--gold);
@@ -2350,35 +2350,6 @@ const TRANSPORT_CATS = [
     id: 'train', icon: '🚂', label: 'Zug',
     filters: ['node["railway"~"station|halt"]','way["railway"~"station|halt"]'],
     radius: 30000, osmLabel: 'Bahnhof',
-  },
-  {
-    id: 'bike', icon: '🚲', label: 'Fahrrad',
-    filters: ['node["amenity"="bicycle_rental"]','node["amenity"="bicycle_parking"]'],
-    radius: 2000, osmLabel: 'Fahrrad-Verleih',
-    providers: [
-      { icon: '🟢', name: 'nextbike', sub: 'Stadtrad-Verleih', url: 'https://www.nextbike.net/de/' },
-      { icon: '🔵', name: 'TIER Bikes', sub: 'E-Bike & Fahrrad', url: 'https://www.tier.app/' },
-    ],
-  },
-  {
-    id: 'scooter', icon: '🛴', label: 'E-Scooter',
-    filters: ['node["amenity"~"kick-scooter_rental|scooter_rental"]','node["rental"="scooter"]'],
-    radius: 2000, osmLabel: 'E-Scooter Station',
-    providers: [
-      { icon: '🟢', name: 'Lime', sub: 'E-Scooter & E-Bike', url: 'https://www.li.me/' },
-      { icon: '🟡', name: 'Bolt', sub: 'E-Scooter', url: 'https://bolt.eu/de/scooters/' },
-      { icon: '🔵', name: 'TIER', sub: 'E-Scooter', url: 'https://www.tier.app/' },
-      { icon: '⚫', name: 'Bird', sub: 'E-Scooter', url: 'https://www.bird.co/' },
-    ],
-  },
-  {
-    id: 'taxi', icon: '🚕', label: 'Taxi',
-    filters: ['node["amenity"="taxi"]'],
-    radius: 3000, osmLabel: 'Taxistand',
-    providers: [
-      { icon: '🟡', name: 'Uber', sub: 'Ride-Sharing', url: 'https://www.uber.com/' },
-      { icon: '🟢', name: 'Bolt', sub: 'Günstige Fahrten', url: 'https://bolt.eu/de/rides/' },
-    ],
   },
 ];
 
