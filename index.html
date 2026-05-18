@@ -3328,11 +3328,12 @@ function renderBuchen(geo) {
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
 
-  const catBtns = BUCHEN_CATS.map(c => `
-    <button class="tcat-btn${c.id === activeBuchenCat ? ' active' : ''}" id="bcat-${c.id}" onclick="selectBuchenCat('${c.id}')">
-      <span class="tcat-icon">${c.icon}</span>
-      ${c.label}
-    </button>`).join('');
+  const activeCat = BUCHEN_CATS.find(c => c.id === activeBuchenCat) || BUCHEN_CATS[0];
+  const catBtns = `<button class="filter-picker-btn" onclick="openBuchenFilterSheet()" style="width:100%;margin-bottom:10px;">
+    <span>${activeCat.icon}</span>
+    <span>${activeCat.label}</span>
+    <span class="fp-chevron">▼</span>
+  </button>`;
 
   const q = activeBuchenCat === 'alle'
     ? esc(city)
@@ -3349,24 +3350,29 @@ function renderBuchen(geo) {
   </div>`;
 
   document.getElementById('panel-buchen').innerHTML = `
-  <div class="transport-cats">${catBtns}</div>
+  ${catBtns}
   <p class="section-title" style="margin-top:4px;">🎟️ Aktivitäten in ${esc(city)}</p>
   <div id="gygTabWidget">${gygWidget}</div>`;
 
   loadGYGScript();
 }
 
+function openBuchenFilterSheet() {
+  openFilterSheet('Kategorie wählen', BUCHEN_CATS, activeBuchenCat, () => 0, id => selectBuchenCat(id));
+}
+
 function selectBuchenCat(catId) {
   activeBuchenCat = catId;
-  document.querySelectorAll('[id^="bcat-"]').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById(`bcat-${catId}`);
-  if (btn) btn.classList.add('active');
 
   const city = currentCity;
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
   const cat = BUCHEN_CATS.find(c => c.id === catId);
   const q = catId === 'alle' ? esc(city) : `${esc(city)} ${cat.q}`;
+
+  // Button-Text aktualisieren
+  const btn = document.querySelector('#panel-buchen .filter-picker-btn');
+  if (btn && cat) btn.innerHTML = `<span>${cat.icon}</span><span>${cat.label}</span><span class="fp-chevron">▼</span>`;
 
   document.getElementById('gygTabWidget').innerHTML = `
   <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
