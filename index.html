@@ -1643,6 +1643,33 @@ function googleIcon(types) {
 // ══════════════════════════════════════════════════════════
 //  OVERPASS API (OpenStreetMap — kostenlos, kein Key)
 // ══════════════════════════════════════════════════════════
+async function searchOverpassCombined(lat, lng, radius = 5000) {
+  const a = `(around:${radius},${lat},${lng})`;
+  const query = `[out:json][timeout:60];
+(
+  node["amenity"~"restaurant|cafe|fast_food|bakery|bar|pub|biergarten|nightclub|theatre|cinema"]${a};
+  way["amenity"~"restaurant|cafe|fast_food|bakery|bar|pub|biergarten|nightclub"]${a};
+  node["tourism"~"museum|attraction|gallery|viewpoint|zoo"]${a};
+  way["tourism"~"museum|attraction|gallery|viewpoint|zoo"]${a};
+  node["historic"]${a};
+  node["leisure"~"zoo|park|nature_reserve|garden"]${a};
+  way["leisure"~"zoo|nature_reserve|garden"]${a};
+);
+out center 150;`;
+  let lastErr;
+  for (const mirror of OVERPASS_MIRRORS) {
+    try {
+      const res = await fetch(mirror, {
+        method: 'POST', body: 'data=' + encodeURIComponent(query),
+        signal: AbortSignal.timeout(65000),
+      });
+      if (!res.ok) continue;
+      return (await res.json()).elements || [];
+    } catch(e) { lastErr = e; }
+  }
+  throw new Error('OpenStreetMap nicht erreichbar.');
+}
+
 const OVERPASS_MIRRORS = [
   'https://overpass-api.de/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter',
@@ -1949,11 +1976,11 @@ async function searchCity() {
     } else {
       setLoading(true, 'Lade Orte aus OpenStreetMap…');
       source = 'OpenStreetMap';
-      const [er, tr, kr] = await Promise.all([
-        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"restaurant|cafe|fast_food|bakery"]','way["amenity"~"restaurant|cafe|fast_food|bakery"]'], 5000, CONFIG.resultsPerCategory),
-        searchOverpass(geo.lat, geo.lng, ['node["amenity"~"bar|pub|biergarten|nightclub"]','way["amenity"~"bar|pub|biergarten|nightclub"]'], 5000, CONFIG.resultsPerCategory),
-        searchOverpass(geo.lat, geo.lng, ['node["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','way["tourism"~"museum|attraction|gallery|viewpoint|zoo"]','node["historic"]','node["amenity"~"theatre|cinema"]','node["leisure"~"zoo|park|nature_reserve|garden"]','way["leisure"~"zoo|nature_reserve"]'], 8000, CONFIG.resultsPerCategory),
-      ]);
+      // Alles in EINER Anfrage statt 3 parallelen → kein Rate-Limiting
+      const osmAll = await searchOverpassCombined(geo.lat, geo.lng);
+      const er = osmAll.filter(e => ['restaurant','cafe','fast_food','bakery'].includes(e.tags?.amenity));
+      const tr = osmAll.filter(e => ['bar','pub','biergarten','nightclub'].includes(e.tags?.amenity));
+      const kr = osmAll.filter(e => e.tags?.tourism || e.tags?.historic || ['theatre','cinema'].includes(e.tags?.amenity) || ['zoo','park','nature_reserve','garden'].includes(e.tags?.leisure));
       essenPlaces   = er.map(normOverpassPlace);
       trinkenPlaces = tr.map(normOverpassPlace);
       kulturPlaces  = kr.map(normOverpassPlace);
