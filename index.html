@@ -3278,16 +3278,14 @@ function renderTransport(geo) {
     </button>`).join('');
 
   document.getElementById('panel-transport').innerHTML = `
-  <button class="ticket-info-btn" onclick="openTicketSheet()">
-    <span class="tib-icon">🎫</span>
-    Tickets &amp; Preise für ${esc(geo.displayName)}
-    <span style="margin-left:auto; opacity:.7;">›</span>
-  </button>
-  <button class="ticket-info-btn" onclick="openTransitNetworkMap()" style="margin-top:8px;">
-    <span class="tib-icon">🗺️</span>
-    Liniennetz anzeigen (Metro, Bus, Tram …)
-    <span style="margin-left:auto; opacity:.7;">›</span>
-  </button>
+  <div style="display:flex;gap:8px;margin-bottom:10px;">
+    <button class="filter-picker-btn" onclick="openTicketSheet()">
+      <span>🎫</span><span>Tickets &amp; Preise</span><span class="fp-chevron">▼</span>
+    </button>
+    <button class="filter-picker-btn" onclick="openTransitNetworkMap()">
+      <span>🗺️</span><span>Liniennetz</span><span class="fp-chevron">▼</span>
+    </button>
+  </div>
   <div class="transport-cats">${catBtns}</div>
   <div id="transportMap"></div>
   <p class="section-title" id="stopTitle">⬆️ Kategorie wählen</p>
