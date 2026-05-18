@@ -1350,6 +1350,7 @@
       </div>
       <button id="searchBtn" onclick="searchCity()">Suchen</button>
       <button id="locBtn" onclick="useMyLocation()" title="Meinen Standort verwenden" style="background:var(--bg3);border:1.5px solid var(--border);border-radius:9px;padding:0 9px;font-size:16px;cursor:pointer;flex-shrink:0;transition:border-color .2s;height:34px;" onmouseenter="this.style.borderColor='var(--gold)'" onmouseleave="this.style.borderColor='var(--border)'">📍</button>
+      <button onclick="clearPlacesCache()" title="Cache leeren" style="background:var(--bg3);border:1.5px solid var(--border);border-radius:9px;padding:0 9px;font-size:16px;cursor:pointer;flex-shrink:0;transition:border-color .2s;height:34px;" onmouseenter="this.style.borderColor='var(--gold)'" onmouseleave="this.style.borderColor='var(--border)'">🗑️</button>
     </div>
   </header>
 
@@ -1642,17 +1643,28 @@ function googleIcon(types) {
 // ══════════════════════════════════════════════════════════
 //  OVERPASS API (OpenStreetMap — kostenlos, kein Key)
 // ══════════════════════════════════════════════════════════
+const OVERPASS_MIRRORS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+];
 async function searchOverpass(lat, lng, filters, radius = 2500, limit = CONFIG.resultsPerCategory) {
   const around = `(around:${radius},${lat},${lng})`;
   const parts = filters.map(f => `${f}${around};`).join('\n');
-  const query = `[out:json][timeout:30];\n(\n${parts}\n);\nout center ${limit};`;
-  const res = await fetch('https://overpass-api.de/api/interpreter', {
-    method: 'POST',
-    body: 'data=' + encodeURIComponent(query),
-  });
-  if (!res.ok) throw new Error('OpenStreetMap nicht erreichbar. Bitte versuche es erneut.');
-  const data = await res.json();
-  return (data.elements || []).filter(el => el.tags && el.tags.name);
+  const query = `[out:json][timeout:60];\n(\n${parts}\n);\nout center ${limit};`;
+  let lastErr;
+  for (const mirror of OVERPASS_MIRRORS) {
+    try {
+      const res = await fetch(mirror, {
+        method: 'POST',
+        body: 'data=' + encodeURIComponent(query),
+        signal: AbortSignal.timeout(65000),
+      });
+      if (!res.ok) continue;
+      return (await res.json()).elements || [];
+    } catch(e) { lastErr = e; }
+  }
+  throw new Error('OpenStreetMap nicht erreichbar. Bitte versuche es erneut.');
 }
 
 function normOverpassPlace(el) {
@@ -3658,6 +3670,12 @@ function setApiBadge(type, text) {
   _toastTimer = setTimeout(() => el.classList.remove('show'), 6000);
   // Antippen blendet es sofort aus
   el.onclick = () => { el.classList.remove('show'); clearTimeout(_toastTimer); };
+}
+
+function clearPlacesCache() {
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('cg_places_'));
+  keys.forEach(k => localStorage.removeItem(k));
+  alert(`✅ Cache geleert (${keys.length} Stadt/Städte). Bitte neu suchen.`);
 }
 
 function setLoading(show, text = 'Suche…') {
