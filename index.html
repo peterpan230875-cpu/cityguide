@@ -569,6 +569,9 @@
         transform: scale(0.5);
         width: calc(100% / 0.5);
       }
+      /* Transport top buttons: hide icons + smaller font on mobile */
+      .transport-top-btn { font-size: 12px; }
+      .transport-top-icon { display: none; }
     }
 
     /* ── No Results ── */
@@ -3326,11 +3329,11 @@ function renderTransport(geo) {
 
   document.getElementById('panel-transport').innerHTML = `
   <div style="display:flex;gap:8px;margin-bottom:10px;">
-    <button class="filter-picker-btn" onclick="openTicketSheet()" style="font-size:12px;">
-      <span>Tickets &amp; Preise</span><span class="fp-chevron">▼</span>
+    <button class="filter-picker-btn transport-top-btn" onclick="openTicketSheet()">
+      <span class="transport-top-icon">🎫</span><span>Tickets &amp; Preise</span><span class="fp-chevron">▼</span>
     </button>
-    <button class="filter-picker-btn" onclick="openTransitNetworkMap()" style="font-size:12px;">
-      <span>Liniennetz</span><span class="fp-chevron">▼</span>
+    <button class="filter-picker-btn transport-top-btn" onclick="openTransitNetworkMap()">
+      <span class="transport-top-icon">🗺️</span><span>Liniennetz</span><span class="fp-chevron">▼</span>
     </button>
   </div>
   <div class="transport-cats">${catBtns}</div>
