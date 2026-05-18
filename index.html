@@ -1170,9 +1170,9 @@
     }
 
     /* Auf Desktop: cards-grid deaktivieren (nur Mobile-Grid-Klasse, kein Effekt auf Desktop) */
+    #desktopNav { display: none !important; }
     @media (min-width: 768px) {
       .cards-grid { display: block; }
-      #desktopNav { display: none !important; }
     }
 
   </style>
@@ -3417,9 +3417,8 @@ function switchTab(tab) {
 
 function showResults() {
   setLoading(false);
-  // Desktop-Nav einblenden (CSS zeigt sie nur auf ≥768px)
-  const dn = document.getElementById('desktopNav');
-  if (dn) dn.style.display = '';
+  // Desktop-Nav bleibt versteckt — nur Bottom-Nav wird verwendet
+
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   // tabsRow removed — navigation via bottom nav only
