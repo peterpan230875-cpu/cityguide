@@ -567,7 +567,7 @@
     .nav-btn.active .nav-label { color: var(--gold2); }
     .tmode-btn { background:var(--bg3);border:1.5px solid var(--border);color:var(--text);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .2s; }
     .tmode-btn.active,.tmode-btn:hover { background:var(--gold);border-color:var(--gold);color:#000;font-weight:600; }
-    .filter-picker-btn { display:flex;align-items:center;gap:8px;background:var(--bg3);border:1.5px solid var(--gold);border-radius:12px;padding:8px 12px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;min-width:0; }
+    .filter-picker-btn { display:flex;align-items:center;gap:8px;background:var(--bg3);border:1.5px solid var(--gold);border-radius:12px;padding:8px 12px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;min-width:0;flex:1;width:0; }
     .filter-picker-btn .fp-chevron { margin-left:auto;font-size:11px;opacity:.7; }
     .filter-sheet-item { display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:12px;cursor:pointer;transition:background .15s;border:1.5px solid transparent; }
     .filter-sheet-item:active { background:var(--bg3); }
@@ -2894,7 +2894,7 @@ const SORT_OPTS = [
 
 function sortPickerBtn(activeSort, openFn) {
   const active = SORT_OPTS.find(o => o.id === activeSort) || SORT_OPTS[0];
-  return `<button class="filter-picker-btn" onclick="${openFn}()" style="flex:1;">
+  return `<button class="filter-picker-btn" onclick="${openFn}()">
     <span>${active.icon}</span>
     <span>${active.label}</span>
     <span class="fp-chevron">▼</span>
