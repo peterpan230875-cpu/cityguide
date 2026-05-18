@@ -563,6 +563,13 @@
       width: calc(100% / 0.78);
       overflow: hidden;
     }
+    /* Mobile: render widget at double width → 2 columns, then scale to 50% */
+    @media (max-width: 640px) {
+      .gyg-scale-wrap {
+        transform: scale(0.5);
+        width: calc(100% / 0.5);
+      }
+    }
 
     /* ── No Results ── */
     .no-results {
@@ -3378,7 +3385,7 @@ function renderBuchen(geo) {
   const gygWidget = `<div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
        data-gyg-locale-code="de-DE"
        data-gyg-widget="activities"
-       data-gyg-number-of-items="12"
+       data-gyg-number-of-items="20"
        data-gyg-currency="EUR"
        ${pidAttr}
        data-gyg-q="${q}"></div>`;
@@ -3412,7 +3419,7 @@ function selectBuchenCat(catId) {
     `<div class="gyg-scale-wrap"><div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
        data-gyg-locale-code="de-DE"
        data-gyg-widget="activities"
-       data-gyg-number-of-items="12"
+       data-gyg-number-of-items="20"
        data-gyg-currency="EUR"
        ${pidAttr}
        data-gyg-q="${q}"></div></div>`;
