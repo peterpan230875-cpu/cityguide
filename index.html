@@ -3087,16 +3087,10 @@ function renderEssen(places) {
   } else {
     filtered = sortPlaces(places, activeEssenSort);
   }
-  const insiderNote = activeEssenFilter === 'insider'
-    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Hoch bewertet (≥4.2★), wenig bekannt. Wo Einheimische hingehen.</div>`
-    : activeEssenFilter === 'lokal'
-    ? `<div class="ticket-tip" style="margin-bottom:12px;">🏠 <strong>Lokal & Traditionell</strong> — Keine internationalen Ketten. Echte lokale Küche.</div>`
-    : '';
   const essenCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return 0; };
   const pickerHtml = filterPickerHtml(activeEssenFilter, ESSEN_FILTERS, 'Essen filtern', essenCountFn, 'openEssenFilterSheet');
   el.innerHTML = pickerHtml
     + sortBarHtml(activeEssenSort, 'setSortEssen')
-    + insiderNote
     + (filtered.length
         ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
@@ -3113,14 +3107,11 @@ function renderTrinken(places) {
   } else {
     filtered = sortPlaces(applyFilter(places, activeTrinkenFilter, TRINKEN_TYPE_MAP), activeTrinkenSort);
   }
-  const insiderNote = activeTrinkenFilter === 'insider'
-    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Echte Einheimischen-Kneipen, hoch bewertet aber kein Touristenstrom.</div>`
-    : '';
   const trinkenCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(places,id,TRINKEN_TYPE_MAP).length; };
   const pickerHtml = filterPickerHtml(activeTrinkenFilter, TRINKEN_FILTERS, 'Trinken filtern', trinkenCountFn, 'openTrinkenFilterSheet');
   el.innerHTML = pickerHtml
     + sortBarHtml(activeTrinkenSort, 'setSortTrinken')
-    + insiderNote
+
     + (filtered.length
         ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
@@ -3141,14 +3132,11 @@ function renderKultur(places) {
   } else {
     filtered = sortPlaces(applyFilter(places, activeKulturFilter, KULTUR_TYPE_MAP), activeKulturSort);
   }
-  const insiderNote = activeKulturFilter === 'insider'
-    ? `<div class="ticket-tip" style="margin-bottom:12px;">🔍 <strong>Geheimtipps</strong> — Besondere Orte abseits der Touristenpfade, von Einheimischen empfohlen.</div>`
-    : '';
   const kulturCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(places,id,KULTUR_TYPE_MAP).length; };
   const pickerHtml = filterPickerHtml(activeKulturFilter, KULTUR_FILTERS, 'Kultur filtern', kulturCountFn, 'openKulturFilterSheet');
   el.innerHTML = pickerHtml
     + sortBarHtml(activeKulturSort, 'setSortKultur')
-    + insiderNote
+
     + (filtered.length
         ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
