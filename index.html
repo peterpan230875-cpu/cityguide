@@ -3582,11 +3582,9 @@ function switchTab(tab) {
 
 function showResults() {
   setLoading(false);
-  // Desktop-Nav bleibt versteckt — nur Bottom-Nav wird verwendet
-
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('results').style.display = 'block';
-  // tabsRow removed — navigation via bottom nav only
+  document.getElementById('cityHero').style.display = 'block';
   switchTab('essen');
 }
 
