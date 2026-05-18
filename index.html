@@ -464,6 +464,14 @@
       color: var(--gold2);
       border: 1px solid rgba(245,158,11,.25);
     }
+    .btn-book-disabled {
+      background: transparent;
+      color: var(--text3);
+      border: 1px solid var(--border);
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
 
     /* ── Transport Panel ── */
     .transport-card {
@@ -2925,6 +2933,13 @@ function dirLink(lat, lng, label) {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=transit`;
 }
 
+// Typen bei denen GYG wahrscheinlich etwas zu buchen hat
+function isBookable(p) {
+  const bookableTypes = ['museum','art_gallery','tourist_attraction','zoo','aquarium',
+    'amusement_park','theatre','stadium','bowling_alley','casino','spa'];
+  return (p.types || []).some(t => bookableTypes.includes(t));
+}
+
 function renderPlaceCard(p, includeBook = false, insider = false) {
   const gygUrl = gygLink(currentCity, p.name);
   const fav = isFav(p);
@@ -2953,7 +2968,11 @@ function renderPlaceCard(p, includeBook = false, insider = false) {
     <div class="place-actions">
       <button onclick="openInAppMap(${lat},${lng},'${nameE}')" class="btn btn-nav">📍 Google Maps</button>
       <button onclick="openInAppTransit(${lat},${lng},'${nameE}')" class="btn btn-maps">🚇 ÖPNV-Route</button>
-      ${includeBook ? `<a href="${gygUrl}" target="_blank" class="btn btn-book">🎟️ Buchen</a>` : ''}
+      ${includeBook
+        ? isBookable(p)
+          ? `<a href="${gygUrl}" target="_blank" class="btn btn-book">🎟️ Buchen</a>`
+          : `<span class="btn btn-book-disabled">🎟️ Buchen</span>`
+        : ''}
     </div>
   </div>`;
 }
