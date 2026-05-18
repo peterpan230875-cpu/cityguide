@@ -3366,15 +3366,14 @@ function renderBuchen(geo) {
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
 
-  const chips = BUCHEN_CATS.map(c =>
-    `<button class="buchen-chip${activeBuchenCat===c.id?' active':''}" onclick="selectBuchenCat('${c.id}')">
-      <span>${c.icon}</span><span>${c.label}</span>
-    </button>`
-  ).join('');
+  const activeCat = BUCHEN_CATS.find(c => c.id === activeBuchenCat) || BUCHEN_CATS[0];
+  const pickerHtml = `<button class="filter-picker-btn" onclick="openBuchenFilterSheet()">
+    <span>${activeCat.icon}</span><span>${activeCat.label}</span><span class="fp-chevron">▼</span>
+  </button>`;
 
   const q = activeBuchenCat === 'alle'
     ? esc(city)
-    : `${esc(city)} ${BUCHEN_CATS.find(c => c.id === activeBuchenCat).q}`;
+    : `${esc(city)} ${activeCat.q}`;
 
   const gygWidget = `<div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
        data-gyg-locale-code="de-DE"
@@ -3385,7 +3384,7 @@ function renderBuchen(geo) {
        data-gyg-q="${q}"></div>`;
 
   document.getElementById('panel-buchen').innerHTML = `
-  <div class="buchen-chips">${chips}</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}</div>
   <p class="section-title" style="margin-top:0;">🎟️ Aktivitäten in ${esc(city)}</p>
   <div id="gygTabWidget"><div class="gyg-scale-wrap">${gygWidget}</div></div>`;
 
@@ -3398,16 +3397,15 @@ function openBuchenFilterSheet() {
 
 function selectBuchenCat(catId) {
   activeBuchenCat = catId;
+  const cat = BUCHEN_CATS.find(c => c.id === catId);
 
-  // Chips aktualisieren
-  document.querySelectorAll('.buchen-chip').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${catId}'`));
-  });
+  // Filter-Knopf-Text aktualisieren
+  const btn = document.querySelector('#panel-buchen .filter-picker-btn');
+  if (btn && cat) btn.innerHTML = `<span>${cat.icon}</span><span>${cat.label}</span><span class="fp-chevron">▼</span>`;
 
   const city = currentCity;
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
-  const cat = BUCHEN_CATS.find(c => c.id === catId);
   const q = catId === 'alle' ? esc(city) : `${esc(city)} ${cat.q}`;
 
   document.getElementById('gygTabWidget').innerHTML =
