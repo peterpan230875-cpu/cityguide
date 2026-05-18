@@ -1758,67 +1758,74 @@ async function searchCity() {
       setLoading(true, 'Lade Orte mit Bewertungen…');
       source = 'Google';
 
-      // ── Cache: gleiche Stadt nicht nochmal laden ──
+      // ── Cache: gleiche Stadt 24h nicht nochmal laden ──
       const cacheKey = 'cg_places_' + geo.displayName.toLowerCase().replace(/\s+/g,'_');
-      const cached = sessionStorage.getItem(cacheKey);
-      if (cached) {
-        const cd = JSON.parse(cached);
-        essenPlaces  = cd.essenPlaces;  essenPools   = cd.essenPools;
-        trinkenPlaces= cd.trinkenPlaces; trinkenPools = cd.trinkenPools;
-        kulturPlaces = cd.kulturPlaces; kulturPools  = cd.kulturPools;
-        statePlaces  = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
-        renderEssen(essenPlaces); renderTrinken(trinkenPlaces); renderKultur(kulturPlaces);
-        renderTransport(geo); renderBuchen(geo); showResults();
-        setLoading(false);
-        return;
-      }
+      try {
+        const raw = localStorage.getItem(cacheKey);
+        if (raw) {
+          const cd = JSON.parse(raw);
+          if (cd._ts && Date.now() - cd._ts < 86400000) { // 24h
+            essenPlaces  = cd.essenPlaces;  essenPools   = cd.essenPools;
+            trinkenPlaces= cd.trinkenPlaces; trinkenPools = cd.trinkenPools;
+            kulturPlaces = cd.kulturPlaces; kulturPools  = cd.kulturPools;
+            statePlaces  = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
+            renderEssen(essenPlaces); renderTrinken(trinkenPlaces); renderKultur(kulturPlaces);
+            renderTransport(geo); renderBuchen(geo); showResults();
+            setLoading(false);
+            return;
+          }
+        }
+      } catch(e) {}
 
       const tag = (t) => (r) => r.map(p => (p._tag = p._tag || t, p));
-      const [erRestaurant, erFastfood, erBuffet, erKantine, tr, kr] = await Promise.all([
-        // Normale Restaurants (lokal, günstig, normal, gehoben, geheimtipp, alle)
+      // 13 Calls statt 19 — Duplikate & redundante Suchen entfernt
+      const [erRestaurant, erFastfood, trBar, trNight, krZooRaw, krAquariumRaw, krAmusementRaw, krSehenRaw, krMuseumRaw, krNaturRaw, erCafeRaw] = await Promise.all([
+        // [1] Restaurants + Cafés + Bäckereien
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'restaurant').then(tag('restaurant')),
-          searchGooglePlaces(geo.lat, geo.lng, 'cafe').then(tag('cafe')),
           searchGooglePlaces(geo.lat, geo.lng, 'bakery').then(tag('bakery')),
-          searchGooglePlaces(geo.lat, geo.lng, null, 10000, 'restaurant').then(tag('restaurant')),
-        ]).then(([a,b,c,d]) => [...a,...b,...c,...d]),
-        // Fast Food & Ketten — eigene Suche
+        ]).then(([a,b]) => [...a,...b]),
+        // [2+3] Fast Food & Takeaway
         Promise.all([
           searchGooglePlaces(geo.lat, geo.lng, 'fast_food').then(tag('fast_food')),
           searchGooglePlaces(geo.lat, geo.lng, 'meal_takeaway').then(tag('meal_takeaway')),
         ]).then(([a,b]) => [...a,...b]),
-        // Buffet — eigene Suche
-        searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 10000, 'buffet').then(tag('buffet')),
-        // Kantine — eigene Suche
-        searchGooglePlaces(geo.lat, geo.lng, 'restaurant', 8000, 'kantine mensa canteen').then(tag('kantine')),
+        // [4] Bar (Trinken)
+        searchGooglePlaces(geo.lat, geo.lng, 'bar'),
+        // [5] Nachtclub
+        searchGooglePlaces(geo.lat, geo.lng, 'night_club'),
+        // [6] Zoo
+        searchGooglePlaces(geo.lat, geo.lng, 'zoo', 50000),
+        // [7] Aquarium
+        searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 40000),
+        // [8] Freizeitpark
+        searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 35000),
+        // [9] Sehenswürdigkeiten
+        searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
+        // [10+11] Museum & Kunstgalerie zusammen
         Promise.all([
-          searchGooglePlaces(geo.lat, geo.lng, 'bar'),
-          searchGooglePlaces(geo.lat, geo.lng, 'cafe'),
-          searchGooglePlaces(geo.lat, geo.lng, 'night_club'),
-        ]).then(r => r),
-        Promise.all([
-          searchGooglePlaces(geo.lat, geo.lng, 'zoo', 50000),
-          searchGooglePlaces(geo.lat, geo.lng, 'aquarium', 40000),
-          searchGooglePlaces(geo.lat, geo.lng, 'amusement_park', 35000),
-          searchGooglePlaces(geo.lat, geo.lng, 'tourist_attraction'),
           searchGooglePlaces(geo.lat, geo.lng, 'museum'),
           searchGooglePlaces(geo.lat, geo.lng, 'art_gallery'),
-          searchGooglePlaces(geo.lat, geo.lng, 'park', 15000),
-          searchGooglePlaces(geo.lat, geo.lng, 'church', 5000),
-        ]).then(r => r),
+        ]).then(([a,b]) => [...a,...b]),
+        // [12] Parks & Natur
+        searchGooglePlaces(geo.lat, geo.lng, 'park', 15000),
+        // [13] Café — einmal laden, für Essen UND Trinken verwenden
+        searchGooglePlaces(geo.lat, geo.lng, 'cafe').then(tag('cafe')),
       ]);
-      // Deduplicate by place_id, then limit
+      // Deduplicate by place_id
       const dedup = arr => {
         const seen = new Set();
         return arr.filter(p => { if (seen.has(p.place_id)) return false; seen.add(p.place_id); return true; });
       };
+      // erCafeRaw einmal laden → für Essen UND Trinken wiederverwenden
+      const erCafe = erCafeRaw;
+
       // Essen: separate Pools pro Kategorie
-      const allRestaurants = dedup(erRestaurant).map(normGooglePlace);
+      const allRestaurants = dedup([...erRestaurant, ...erCafe]).map(normGooglePlace);
       const ffNorm = dedup(erFastfood).map(normGooglePlace);
-      const buffetNorm = dedup([...erBuffet, ...erKantine]).map(normGooglePlace);
       essenPools = {
         fastfood:  ffNorm,
-        buffet:    buffetNorm,
+        buffet:    allRestaurants.filter(p => (p.name||'').toLowerCase().includes('buffet')),
         lokal:     allRestaurants.filter(p => !isChain(p)),
         guenstig:  allRestaurants.filter(p => p.priceLevel !== null && p.priceLevel <= 1),
         normal:    allRestaurants.filter(p => p.priceLevel === 2),
@@ -1826,42 +1833,45 @@ async function searchCity() {
         insider:   allRestaurants.filter(p => p.rating >= 4.2 && p.ratingCount < 300),
       };
       essenPlaces = allRestaurants;
-      // Trinken: separate pools pro Kategorie
+
+      // Trinken: Café-Daten wiederverwenden (kein extra API-Call)
       const PUB_KW = ['pub','kneipe','wirtshaus','beisl','gasthaus','tavern','taverna','inn','brauhaus','pinte','bodega'];
       const isPub = p => PUB_KW.some(k => (p.name||'').toLowerCase().includes(k));
-      const [trBar, trCafe, trNight] = tr;
       trinkenPools = {
         pub:   dedup(trBar.filter(isPub)).map(normGooglePlace),
         bar:   dedup(trBar.filter(p => !isPub(p))).map(normGooglePlace),
-        cafe:  dedup(trCafe).map(normGooglePlace),
+        cafe:  dedup(erCafe).map(normGooglePlace),
         nacht: dedup(trNight).map(normGooglePlace),
       };
-      trinkenPlaces = dedup([...trBar, ...trCafe, ...trNight]).map(normGooglePlace);
-      // Kultur: separate pools per category so zoo can never be displaced
-      const [krZoo, krAquarium, krAmusement, krSehens, krMuseum, krGallery, krNatur, krHistorisch] = kr;
+      trinkenPlaces = dedup([...trBar, ...erCafe, ...trNight]).map(normGooglePlace);
+
+      // Kultur: separate pools
       const kulturPools = {
-        zoo:        dedup([...krZoo, ...krAquarium])
+        zoo:        dedup([...krZooRaw, ...krAquariumRaw])
                       .filter(p => {
                         const types = p.types || [];
                         const name = (p.name || '').toLowerCase();
                         const ratings = p.user_ratings_total || 0;
-                        // Nur echte Zoos/Aquarien: muss zoo oder aquarium als Google-Type haben
                         const isRealZoo = types.includes('zoo') || types.includes('aquarium');
                         if (!isRealZoo) return false;
-                        // Einzelne Tiergehege / Tiere ausschließen (haben zwar zoo-type, sind aber sub-attractions)
                         const animalKw = ['löwe','tiger','elefant','giraffe','pinguin','gorilla','orang','schimpanse','zebra','nashorn','nilpferd','krokodil','schlange','papagei','erdmännchen','flamingo','gepard','leopard','wolf','bär','panda','koala','känguru','gehege','enclosure','paddock','streichelzoo','streichel'];
                         if (animalKw.some(k => name.includes(k))) return false;
-                        // Mindestanzahl Bewertungen: echte Zoos haben viele, Tiergehege kaum
                         return ratings >= 50;
                       })
                       .map(normGooglePlace),
-        museum:     dedup([...krMuseum, ...krGallery]).map(normGooglePlace),
-        sehens:     dedup(krSehens).map(normGooglePlace),
-        natur:        dedup(krNatur).map(normGooglePlace),
-        freizeitpark: dedup(krAmusement).map(normGooglePlace),
-        historisch:   dedup(krHistorisch).map(normGooglePlace),
+        museum:     dedup(krMuseumRaw).map(normGooglePlace),
+        sehens:     dedup(krSehenRaw).map(normGooglePlace),
+        natur:      dedup(krNaturRaw).map(normGooglePlace),
+        freizeitpark: dedup(krAmusementRaw).map(normGooglePlace),
+        // Historisch aus tourist_attraction filtern (Keyword-Match)
+        historisch: dedup(krSehenRaw.filter(p => {
+          const t = (p.types||[]);
+          const n = (p.name||'').toLowerCase();
+          return t.includes('church')||t.includes('castle')||t.includes('monument')||
+                 ['kirche','dom','schloss','burg','palast','denkmal','monument','cathedral','palace'].some(k=>n.includes(k));
+        })).map(normGooglePlace),
       };
-      kulturPlaces = dedup([...krZoo,...krAquarium,...krAmusement,...krSehens,...krMuseum,...krGallery,...krNatur,...krHistorisch]).map(normGooglePlace);
+      kulturPlaces = dedup([...krZooRaw,...krAquariumRaw,...krAmusementRaw,...krSehenRaw,...krMuseumRaw,...krNaturRaw]).map(normGooglePlace);
       // Fallback falls Key gesperrt (z.B. localhost)
       if (!essenPlaces.length)   essenPlaces   = getDemoData(currentCity, 'essen');
       if (!trinkenPlaces.length) trinkenPlaces  = getDemoData(currentCity, 'trinken');
@@ -1894,12 +1904,13 @@ async function searchCity() {
     if (source === 'Google') {
       try {
         const cacheKey = 'cg_places_' + geo.displayName.toLowerCase().replace(/\s+/g,'_');
-        sessionStorage.setItem(cacheKey, JSON.stringify({
+        localStorage.setItem(cacheKey, JSON.stringify({
+          _ts: Date.now(),
           essenPlaces, essenPools: essenPools||{},
           trinkenPlaces, trinkenPools: trinkenPools||{},
           kulturPlaces, kulturPools: kulturPools||{}
         }));
-      } catch(e) { /* sessionStorage voll – kein Problem */ }
+      } catch(e) { /* localStorage voll – kein Problem */ }
     }
 
     // 3. Render
