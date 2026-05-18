@@ -1655,7 +1655,7 @@ async function searchOverpassCombined(lat, lng, radius = 5000) {
   node["leisure"~"zoo|park|nature_reserve|garden"]${a};
   way["leisure"~"zoo|nature_reserve|garden"]${a};
 );
-out center 150;`;
+out center 300;`;
   let lastErr;
   for (const mirror of OVERPASS_MIRRORS) {
     try {
