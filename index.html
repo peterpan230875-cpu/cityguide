@@ -1774,23 +1774,25 @@ async function searchCity() {
       const cacheKey = 'cg_places_' + geo.displayName.toLowerCase().replace(/\s+/g,'_');
       try {
         const raw = localStorage.getItem(cacheKey);
+        console.log('[Cache] Suche:', cacheKey, raw ? Math.round(raw.length/1024)+'KB gefunden' : 'nicht vorhanden');
         if (raw) {
           const cd = JSON.parse(raw);
           if (cd._ts && Date.now() - cd._ts < 86400000) { // 24h
-            essenPlaces  = cd.essenPlaces;  essenPools   = cd.essenPools;
-            trinkenPlaces= cd.trinkenPlaces; trinkenPools = cd.trinkenPools;
-            kulturPlaces = cd.kulturPlaces; kulturPools  = cd.kulturPools;
-            statePlaces  = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
+            essenPlaces   = cd.essenPlaces   || [];
+            trinkenPlaces = cd.trinkenPlaces || [];
+            kulturPlaces  = cd.kulturPlaces  || [];
+            statePlaces   = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
             renderEssen(essenPlaces); renderTrinken(trinkenPlaces); renderKultur(kulturPlaces);
             renderTransport(geo); renderBuchen(geo); showResults();
-            // Badge: Cache-Treffer
             const remaining = Math.round((86400000 - (Date.now() - cd._ts)) / 3600000);
             setApiBadge('cached', `💾 Cache · ${remaining}h gültig · 0 API-Calls`);
             setLoading(false);
             return;
+          } else {
+            console.log('[Cache] Abgelaufen, lade neu');
           }
         }
-      } catch(e) {}
+      } catch(e) { console.warn('[Cache] Ladefehler:', e.message); }
       apiCallCount = 0; // Zähler zurücksetzen vor neuer Suche
 
       const tag = (t) => (r) => r.map(p => (p._tag = p._tag || t, p));
@@ -1916,17 +1918,18 @@ async function searchCity() {
     if (leafletMap) { leafletMap.remove(); leafletMap = null; }
     statePlaces = { essen: essenPlaces, essenPools: essenPools || {}, trinken: trinkenPlaces, trinkenPools: trinkenPools || {}, kultur: kulturPlaces, kulturPools: kulturPools || {} };
 
-    // ── Cache speichern (nur Google-Daten, für diese Browser-Session) ──
+    // ── Cache speichern (nur Google-Daten) ──
     if (source === 'Google') {
       try {
         const cacheKey = 'cg_places_' + geo.displayName.toLowerCase().replace(/\s+/g,'_');
-        localStorage.setItem(cacheKey, JSON.stringify({
-          _ts: Date.now(),
-          essenPlaces, essenPools: essenPools||{},
-          trinkenPlaces, trinkenPools: trinkenPools||{},
-          kulturPlaces, kulturPools: kulturPools||{}
-        }));
-      } catch(e) { /* localStorage voll – kein Problem */ }
+        // Nur die 3 Haupt-Arrays speichern (Pools werden beim Laden neu berechnet)
+        const payload = JSON.stringify({ _ts: Date.now(), essenPlaces, trinkenPlaces, kulturPlaces });
+        localStorage.setItem(cacheKey, payload);
+        console.log('[Cache] Gespeichert:', cacheKey, Math.round(payload.length/1024) + 'KB');
+      } catch(e) {
+        console.warn('[Cache] Speichern fehlgeschlagen:', e.message);
+        setApiBadge('warn', `⚠️ Cache-Fehler: ${e.message}`);
+      }
     }
 
     // 3. Render
