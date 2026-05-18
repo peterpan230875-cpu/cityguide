@@ -524,6 +524,46 @@
     .gyg-cat-btn:hover { border-color: rgba(245,158,11,.4); }
     .gyg-cat-btn .cat-icon { font-size: 20px; }
 
+    /* ── Buchen Category Chips ── */
+    .buchen-chips {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .buchen-chips::-webkit-scrollbar { display: none; }
+    .buchen-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color .2s, color .2s;
+      flex-shrink: 0;
+    }
+    .buchen-chip.active {
+      border-color: var(--gold);
+      color: var(--gold2);
+      background: rgba(245,158,11,.1);
+    }
+    /* Scale-wrapper so the GYG widget cards appear smaller */
+    .gyg-scale-wrap {
+      transform-origin: top left;
+      transform: scale(0.78);
+      width: calc(100% / 0.78);
+      overflow: hidden;
+    }
+
     /* ── No Results ── */
     .no-results {
       text-align: center;
@@ -3326,31 +3366,28 @@ function renderBuchen(geo) {
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
 
-  const activeCat = BUCHEN_CATS.find(c => c.id === activeBuchenCat) || BUCHEN_CATS[0];
-  const catBtns = `<button class="filter-picker-btn" onclick="openBuchenFilterSheet()" style="width:100%;margin-bottom:10px;">
-    <span>${activeCat.icon}</span>
-    <span>${activeCat.label}</span>
-    <span class="fp-chevron">▼</span>
-  </button>`;
+  const chips = BUCHEN_CATS.map(c =>
+    `<button class="buchen-chip${activeBuchenCat===c.id?' active':''}" onclick="selectBuchenCat('${c.id}')">
+      <span>${c.icon}</span><span>${c.label}</span>
+    </button>`
+  ).join('');
 
   const q = activeBuchenCat === 'alle'
     ? esc(city)
     : `${esc(city)} ${BUCHEN_CATS.find(c => c.id === activeBuchenCat).q}`;
 
-  const gygWidget = `
-  <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+  const gygWidget = `<div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
        data-gyg-locale-code="de-DE"
        data-gyg-widget="activities"
-       data-gyg-number-of-items="8"
+       data-gyg-number-of-items="12"
        data-gyg-currency="EUR"
        ${pidAttr}
-       data-gyg-q="${q}">
-  </div>`;
+       data-gyg-q="${q}"></div>`;
 
   document.getElementById('panel-buchen').innerHTML = `
-  ${catBtns}
-  <p class="section-title" style="margin-top:4px;">🎟️ Aktivitäten in ${esc(city)}</p>
-  <div id="gygTabWidget">${gygWidget}</div>`;
+  <div class="buchen-chips">${chips}</div>
+  <p class="section-title" style="margin-top:0;">🎟️ Aktivitäten in ${esc(city)}</p>
+  <div id="gygTabWidget"><div class="gyg-scale-wrap">${gygWidget}</div></div>`;
 
   loadGYGScript();
 }
@@ -3362,25 +3399,25 @@ function openBuchenFilterSheet() {
 function selectBuchenCat(catId) {
   activeBuchenCat = catId;
 
+  // Chips aktualisieren
+  document.querySelectorAll('.buchen-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${catId}'`));
+  });
+
   const city = currentCity;
   const pid = CONFIG.getYourGuidePartnerId;
   const pidAttr = pid ? `data-gyg-partner-id="${pid}"` : '';
   const cat = BUCHEN_CATS.find(c => c.id === catId);
   const q = catId === 'alle' ? esc(city) : `${esc(city)} ${cat.q}`;
 
-  // Button-Text aktualisieren
-  const btn = document.querySelector('#panel-buchen .filter-picker-btn');
-  if (btn && cat) btn.innerHTML = `<span>${cat.icon}</span><span>${cat.label}</span><span class="fp-chevron">▼</span>`;
-
-  document.getElementById('gygTabWidget').innerHTML = `
-  <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+  document.getElementById('gygTabWidget').innerHTML =
+    `<div class="gyg-scale-wrap"><div data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
        data-gyg-locale-code="de-DE"
        data-gyg-widget="activities"
-       data-gyg-number-of-items="8"
+       data-gyg-number-of-items="12"
        data-gyg-currency="EUR"
        ${pidAttr}
-       data-gyg-q="${q}">
-  </div>`;
+       data-gyg-q="${q}"></div></div>`;
   loadGYGScript();
 }
 
