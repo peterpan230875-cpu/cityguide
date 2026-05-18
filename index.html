@@ -565,7 +565,7 @@
     .nav-btn.active .nav-label { color: var(--gold2); }
     .tmode-btn { background:var(--bg3);border:1.5px solid var(--border);color:var(--text);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .2s; }
     .tmode-btn.active,.tmode-btn:hover { background:var(--gold);border-color:var(--gold);color:#000;font-weight:600; }
-    .filter-picker-btn { display:flex;align-items:center;gap:8px;background:var(--bg3);border:1.5px solid var(--gold);border-radius:12px;padding:8px 14px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;width:100%;margin-bottom:10px; }
+    .filter-picker-btn { display:flex;align-items:center;gap:8px;background:var(--bg3);border:1.5px solid var(--gold);border-radius:12px;padding:8px 12px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;min-width:0; }
     .filter-picker-btn .fp-chevron { margin-left:auto;font-size:11px;opacity:.7; }
     .filter-sheet-item { display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:12px;cursor:pointer;transition:background .15s;border:1.5px solid transparent; }
     .filter-sheet-item:active { background:var(--bg3); }
@@ -2862,16 +2862,37 @@ function sortPlaces(places, sort) {
   });
 }
 
-function sortBarHtml(active, setFn) {
-  const opts = [
-    { id:'rating', label:'⭐ Bewertung' },
-    { id:'count',  label:'📊 Anzahl' },
-    { id:'alpha',  label:'🔤 A–Z' },
-    { id:'price',  label:'💰 Preis' },
-  ];
-  return `<div style="display:flex;gap:6px;flex-wrap:wrap;padding:4px 0 8px 0;">${opts.map(o =>
-    `<button onclick="${setFn}('${o.id}')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid ${active===o.id?'var(--gold)':'rgba(255,255,255,.15)'};background:${active===o.id?'rgba(251,191,36,.15)':'transparent'};color:${active===o.id?'var(--gold)':'var(--text2)'};cursor:pointer;">${o.label}</button>`
-  ).join('')}</div>`;
+const SORT_OPTS = [
+  { id:'rating', icon:'⭐', label:'Bewertung' },
+  { id:'count',  icon:'📊', label:'Anzahl' },
+  { id:'alpha',  icon:'🔤', label:'A–Z' },
+  { id:'price',  icon:'💰', label:'Preis' },
+];
+
+function sortPickerBtn(activeSort, openFn) {
+  const active = SORT_OPTS.find(o => o.id === activeSort) || SORT_OPTS[0];
+  return `<button class="filter-picker-btn" onclick="${openFn}()" style="flex:1;">
+    <span>${active.icon}</span>
+    <span>${active.label}</span>
+    <span class="fp-chevron">▼</span>
+  </button>`;
+}
+
+function openSortSheet(activeSort, setFn) {
+  document.getElementById('filterSheetTitle').textContent = 'Sortierung';
+  const list = document.getElementById('filterSheetList');
+  list.innerHTML = SORT_OPTS.map(o => `
+    <div class="filter-sheet-item${o.id === activeSort ? ' active' : ''}" onclick="pickFilter('${o.id}')">
+      <span class="fsi-icon">${o.icon}</span>
+      <span class="fsi-label">${o.label}</span>
+    </div>`).join('');
+  _filterSheetCallback = id => { window[setFn](id); };
+  document.getElementById('filterSheet').style.display = 'block';
+  document.getElementById('filterSheetBackdrop').style.display = 'block';
+}
+
+function sortBarHtml(activeSort, setFn, openFn) {
+  return sortPickerBtn(activeSort, openFn);
 }
 
 function isInsider(p) {
@@ -3089,8 +3110,8 @@ function renderEssen(places) {
   }
   const essenCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return 0; };
   const pickerHtml = filterPickerHtml(activeEssenFilter, ESSEN_FILTERS, 'Essen filtern', essenCountFn, 'openEssenFilterSheet');
-  el.innerHTML = pickerHtml
-    + sortBarHtml(activeEssenSort, 'setSortEssen')
+  const sortHtml = sortPickerBtn(activeEssenSort, 'openEssenSortSheet');
+  el.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}${sortHtml}</div>`
     + (filtered.length
         ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
@@ -3109,8 +3130,8 @@ function renderTrinken(places) {
   }
   const trinkenCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(places,id,TRINKEN_TYPE_MAP).length; };
   const pickerHtml = filterPickerHtml(activeTrinkenFilter, TRINKEN_FILTERS, 'Trinken filtern', trinkenCountFn, 'openTrinkenFilterSheet');
-  el.innerHTML = pickerHtml
-    + sortBarHtml(activeTrinkenSort, 'setSortTrinken')
+  const sortHtml = sortPickerBtn(activeTrinkenSort, 'openTrinkenSortSheet');
+  el.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}${sortHtml}</div>`
 
     + (filtered.length
         ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('') + '</div>'
@@ -3134,8 +3155,8 @@ function renderKultur(places) {
   }
   const kulturCountFn = id => { if(id==='alle') return places.length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(places,id,KULTUR_TYPE_MAP).length; };
   const pickerHtml = filterPickerHtml(activeKulturFilter, KULTUR_FILTERS, 'Kultur filtern', kulturCountFn, 'openKulturFilterSheet');
-  el.innerHTML = pickerHtml
-    + sortBarHtml(activeKulturSort, 'setSortKultur')
+  const sortHtml = sortPickerBtn(activeKulturSort, 'openKulturSortSheet');
+  el.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}${sortHtml}</div>`
 
     + (filtered.length
         ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('') + '</div>'
@@ -3160,6 +3181,9 @@ function openKulturFilterSheet() {
   const countFn = id => { if(id==='alle') return (statePlaces.kultur||[]).length; if(poolFilters.includes(id)&&pools[id]) return pools[id].length; return applyFilter(statePlaces.kultur||[],id,KULTUR_TYPE_MAP).length; };
   openFilterSheet('Kategorie wählen', KULTUR_FILTERS, activeKulturFilter, countFn, id => setKulturFilter(id));
 }
+function openEssenSortSheet()   { openSortSheet(activeEssenSort,   'setSortEssen'); }
+function openTrinkenSortSheet() { openSortSheet(activeTrinkenSort, 'setSortTrinken'); }
+function openKulturSortSheet()  { openSortSheet(activeKulturSort,  'setSortKultur'); }
 function setEssenFilter(f)   { activeEssenFilter   = f; renderEssen(statePlaces.essen); }
 function setSortEssen(s)     { activeEssenSort     = s; renderEssen(statePlaces.essen); }
 function setSortTrinken(s)   { activeTrinkenSort   = s; renderTrinken(statePlaces.trinken); }
