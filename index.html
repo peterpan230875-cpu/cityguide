@@ -1516,7 +1516,7 @@ function loadGoogleMaps() {
   });
 }
 
-function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null, pages = 3) {
+function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null, pages = 1) {
   return new Promise((resolve) => {
     const allResults = [];
     const timer = setTimeout(() => resolve(allResults), 25000);
@@ -1757,6 +1757,22 @@ async function searchCity() {
     if (gmLoaded) {
       setLoading(true, 'Lade Orte mit Bewertungen…');
       source = 'Google';
+
+      // ── Cache: gleiche Stadt nicht nochmal laden ──
+      const cacheKey = 'cg_places_' + geo.displayName.toLowerCase().replace(/\s+/g,'_');
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        const cd = JSON.parse(cached);
+        essenPlaces  = cd.essenPlaces;  essenPools   = cd.essenPools;
+        trinkenPlaces= cd.trinkenPlaces; trinkenPools = cd.trinkenPools;
+        kulturPlaces = cd.kulturPlaces; kulturPools  = cd.kulturPools;
+        statePlaces  = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
+        renderEssen(essenPlaces); renderTrinken(trinkenPlaces); renderKultur(kulturPlaces);
+        renderTransport(geo); renderBuchen(geo); showResults();
+        setLoading(false);
+        return;
+      }
+
       const tag = (t) => (r) => r.map(p => (p._tag = p._tag || t, p));
       const [erRestaurant, erFastfood, erBuffet, erKantine, tr, kr] = await Promise.all([
         // Normale Restaurants (lokal, günstig, normal, gehoben, geheimtipp, alle)
@@ -1873,6 +1889,18 @@ async function searchCity() {
     transportMapReady = false;
     if (leafletMap) { leafletMap.remove(); leafletMap = null; }
     statePlaces = { essen: essenPlaces, essenPools: essenPools || {}, trinken: trinkenPlaces, trinkenPools: trinkenPools || {}, kultur: kulturPlaces, kulturPools: kulturPools || {} };
+
+    // ── Cache speichern (nur Google-Daten, für diese Browser-Session) ──
+    if (source === 'Google') {
+      try {
+        const cacheKey = 'cg_places_' + geo.displayName.toLowerCase().replace(/\s+/g,'_');
+        sessionStorage.setItem(cacheKey, JSON.stringify({
+          essenPlaces, essenPools: essenPools||{},
+          trinkenPlaces, trinkenPools: trinkenPools||{},
+          kulturPlaces, kulturPools: kulturPools||{}
+        }));
+      } catch(e) { /* sessionStorage voll – kein Problem */ }
+    }
 
     // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
