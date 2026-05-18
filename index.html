@@ -296,9 +296,9 @@
     /* ── API Toast ── */
     #apiToast {
       position: fixed;
-      bottom: 80px;
+      top: 70px;
       left: 50%;
-      transform: translateX(-50%) translateY(20px);
+      transform: translateX(-50%) translateY(-20px);
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -330,7 +330,7 @@
     #apiToast .toast-dot.cached { background: #93c5fd; }
     #apiToast .toast-dot.warn   { background: var(--gold2); }
     @media (min-width: 768px) {
-      #apiToast { bottom: 24px; }
+      #apiToast { top: 80px; }
     }
 
     /* ── Place Cards ── */
@@ -3633,7 +3633,7 @@ function setApiBadge(type, text) {
   el.innerHTML = `<span class="toast-dot ${type}"></span>${text}`;
   el.classList.add('show');
   // nach 4 Sekunden automatisch ausblenden
-  _toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 6000);
   // Antippen blendet es sofort aus
   el.onclick = () => { el.classList.remove('show'); clearTimeout(_toastTimer); };
 }
