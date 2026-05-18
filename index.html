@@ -2940,11 +2940,22 @@ function isBookable(p) {
   return (p.types || []).some(t => bookableTypes.includes(t));
 }
 
-function renderPlaceCard(p, includeBook = false, insider = false) {
-  const gygUrl = gygLink(currentCity, p.name);
+function renderPlaceCard(p, context = 'kultur', insider = false) {
   const fav = isFav(p);
   const pJson = esc(JSON.stringify(p));
   const lat = p.lat, lng = p.lng, nameE = esc(p.name).replace(/'/g,"&#39;");
+
+  // Buttons je nach Tab
+  let actions = '';
+  if (context === 'essen' || context === 'trinken') {
+    // Nur kleiner Route-Button
+    actions = `<button onclick="openInAppTransit(${lat},${lng},'${nameE}')" class="btn btn-maps" style="font-size:11px;padding:6px 10px;">🚇 Route</button>`;
+  } else {
+    // Kultur: beide Buttons
+    actions = `
+      <button onclick="openInAppMap(${lat},${lng},'${nameE}')" class="btn btn-nav">📍 Google Maps</button>
+      <button onclick="openInAppTransit(${lat},${lng},'${nameE}')" class="btn btn-maps">🚇 ÖPNV-Route</button>`;
+  }
 
   return `
   <div class="place-card fade-in" id="card-${favKey(p).replace(/[^a-z0-9]/g,'_')}">
@@ -2965,15 +2976,7 @@ function renderPlaceCard(p, includeBook = false, insider = false) {
       </div>
       <button onclick='handleFavToggle(${pJson})' style="background:none;border:none;cursor:pointer;font-size:20px;line-height:1;flex-shrink:0;padding:0 0 0 6px;align-self:flex-start;" title="Favorit">${fav ? '❤️' : '🤍'}</button>
     </div>
-    <div class="place-actions">
-      <button onclick="openInAppMap(${lat},${lng},'${nameE}')" class="btn btn-nav">📍 Google Maps</button>
-      <button onclick="openInAppTransit(${lat},${lng},'${nameE}')" class="btn btn-maps">🚇 ÖPNV-Route</button>
-      ${includeBook
-        ? isBookable(p)
-          ? `<a href="${gygUrl}" target="_blank" class="btn btn-book">🎟️ Buchen</a>`
-          : `<span class="btn btn-book-disabled">🎟️ Buchen</span>`
-        : ''}
-    </div>
+    <div class="place-actions">${actions}</div>
   </div>`;
 }
 
@@ -3296,7 +3299,7 @@ function renderEssen(places) {
   const sortHtml = sortPickerBtn(activeEssenSort, 'openEssenSortSheet');
   el.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}${sortHtml}</div>`
     + (filtered.length
-        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, activeEssenFilter === 'insider')).join('') + '</div>'
+        ? `<p class="section-title">🍽️ Restaurants & Cafés (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, 'essen', activeEssenFilter === 'insider')).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
@@ -3317,7 +3320,7 @@ function renderTrinken(places) {
   el.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}${sortHtml}</div>`
 
     + (filtered.length
-        ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, false, isInsider(p))).join('') + '</div>'
+        ? `<p class="section-title">🍺 Bars & Drinks (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, 'trinken', isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
@@ -3342,7 +3345,7 @@ function renderKultur(places) {
   el.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:10px;">${pickerHtml}${sortHtml}</div>`
 
     + (filtered.length
-        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, true, isInsider(p))).join('') + '</div>'
+        ? `<p class="section-title">🏛️ Sehenswürdigkeiten (${filtered.length})</p><div class="cards-grid">` + filtered.map(p => renderPlaceCard(p, 'kultur', isInsider(p))).join('') + '</div>'
         : noResults('Keine Treffer für diesen Filter.'));
 }
 
