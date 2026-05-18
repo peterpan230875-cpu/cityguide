@@ -293,6 +293,15 @@
     .city-hero-inner .icon { font-size: 32px; }
     .city-name { font-size: 20px; font-weight: 700; }
     .city-meta { font-size: 13px; color: var(--text2); margin-top: 2px; }
+    .api-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600;
+      padding: 3px 8px; border-radius: 20px; margin-top: 5px;
+      cursor: pointer;
+    }
+    .api-badge.fresh  { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+    .api-badge.cached { background: rgba(96,165,250,.15); color: #93c5fd; border: 1px solid rgba(96,165,250,.3); }
+    .api-badge.warn   { background: rgba(251,191,36,.15); color: var(--gold2); border: 1px solid rgba(251,191,36,.3); }
 
     /* ── Place Cards ── */
     #results { display: none; }
@@ -1347,6 +1356,7 @@
         <div>
           <div class="city-name" id="heroCity">—</div>
           <div class="city-meta" id="heroCityMeta">Ergebnisse geladen</div>
+          <div id="apiBadge" style="display:none;"></div>
         </div>
       </div>
     </div>
@@ -1495,6 +1505,7 @@ async function geocodeCity(cityName) {
 // ══════════════════════════════════════════════════════════
 let googleLoaded = false;
 let placesService = null;
+let apiCallCount = 0; // Zähler für Google Places Calls pro Suche
 
 function loadGoogleMaps() {
   const key = CONFIG.googlePlacesApiKey;
@@ -1531,6 +1542,7 @@ function searchGooglePlaces(lat, lng, type, radius = 10000, keyword = null, page
       if (keyword) req.keyword = keyword;
 
       function handlePage(results, status, pagination) {
+        apiCallCount++; // jeden nearbySearch-Aufruf zählen
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           allResults.push(...results);
         }
@@ -1771,11 +1783,15 @@ async function searchCity() {
             statePlaces  = { essen: essenPlaces, trinken: trinkenPlaces, kultur: kulturPlaces };
             renderEssen(essenPlaces); renderTrinken(trinkenPlaces); renderKultur(kulturPlaces);
             renderTransport(geo); renderBuchen(geo); showResults();
+            // Badge: Cache-Treffer
+            const remaining = Math.round((86400000 - (Date.now() - cd._ts)) / 3600000);
+            setApiBadge('cached', `💾 Cache · ${remaining}h gültig · 0 API-Calls`);
             setLoading(false);
             return;
           }
         }
       } catch(e) {}
+      apiCallCount = 0; // Zähler zurücksetzen vor neuer Suche
 
       const tag = (t) => (r) => r.map(p => (p._tag = p._tag || t, p));
       // 13 Calls statt 19 — Duplikate & redundante Suchen entfernt
@@ -1916,6 +1932,13 @@ async function searchCity() {
     // 3. Render
     const total = essenPlaces.length + trinkenPlaces.length + kulturPlaces.length;
     document.getElementById('heroCityMeta').textContent = `${total} Orte · ${source}`;
+    if (source === 'Google') {
+      const warn = apiCallCount > 15;
+      setApiBadge(warn ? 'warn' : 'fresh',
+        `🌐 ${apiCallCount} API-Calls · frisch geladen`);
+    } else {
+      setApiBadge('cached', '🗺️ OpenStreetMap · kostenlos · 0 API-Calls');
+    }
     document.getElementById('osmBanner').style.display = gmLoaded ? 'none' : 'flex';
 
     renderEssen(essenPlaces);
@@ -3565,6 +3588,13 @@ function showResults() {
   document.getElementById('results').style.display = 'block';
   // tabsRow removed — navigation via bottom nav only
   switchTab('essen');
+}
+
+function setApiBadge(type, text) {
+  const el = document.getElementById('apiBadge');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = `<span class="api-badge ${type}" title="Klicken zum Ausblenden" onclick="this.parentElement.style.display='none'">${text}</span>`;
 }
 
 function setLoading(show, text = 'Suche…') {
