@@ -3189,23 +3189,56 @@ async function loadGtfsMap(basePath) {
   const { stops, stopRoutes, routeByName } = _gtfsData;
 
   const typeColor = { 0:'#FB8C00', 1:'#E53935', 2:'#43A047', 3:'#1E88E5', 4:'#00ACC1', 11:'#8E24AA', 12:'#8E24AA' };
+  const typeLabel = { 0:'🚋 Tram', 1:'🚇 U-Bahn', 2:'🚆 S-Bahn', 3:'🚌 Bus', 4:'⛴️ Fähre', 11:'🚡 Seilbahn', 12:'🚝 Monorail' };
 
+  // Stops mit Typ speichern für Filter
+  const _stopsByType = {};
   stops.forEach(s => {
     const lines = stopRoutes[s.id] || [];
     if (!lines.length) return;
-    // Farbe: wichtigste Linie bestimmt Farbe
-    let color = '#888';
+    let color = '#888', stopType = 3;
     for (const name of lines) {
       const r = routeByName[name];
-      if (r) { color = typeColor[r.type] || r.color || '#888'; break; }
+      if (r) { color = typeColor[r.type] ?? r.color ?? '#888'; stopType = r.type; break; }
     }
     const circle = L.circleMarker([s.lat, s.lng], {
       radius: 7, color: '#fff', weight: 1.5,
       fillColor: color, fillOpacity: 0.9,
     });
+    circle._stopType = stopType;
     circle.on('click', () => showGtfsStopDetail(s, lines));
     circle.addTo(_gtfsStopLayer);
+    if (!_stopsByType[stopType]) _stopsByType[stopType] = [];
+    _stopsByType[stopType].push(circle);
   });
+
+  // Filter-Bar über der Karte einfügen
+  const usedTypes = Object.keys(_stopsByType).map(Number).sort();
+  if (usedTypes.length > 1) {
+    const bar = document.createElement('div');
+    bar.id = 'gtfsFilterBar';
+    bar.style.cssText = 'position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:all;';
+    const activeTypes = new Set(usedTypes);
+    usedTypes.forEach(t => {
+      const btn = document.createElement('button');
+      btn.textContent = typeLabel[t] || `Typ ${t}`;
+      btn.style.cssText = `background:${typeColor[t]||'#888'};color:#fff;border:none;border-radius:20px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.4);opacity:1;transition:opacity .2s;`;
+      btn.onclick = () => {
+        if (activeTypes.has(t)) {
+          activeTypes.delete(t);
+          btn.style.opacity = '0.35';
+          (_stopsByType[t]||[]).forEach(c => c.setStyle({ opacity:0, fillOpacity:0 }));
+        } else {
+          activeTypes.add(t);
+          btn.style.opacity = '1';
+          (_stopsByType[t]||[]).forEach(c => c.setStyle({ opacity:1, fillOpacity:0.9 }));
+        }
+      };
+      bar.appendChild(btn);
+    });
+    document.getElementById('transitNetMap').style.position = 'relative';
+    document.getElementById('transitNetMap').appendChild(bar);
+  }
 
 }
 
