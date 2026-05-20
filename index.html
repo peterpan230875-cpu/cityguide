@@ -3085,6 +3085,8 @@ out body ${250};`;
 let _gtfsData = null;
 let _gtfsRouteLayer = null;
 let _gtfsStopLayer  = null;
+let _gtfsStopsByType = {};
+let _gtfsActiveTypes = new Set();
 
 async function loadGtfsMap(basePath) {
   document.getElementById('mapModalTitle').textContent = '🚇 Liniennetz ' + currentCity;
@@ -3192,7 +3194,8 @@ async function loadGtfsMap(basePath) {
   const typeLabel = { 0:'🚋 Tram', 1:'🚇 U-Bahn', 2:'🚆 S-Bahn', 3:'🚌 Bus', 4:'⛴️ Fähre', 11:'🚡 Seilbahn', 12:'🚝 Monorail' };
 
   // Stops mit Typ speichern für Filter
-  const _stopsByType = {};
+  _gtfsStopsByType = {};
+  const _stopsByType = _gtfsStopsByType;
   stops.forEach(s => {
     const lines = stopRoutes[s.id] || [];
     if (!lines.length) return;
@@ -3218,7 +3221,8 @@ async function loadGtfsMap(basePath) {
     const bar = document.createElement('div');
     bar.id = 'gtfsFilterBar';
     bar.style.cssText = 'position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:all;';
-    const activeTypes = new Set(usedTypes);
+    _gtfsActiveTypes = new Set(usedTypes);
+    const activeTypes = _gtfsActiveTypes;
     usedTypes.forEach(t => {
       const btn = document.createElement('button');
       btn.textContent = typeLabel[t] || `Typ ${t}`;
@@ -3288,8 +3292,8 @@ function drawGtfsRoute(routeId, routeName) {
   const typeLineColor = { 0:'#FFD700', 1:'#E53935', 2:'#E53935', 3:'#1E88E5', 4:'#1E88E5', 11:'#FFD700', 12:'#E53935' };
   const color = r ? (typeLineColor[r.type] || '#FFD700') : '#FFD700';
   L.polyline(shape, { color, weight: 5, opacity: 0.95 }).addTo(_gtfsRouteLayer);
-  // Stops ausblenden während Route angezeigt wird
-  if (_gtfsStopLayer) _gtfsStopLayer.eachLayer(l => l.setStyle({ opacity: 0, fillOpacity: 0 }));
+  // Stops ausblenden während Route angezeigt wird (nur sichtbare)
+  if (_gtfsStopLayer) _gtfsStopLayer.eachLayer(l => { if (l.options.fillOpacity > 0) l.setStyle({ opacity: 0, fillOpacity: 0 }); });
   // Karte auf Route zoomen
   const poly = L.polyline(shape);
   window._transitMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
@@ -3297,8 +3301,11 @@ function drawGtfsRoute(routeId, routeName) {
 
 function clearGtfsRoute() {
   if (_gtfsRouteLayer) _gtfsRouteLayer.clearLayers();
-  // Stops wieder einblenden
-  if (_gtfsStopLayer) _gtfsStopLayer.eachLayer(l => l.setStyle({ opacity: 1, fillOpacity: 0.9 }));
+  // Stops wieder einblenden — nur die aktuell aktiven Filter-Typen
+  Object.entries(_gtfsStopsByType).forEach(([type, circles]) => {
+    const visible = _gtfsActiveTypes.has(Number(type));
+    circles.forEach(c => c.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 }));
+  });
 }
 
 function closeMapModal() {
