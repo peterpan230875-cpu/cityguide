@@ -153,6 +153,25 @@ for sid, sname in LC07A_STOPS:
 
 print(f'LC07A: {len(shape_pts)}/89 stops with coords')
 
+# For the SHAPE, use only OSM-confirmed stops (not manually guessed ones)
+# Manual stops go into stops.json but must NOT distort the route shape
+OSM_CONFIRMED = {
+    '11599','14639','11600','11601','11595','11222','12613','12420','11225',
+    '11230','11231','11232','11111','11113','10095','10097','10099','10101',
+    '10103','10105','10107','10110','10112','10113','10114','11810','10116',
+    '10118','10119','10120','10121','10123','10124','10125','10127','10128',
+    '10129','10131','13822','10134','10135','10502','10503','10504','10505',
+    '10321','10323','10148','10324','10785','10378','10545','10546','10547',
+    '12197','10629','10302','13007',
+}
+shape_pts_confirmed = []
+for sid, sname in LC07A_STOPS:
+    if sid not in OSM_CONFIRMED: continue
+    coords = osm_by_id.get(sid)
+    if coords:
+        shape_pts_confirmed.append([coords[0], coords[1]])
+print(f'Shape uses {len(shape_pts_confirmed)} OSM-confirmed stops only')
+
 # Add route
 routes_list.append({'id': 'BUS-LC07A', 'name': 'LC07A', 'color': '#C0CA33', 'type': 3})
 
@@ -170,8 +189,8 @@ def osrm_route_chunk(pts):
 print('Routing via OSRM...')
 routed = []
 i = 0
-while i < len(shape_pts) - 1:
-    chunk = shape_pts[i:i+10]
+while i < len(shape_pts_confirmed) - 1:
+    chunk = shape_pts_confirmed[i:i+10]
     if len(chunk) < 2: break
     try:
         r = osrm_route_chunk(chunk)
@@ -186,7 +205,7 @@ while i < len(shape_pts) - 1:
     time.sleep(0.15)
 
 shapes['BUS-LC07A'] = routed
-print(f'  {len(shape_pts)} -> {len(routed)} pts')
+print(f'  {len(shape_pts_confirmed)} confirmed stops -> {len(routed)} pts')
 
 # ---- Save ----
 with open('stops.json', 'w', encoding='utf-8') as f:
