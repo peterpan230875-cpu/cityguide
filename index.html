@@ -261,6 +261,11 @@
       animation: spin .8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes locationPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(255,107,0,0.6); }
+      70%  { box-shadow: 0 0 0 12px rgba(255,107,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,107,0,0); }
+    }
     #loading p { color: var(--text2); font-size: 15px; }
 
     /* ── Error Banner ── */
@@ -3149,11 +3154,31 @@ async function loadGtfsMap(basePath) {
     attribution: '', maxZoom: 19, opacity: 0.8,
   }).addTo(map);
 
-  // Eigener Standort
-  if (userGpsLat && userGpsLng) {
-    L.marker([userGpsLat, userGpsLng], {
-      icon: L.divIcon({ className:'', html:'<div style="font-size:22px;">📍</div>', iconAnchor:[11,22] })
-    }).addTo(map).bindPopup('Dein Standort');
+  // Eigener Standort — pulsierender Marker
+  let _locationMarker = null;
+  function setLocationMarker(lat, lng) {
+    const html = `<div style="
+      width:16px;height:16px;border-radius:50%;
+      background:#FF6B00;border:2.5px solid #fff;
+      box-shadow:0 0 0 0 rgba(255,107,0,0.6);
+      animation:locationPulse 1.6s ease-out infinite;
+      position:relative;
+    "></div>`;
+    const icon = L.divIcon({ className:'', html, iconSize:[16,16], iconAnchor:[8,8] });
+    if (_locationMarker) {
+      _locationMarker.setLatLng([lat, lng]);
+    } else {
+      _locationMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 })
+        .addTo(map).bindPopup('Dein Standort');
+    }
+  }
+  if (userGpsLat && userGpsLng) setLocationMarker(userGpsLat, userGpsLng);
+  // Live-GPS verfolgen
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(
+      pos => setLocationMarker(pos.coords.latitude, pos.coords.longitude),
+      null, { enableHighAccuracy: true, maximumAge: 5000 }
+    );
   }
 
   // Routen-Layer (wird bei Klick befüllt)
