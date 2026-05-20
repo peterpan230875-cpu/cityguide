@@ -1,0 +1,6798 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-05-06T03:25:00Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 1235780719,
+  "lat": 36.8678297,
+  "lon": 30.6377249,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "check_date:shelter": "2022-11-23",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10168",
+    "public_transport": "platform",
+    "ref": "10168",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 2325819697,
+  "lat": 36.8880475,
+  "lon": 30.7237289,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10443",
+    "public_transport": "platform",
+    "ref": "10443"
+  }
+},
+{
+  "type": "node",
+  "id": 3166350930,
+  "lat": 36.8921428,
+  "lon": 30.6987499,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Yener Ulusoy Bulvarı-1",
+    "name:en": "10151",
+    "public_transport": "platform",
+    "ref": "10151",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3836492717,
+  "lat": 36.8869449,
+  "lon": 30.7312915,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "14240 Meydan",
+    "name:ru": "Площадь",
+    "name:tr": "14240 Meydan",
+    "public_transport": "platform",
+    "ref": "14240",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3836925438,
+  "lat": 36.8837734,
+  "lon": 30.6579250,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10160 - Lunapark",
+    "name:en": "Lunapark",
+    "public_transport": "platform",
+    "ref": "10160",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3836927042,
+  "lat": 36.8834721,
+  "lon": 30.6583685,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10023 - Migros",
+    "name:en": "10022 5M Migros",
+    "public_transport": "platform",
+    "ref": "10023",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3837583572,
+  "lat": 36.8867172,
+  "lon": 30.7023675,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Cumhuriyet Meydanı",
+    "name:en": "KL08",
+    "name:ru": "- KL08, TC16",
+    "public_transport": "platform",
+    "ref": "10035",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3837655320,
+  "lat": 36.8551504,
+  "lon": 30.7794321,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "check_date:shelter": "2025-07-12",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "10107 - Barınaklar Bulvarı",
+    "public_transport": "platform",
+    "ref": "10107",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4197577293,
+  "lat": 36.8812921,
+  "lon": 30.6616720,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Antalya Aquarium",
+    "name:tr": "Dumlupınar Bulvarı (ANTALYA AQUARIUM)",
+    "public_transport": "platform",
+    "ref": "10534",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4197577294,
+  "lat": 36.8755460,
+  "lon": 30.6433652,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10165",
+    "public_transport": "platform",
+    "ref": "10165",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4197582589,
+  "lat": 36.8534384,
+  "lon": 30.6180413,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Atatürk Bulvarı-29",
+    "public_transport": "platform",
+    "ref": "10175",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4197582689,
+  "lat": 36.8488727,
+  "lon": 30.6131070,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Blv-31",
+    "name:en": "Ataturk Blv-31",
+    "public_transport": "platform",
+    "ref": "10177",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4331031489,
+  "lat": 36.8788341,
+  "lon": 30.7245358,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "10460",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4394770177,
+  "lat": 36.8559934,
+  "lon": 30.7471608,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10121 - Medical park hastanesi",
+    "name:en": "10121- Medical park hospital",
+    "public_transport": "platform",
+    "ref": "10121",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4394770188,
+  "lat": 36.8531789,
+  "lon": 30.7512859,
+  "tags": {
+    "addr:neighbourhood": "Fener Mah.",
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10119 Tekelioğlu-9",
+    "name:ru": "10119 Текелиоглу-9 - KL08,",
+    "public_transport": "platform",
+    "ref": "10119",
+    "shelter": "yes",
+    "tactile_paving": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4394770190,
+  "lat": 36.8523721,
+  "lon": 30.7550986,
+  "tags": {
+    "addr:neighbourhood": "Fener Mah.",
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "departures_board": "no",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10118 Terracity-1",
+    "operator": "Antalya Büyükşehir Belediyesi",
+    "public_transport": "platform",
+    "ref": "10118",
+    "shelter": "yes",
+    "tactile_paving": "incorrect"
+  }
+},
+{
+  "type": "node",
+  "id": 4394788682,
+  "lat": 36.8593832,
+  "lon": 30.8219417,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Yaşar Sobutay Blv-39",
+    "network": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "11111"
+  }
+},
+{
+  "type": "node",
+  "id": 4421289622,
+  "lat": 36.8484194,
+  "lon": 30.6132052,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Blv-1",
+    "name:en": "Ataturk Blv-1",
+    "public_transport": "platform",
+    "ref": "10006",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295508,
+  "lat": 36.8837101,
+  "lon": 30.7091199,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "check_date:shelter": "2025-07-12",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "10039",
+    "public_transport": "platform",
+    "ref": "10039",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295511,
+  "lat": 36.8798298,
+  "lon": 30.7089797,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "İşiklar 2",
+    "public_transport": "platform",
+    "ref": "10041",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295513,
+  "lat": 36.8753860,
+  "lon": 30.7122180,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "İşiklar 2",
+    "public_transport": "platform",
+    "ref": "10043",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295515,
+  "lat": 36.8771593,
+  "lon": 30.7136907,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10138",
+    "public_transport": "platform",
+    "ref": "10138",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295520,
+  "lat": 36.8737849,
+  "lon": 30.7172179,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10136",
+    "public_transport": "platform",
+    "ref": "10136",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295522,
+  "lat": 36.8726484,
+  "lon": 30.7186049,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Çiçek Cami 2",
+    "public_transport": "platform",
+    "ref": "10045"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295523,
+  "lat": 36.8712397,
+  "lon": 30.7194448,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10135",
+    "public_transport": "platform",
+    "ref": "10135",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295524,
+  "lat": 36.8714553,
+  "lon": 30.7189421,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Şampı Kavşagı",
+    "public_transport": "platform",
+    "ref": "10045"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295525,
+  "lat": 36.8692339,
+  "lon": 30.7210688,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10134 M. Kasapoğlu 7",
+    "public_transport": "platform",
+    "ref": "10134",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295529,
+  "lat": 36.8655608,
+  "lon": 30.7272235,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10131",
+    "public_transport": "platform",
+    "ref": "10131",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295530,
+  "lat": 36.8625019,
+  "lon": 30.7302855,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10129 İsmet Gökşen Durağı",
+    "name:en": "10129 Dedeman",
+    "public_transport": "platform",
+    "ref": "10129"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295532,
+  "lat": 36.8603048,
+  "lon": 30.7317203,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10055",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295537,
+  "lat": 36.8586962,
+  "lon": 30.7383706,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "İsmet Gökşen 5",
+    "public_transport": "platform",
+    "ref": "10058"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295538,
+  "lat": 36.8586615,
+  "lon": 30.7411728,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "İsmet Gökşen 9",
+    "public_transport": "platform",
+    "ref": "10124",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295540,
+  "lat": 36.8584794,
+  "lon": 30.7442273,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10123",
+    "public_transport": "platform",
+    "ref": "10123",
+    "shelter": "yes",
+    "tactile_paving": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295541,
+  "lat": 36.8583061,
+  "lon": 30.7437635,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10060",
+    "shelter": "yes",
+    "tactile_paving": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295544,
+  "lat": 36.8517578,
+  "lon": 30.7589431,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10116 Muratpasa Belediyesi",
+    "public_transport": "platform",
+    "ref": "10116",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295546,
+  "lat": 36.8517708,
+  "lon": 30.7630902,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "11810-Barınaklar Bulvarı",
+    "public_transport": "platform",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295552,
+  "lat": 36.8522885,
+  "lon": 30.7716279,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10071",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4428295553,
+  "lat": 36.8523291,
+  "lon": 30.7713345,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Barınaklar-17",
+    "public_transport": "platform",
+    "ref": "10112",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4601682081,
+  "lat": 36.8650195,
+  "lon": 30.6432373,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10539"
+  }
+},
+{
+  "type": "node",
+  "id": 4890701723,
+  "lat": 36.8884247,
+  "lon": 30.6814019,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10026 - 100 Yıl Bulvarı-5",
+    "operator": "antalya ulaşim",
+    "public_transport": "platform",
+    "ref": "10026",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4890702221,
+  "lat": 36.8886479,
+  "lon": 30.6811907,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "100 Yıl Bulvarı-4",
+    "name:en": "10156 - KL08, KC71",
+    "operator": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "10156"
+  }
+},
+{
+  "type": "node",
+  "id": 4985380221,
+  "lat": 36.8501895,
+  "lon": 30.8061967,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10090",
+    "public_transport": "platform",
+    "ref": "10090",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5198563122,
+  "lat": 36.8840907,
+  "lon": 30.7111486,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10144",
+    "public_transport": "platform",
+    "ref": "10144",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5199938222,
+  "lat": 36.8921757,
+  "lon": 30.7088155,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10148 - Fahrettin Altay Cad",
+    "public_transport": "platform",
+    "ref": "10148",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5199938223,
+  "lat": 36.9001871,
+  "lon": 30.7160108,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10963",
+    "public_transport": "platform",
+    "ref": "10963",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5203617622,
+  "lat": 36.8879205,
+  "lon": 30.7099332,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10147",
+    "public_transport": "platform",
+    "ref": "10147",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5203617623,
+  "lat": 36.8904436,
+  "lon": 30.6911795,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10153",
+    "public_transport": "platform",
+    "ref": "10153"
+  }
+},
+{
+  "type": "node",
+  "id": 5203636822,
+  "lat": 36.8900730,
+  "lon": 30.6904657,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10029 - 100 Yıl Bulvarı-8",
+    "public_transport": "platform",
+    "ref": "10029",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5203636823,
+  "lat": 36.8893651,
+  "lon": 30.6852537,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "100 Yıl Bulvarı-3",
+    "name:en": "10155 - KL08, KC71",
+    "public_transport": "platform",
+    "ref": "10155",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5203636824,
+  "lat": 36.8888844,
+  "lon": 30.6842184,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10027 - Gazi Lisesi",
+    "public_transport": "platform",
+    "ref": "10027"
+  }
+},
+{
+  "type": "node",
+  "id": 5203636825,
+  "lat": 36.8908507,
+  "lon": 30.6763064,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Eğitim Araştırma Hastanesi-2",
+    "name:ru": "06, KC71",
+    "public_transport": "platform",
+    "ref": "10334",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5203636826,
+  "lat": 36.8897217,
+  "lon": 30.6954056,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10031 - Anafartalar Caddesi-4",
+    "public_transport": "platform",
+    "ref": "10031",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5203637022,
+  "lat": 36.8875684,
+  "lon": 30.6966404,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10033 - Güllük",
+    "public_transport": "platform",
+    "ref": "10033",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5254019423,
+  "lat": 36.8580438,
+  "lon": 30.7895201,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10101 - Barınaklar Bulvarı",
+    "public_transport": "platform"
+  }
+},
+{
+  "type": "node",
+  "id": 5254321791,
+  "lat": 36.8642412,
+  "lon": 30.7282240,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10053"
+  }
+},
+{
+  "type": "node",
+  "id": 5259772626,
+  "lat": 36.8884941,
+  "lon": 30.7079887,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Demirciler Çarşısı",
+    "public_transport": "platform",
+    "ref": "10282",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5401341174,
+  "lat": 36.8488106,
+  "lon": 30.8085084,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "12108 Lara Caddesi",
+    "public_transport": "platform",
+    "ref": "13009",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5401341175,
+  "lat": 36.8504837,
+  "lon": 30.8033909,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10092 - Örnekköy",
+    "public_transport": "platform",
+    "ref": "10092",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5401341176,
+  "lat": 36.8518630,
+  "lon": 30.8008796,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "12109 - Menekşe Cd",
+    "public_transport": "platform"
+  }
+},
+{
+  "type": "node",
+  "id": 5401341181,
+  "lat": 36.8581984,
+  "lon": 30.7932647,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10099 - Cuma Pazarı",
+    "name:ru": "10099 - Пятничный базар",
+    "public_transport": "platform",
+    "ref": "10099",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5401341184,
+  "lat": 36.8572018,
+  "lon": 30.7863653,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10103 Barınıklar-12",
+    "public_transport": "platform",
+    "ref": "10103"
+  }
+},
+{
+  "type": "node",
+  "id": 5401341186,
+  "lat": 36.8561493,
+  "lon": 30.7816917,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10105 Düden İtfaiye Durağı",
+    "public_transport": "platform",
+    "ref": "10105"
+  }
+},
+{
+  "type": "node",
+  "id": 5427537181,
+  "lat": 36.8664346,
+  "lon": 30.7259233,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10051"
+  }
+},
+{
+  "type": "node",
+  "id": 5637208025,
+  "lat": 36.8821139,
+  "lon": 30.6555064,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Atatürk Bulvarı-17",
+    "name:en": "10161",
+    "public_transport": "platform",
+    "ref": "10161",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5637209822,
+  "lat": 36.8787546,
+  "lon": 30.6481585,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "İL SAĞLIK MÜDÜRLÜĞÜ",
+    "public_transport": "platform",
+    "ref": "10163",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5637225421,
+  "lat": 36.8726640,
+  "lon": 30.6415486,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10166",
+    "public_transport": "platform",
+    "ref": "10166",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5881904689,
+  "lat": 36.8923888,
+  "lon": 30.6733350,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Meltem Bulvarı-3",
+    "public_transport": "platform",
+    "ref": "10278"
+  }
+},
+{
+  "type": "node",
+  "id": 5881957187,
+  "lat": 36.8804101,
+  "lon": 30.6530962,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10021- Atatürk Bulvarı-14",
+    "public_transport": "platform",
+    "ref": "10021",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5881970185,
+  "lat": 36.8822848,
+  "lon": 30.6488165,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Pınarbaşı Caddesi-4",
+    "public_transport": "platform",
+    "ref": "10275"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874587,
+  "lat": 36.8924390,
+  "lon": 30.6662873,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Meltem Bulvarı-1",
+    "name:en": "10276 exspres durak",
+    "public_transport": "platform",
+    "ref": "10276"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874589,
+  "lat": 36.8585157,
+  "lon": 30.6037012,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "252. Sokak-5",
+    "public_transport": "platform",
+    "ref": "10453"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874590,
+  "lat": 36.8591342,
+  "lon": 30.6059880,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "check_date:shelter": "2022-09-29",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Boğaçay Caddesi-4",
+    "public_transport": "platform",
+    "ref": "10474",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874592,
+  "lat": 36.8507418,
+  "lon": 30.6156968,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Blv-2",
+    "public_transport": "platform",
+    "ref": "10008",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874593,
+  "lat": 36.8927098,
+  "lon": 30.6688276,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Meltem Bulvarı-5",
+    "public_transport": "platform",
+    "ref": "10337",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874594,
+  "lat": 36.8924276,
+  "lon": 30.6689813,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Meltem Bulvarı-2",
+    "public_transport": "platform",
+    "ref": "10277"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874596,
+  "lat": 36.8856418,
+  "lon": 30.6977184,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "SELEKLER",
+    "public_transport": "platform",
+    "ref": "15059",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920874597,
+  "lat": 36.8931188,
+  "lon": 30.7059823,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10149 Andizli Mezarligi",
+    "name:tr": "10149 Andizli Mezarligi",
+    "public_transport": "platform",
+    "ref": "10149",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920877486,
+  "lat": 36.8576484,
+  "lon": 30.6011011,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "252. Sokak-4",
+    "public_transport": "platform",
+    "ref": "10452",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920877487,
+  "lat": 36.8509464,
+  "lon": 30.6153834,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Atatürk Blv-30",
+    "name:en": "Ataturk Blv-30",
+    "public_transport": "platform",
+    "ref": "10176"
+  }
+},
+{
+  "type": "node",
+  "id": 5920888786,
+  "lat": 36.8583159,
+  "lon": 30.6028843,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "252. Sokak-6",
+    "public_transport": "platform",
+    "ref": "10475"
+  }
+},
+{
+  "type": "node",
+  "id": 5920889985,
+  "lat": 36.8530213,
+  "lon": 30.6144447,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Boğaçay Caddesi-14",
+    "public_transport": "platform",
+    "ref": "10830",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920889986,
+  "lat": 36.8555361,
+  "lon": 30.6111305,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Boğaçay Caddesi-2",
+    "public_transport": "platform",
+    "ref": "10472",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920889987,
+  "lat": 36.8572178,
+  "lon": 30.6087405,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Boğaçay Caddesi-3",
+    "public_transport": "platform",
+    "ref": "10473",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920890585,
+  "lat": 36.8534375,
+  "lon": 30.6141201,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Boğaçay Caddesi-1",
+    "public_transport": "platform",
+    "ref": "10471",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920893385,
+  "lat": 36.8554182,
+  "lon": 30.6109548,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Boğaçay Caddesi-13",
+    "public_transport": "platform",
+    "ref": "10456",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5920897286,
+  "lat": 36.8570375,
+  "lon": 30.6086222,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Boğaçay Caddesi-12",
+    "public_transport": "platform",
+    "ref": "10455"
+  }
+},
+{
+  "type": "node",
+  "id": 5923015786,
+  "lat": 36.8483224,
+  "lon": 30.5961925,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "169. Sokak-2",
+    "public_transport": "platform",
+    "ref": "12359"
+  }
+},
+{
+  "type": "node",
+  "id": 5923015788,
+  "lat": 36.8498695,
+  "lon": 30.5975964,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "36. Cadde-6",
+    "public_transport": "platform",
+    "ref": "11679",
+    "shelter": "no",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923015789,
+  "lat": 36.8512531,
+  "lon": 30.6002621,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "36. Cadde - 2",
+    "public_transport": "platform",
+    "ref": "12345",
+    "shelter": "yes",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923017785,
+  "lat": 36.8497566,
+  "lon": 30.5976257,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "36. Cadde-1",
+    "public_transport": "platform",
+    "ref": "12364",
+    "shelter": "yes",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923020985,
+  "lat": 36.8512401,
+  "lon": 30.6000569,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "36. Cadde-5",
+    "public_transport": "platform",
+    "ref": "10509",
+    "shelter": "no",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923021685,
+  "lat": 36.8523229,
+  "lon": 30.6022318,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "36. Cadde-3",
+    "public_transport": "platform",
+    "ref": "11927",
+    "shelter": "no",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923021785,
+  "lat": 36.8524169,
+  "lon": 30.6021699,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "36. Cadde - 4",
+    "public_transport": "platform",
+    "ref": "10508",
+    "shelter": "no",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923022585,
+  "lat": 36.8545002,
+  "lon": 30.6020758,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "277. Sokak-2",
+    "public_transport": "platform",
+    "ref": "10507",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5923022685,
+  "lat": 36.8548505,
+  "lon": 30.6020008,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "277. Sokak-1",
+    "public_transport": "platform",
+    "ref": "10480",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923041485,
+  "lat": 36.8564291,
+  "lon": 30.6010069,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "277. Sokak-2",
+    "public_transport": "platform",
+    "ref": "11926"
+  }
+},
+{
+  "type": "node",
+  "id": 5923042488,
+  "lat": 36.8530768,
+  "lon": 30.5984446,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10450 / 37.Cd-1",
+    "public_transport": "platform",
+    "shelter": "no",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5923042489,
+  "lat": 36.8529886,
+  "lon": 30.5983623,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "12355 / 37.Cd",
+    "public_transport": "platform",
+    "shelter": "no",
+    "tactile_paving": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5944937485,
+  "lat": 36.8677206,
+  "lon": 30.6381707,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10016",
+    "public_transport": "platform",
+    "ref": "10016",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6067903488,
+  "lat": 36.8775129,
+  "lon": 30.6461763,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "check_date:shelter": "2022-10-12",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "ATATÜRK BLV-20",
+    "public_transport": "platform",
+    "ref": "10164",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6072077488,
+  "lat": 36.8615771,
+  "lon": 30.6280493,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10172",
+    "public_transport": "platform",
+    "ref": "10172",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6078300887,
+  "lat": 36.8898096,
+  "lon": 30.6876358,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10154 - 100 Yıl Bulvarı-2",
+    "public_transport": "platform",
+    "ref": "10154",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6083013385,
+  "lat": 36.8563097,
+  "lon": 30.8777064,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "ref": "11241",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6083013485,
+  "lat": 36.8567763,
+  "lon": 30.8796289,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "ref": "12613",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6087937688,
+  "lat": 36.8933174,
+  "lon": 30.8211564,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "10675"
+  }
+},
+{
+  "type": "node",
+  "id": 6087937689,
+  "lat": 36.8954433,
+  "lon": 30.8208455,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "12259"
+  }
+},
+{
+  "type": "node",
+  "id": 6087937696,
+  "lat": 36.9138433,
+  "lon": 30.7400701,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Yeni hal yolu-1",
+    "public_transport": "platform",
+    "ref": "11697"
+  }
+},
+{
+  "type": "node",
+  "id": 6087954185,
+  "lat": 36.8833602,
+  "lon": 30.8192523,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kardeş Kentler Cd-16",
+    "network": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "10673",
+    "route_ref": "VML54;511;800",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6087954192,
+  "lat": 36.8906320,
+  "lon": 30.7378164,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "11147",
+    "public_transport": "platform",
+    "ref": "11147",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6089509089,
+  "lat": 36.8911261,
+  "lon": 30.7173097,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "10707",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6096744375,
+  "lat": 36.8588692,
+  "lon": 30.6060108,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Boğaçay Caddesi-11",
+    "public_transport": "platform",
+    "ref": "10454",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6180714937,
+  "lat": 36.8987374,
+  "lon": 30.7226141,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Yunus Emre CD-2",
+    "public_transport": "platform",
+    "ref": "12418",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6265668193,
+  "lat": 36.8720934,
+  "lon": 30.7319836,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Avni Tolunay CD-4",
+    "public_transport": "platform",
+    "ref": "10463",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6265668596,
+  "lat": 36.9057919,
+  "lon": 30.6629917,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Erasta Duraĝı",
+    "public_transport": "platform",
+    "ref": "10697",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6265668597,
+  "lat": 36.8815722,
+  "lon": 30.7199212,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Narenciye CD-3",
+    "public_transport": "platform",
+    "ref": "10458",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6265668598,
+  "lat": 36.8749860,
+  "lon": 30.7287574,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "10461",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6265685585,
+  "lat": 36.8896165,
+  "lon": 30.6881497,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10028 - 100 Yıl Bulvarı-7",
+    "public_transport": "platform",
+    "ref": "10028",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6387088187,
+  "lat": 36.8913826,
+  "lon": 30.6638852,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10260 - Dumlupınar Bulvarı-10",
+    "public_transport": "platform",
+    "ref": "10260",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6387102589,
+  "lat": 36.8927136,
+  "lon": 30.6665667,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10587 - Meltem Bulvarı-6",
+    "name:en": "10587",
+    "public_transport": "platform",
+    "ref": "10587"
+  }
+},
+{
+  "type": "node",
+  "id": 6549244486,
+  "lat": 36.8824860,
+  "lon": 30.7138318,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10505",
+    "public_transport": "platform",
+    "ref": "10505",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6549244490,
+  "lat": 36.8754804,
+  "lon": 30.7284288,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10468",
+    "public_transport": "platform",
+    "ref": "10468",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6549244511,
+  "lat": 36.8717407,
+  "lon": 30.7326857,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Avni Tolunay CD-5",
+    "public_transport": "platform",
+    "ref": "10466",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6549280429,
+  "lat": 36.8683724,
+  "lon": 30.7220322,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10049",
+    "public_transport": "platform",
+    "ref": "10049",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6549280431,
+  "lat": 36.8842865,
+  "lon": 30.7136983,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Cebesoy cad. durağı 10321",
+    "name:ru": "10321 - KCO6, LF10,",
+    "public_transport": "platform",
+    "ref": "10321",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6549280435,
+  "lat": 36.8585332,
+  "lon": 30.7407245,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "İsmet Gökşen 6",
+    "public_transport": "platform",
+    "ref": "10059",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6699385020,
+  "lat": 36.8735622,
+  "lon": 30.7288715,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10498"
+  }
+},
+{
+  "type": "node",
+  "id": 6699385031,
+  "lat": 36.9037571,
+  "lon": 30.6844463,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "12197",
+    "public_transport": "platform",
+    "ref": "12197",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6699385032,
+  "lat": 36.8671433,
+  "lon": 30.7381074,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Si̇nanoğlu Cd-11",
+    "network": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "10496",
+    "route_ref": "KC06;LF09;LF13;TC16A;VML54;VML54A;TC93"
+  }
+},
+{
+  "type": "node",
+  "id": 6757549303,
+  "lat": 36.8576093,
+  "lon": 30.7695208,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10310",
+    "public_transport": "platform",
+    "ref": "10310",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6757549323,
+  "lat": 36.8577432,
+  "lon": 30.7649922,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "10311",
+    "public_transport": "platform",
+    "ref": "10311",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6761399654,
+  "lat": 36.8504231,
+  "lon": 30.8058304,
+  "tags": {
+    "bus": "yes",
+    "public_transport": "stop_position",
+    "ref": "10090"
+  }
+},
+{
+  "type": "node",
+  "id": 6761399655,
+  "lat": 36.8509198,
+  "lon": 30.8056869,
+  "tags": {
+    "bus": "yes",
+    "public_transport": "stop_position",
+    "ref": "10086"
+  }
+},
+{
+  "type": "node",
+  "id": 6761869889,
+  "lat": 36.8540380,
+  "lon": 30.7492527,
+  "tags": {
+    "addr:neighbourhood": "Fener Mah.",
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10120",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6761869891,
+  "lat": 36.8787948,
+  "lon": 30.7248128,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10469",
+    "public_transport": "platform",
+    "ref": "10469",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6761869896,
+  "lat": 36.9076170,
+  "lon": 30.6636762,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "11005",
+    "public_transport": "platform",
+    "ref": "11005",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6762026888,
+  "lat": 36.8776984,
+  "lon": 30.7105971,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Işıklar 3",
+    "public_transport": "platform",
+    "ref": "11878",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6762174869,
+  "lat": 36.8734015,
+  "lon": 30.7284135,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10486"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129108,
+  "lat": 36.8789456,
+  "lon": 30.7119852,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10140",
+    "public_transport": "platform",
+    "ref": "10140",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129121,
+  "lat": 36.8582394,
+  "lon": 30.6233315,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Bulvarı-28",
+    "public_transport": "platform",
+    "ref": "10174",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129127,
+  "lat": 36.8880542,
+  "lon": 30.6669388,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10339",
+    "public_transport": "platform",
+    "ref": "10339",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129130,
+  "lat": 36.8663581,
+  "lon": 30.6354105,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10169",
+    "public_transport": "platform",
+    "ref": "10169",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129131,
+  "lat": 36.8814263,
+  "lon": 30.7103957,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Arık Cd",
+    "network": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "10142",
+    "route_ref": "LC07A;LC07;KL08;KL08G;TC16;KL21",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129143,
+  "lat": 36.8670649,
+  "lon": 30.7256222,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "13822",
+    "public_transport": "platform",
+    "ref": "13822",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129145,
+  "lat": 36.8803693,
+  "lon": 30.6518764,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10162 - Atatürk Bulvarı-18",
+    "public_transport": "platform",
+    "ref": "10162",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129148,
+  "lat": 36.8637125,
+  "lon": 30.6313562,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "10171",
+    "public_transport": "platform",
+    "ref": "10171",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129152,
+  "lat": 36.8588629,
+  "lon": 30.7386037,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10125",
+    "public_transport": "platform",
+    "ref": "10125",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129154,
+  "lat": 36.8926838,
+  "lon": 30.6727849,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Meltem Bulvarı-4",
+    "public_transport": "platform",
+    "ref": "10336"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129157,
+  "lat": 36.8754229,
+  "lon": 30.7144243,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10137",
+    "public_transport": "platform",
+    "ref": "10137"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129162,
+  "lat": 36.8524211,
+  "lon": 30.6174944,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Bulvarı-3",
+    "public_transport": "platform",
+    "ref": "10009",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129163,
+  "lat": 36.8912849,
+  "lon": 30.6758344,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10280 Eğitim Araştırma Hastanesi-1",
+    "public_transport": "platform",
+    "ref": "10280",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779129170,
+  "lat": 36.8600681,
+  "lon": 30.6257579,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Bulvarı-27",
+    "public_transport": "platform",
+    "ref": "10173",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737822,
+  "lat": 36.8580511,
+  "lon": 30.6235605,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "check_date:shelter": "2022-04-01",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Atatürk Bulvarı-5",
+    "public_transport": "platform",
+    "ref": "10011",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737823,
+  "lat": 36.8730451,
+  "lon": 30.6421615,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10017",
+    "public_transport": "platform",
+    "ref": "10017",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737824,
+  "lat": 36.8592710,
+  "lon": 30.6251710,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "ATATÜRK BLV-6",
+    "public_transport": "platform",
+    "ref": "10012",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737825,
+  "lat": 36.8759982,
+  "lon": 30.6444323,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10018",
+    "public_transport": "platform",
+    "ref": "10018",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737827,
+  "lat": 36.8782434,
+  "lon": 30.6479260,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "ATATÜRK BLV-13",
+    "public_transport": "platform",
+    "ref": "10020",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737828,
+  "lat": 36.8641358,
+  "lon": 30.6324643,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10014",
+    "public_transport": "platform",
+    "ref": "10014",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6779737829,
+  "lat": 36.8655335,
+  "lon": 30.6346933,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10015",
+    "public_transport": "platform",
+    "ref": "10015",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6797160199,
+  "lat": 36.8581804,
+  "lon": 30.7534103,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10314",
+    "public_transport": "platform",
+    "ref": "10314",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6900561885,
+  "lat": 36.8618686,
+  "lon": 30.6290818,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10013",
+    "name:en": "10013",
+    "name:ru": "В центр.",
+    "public_transport": "platform",
+    "ref": "10013",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6924751512,
+  "lat": 36.8994435,
+  "lon": 30.7152278,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10375",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6924751513,
+  "lat": 36.8959297,
+  "lon": 30.7087491,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Antalya Büyükşehir Belediyesi-2",
+    "public_transport": "platform",
+    "ref": "10376",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6939603598,
+  "lat": 36.8896618,
+  "lon": 30.7441731,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10417"
+  }
+},
+{
+  "type": "node",
+  "id": 7098059145,
+  "lat": 36.8830179,
+  "lon": 30.7185682,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "11014",
+    "public_transport": "platform",
+    "ref": "11014",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7098059147,
+  "lat": 36.8816264,
+  "lon": 30.7204700,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "10470",
+    "public_transport": "platform",
+    "ref": "10470",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7098059148,
+  "lat": 36.8861329,
+  "lon": 30.7196334,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "11015",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8000442486,
+  "lat": 36.8537742,
+  "lon": 30.6188905,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Atatürk Bulvarı-4",
+    "public_transport": "platform",
+    "ref": "10010",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8131733417,
+  "lat": 36.8614885,
+  "lon": 30.5361921,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "12673 Girne Cd-9",
+    "public_transport": "platform",
+    "ref": "12673"
+  }
+},
+{
+  "type": "node",
+  "id": 8131733418,
+  "lat": 36.8683987,
+  "lon": 30.5251485,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "14415 Akdamlar-9",
+    "public_transport": "platform",
+    "ref": "14415"
+  }
+},
+{
+  "type": "node",
+  "id": 8133344317,
+  "lat": 36.8631234,
+  "lon": 30.5308147,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11658 Akdamlar-11",
+    "public_transport": "platform",
+    "ref": "11658"
+  }
+},
+{
+  "type": "node",
+  "id": 8149211017,
+  "lat": 36.8941990,
+  "lon": 30.6913818,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "TONGUÇ CD-1",
+    "public_transport": "platform",
+    "ref": "10362"
+  }
+},
+{
+  "type": "node",
+  "id": 8168818723,
+  "lat": 36.8717465,
+  "lon": 30.5182033,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11660 Akdamlar-7",
+    "public_transport": "platform",
+    "ref": "11660",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8315325797,
+  "lat": 36.8801339,
+  "lon": 30.6259753,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-10",
+    "public_transport": "platform",
+    "ref": "10407"
+  }
+},
+{
+  "type": "node",
+  "id": 8363376505,
+  "lat": 36.8503412,
+  "lon": 30.7615517,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11255 - Fener Caddesi",
+    "public_transport": "platform",
+    "ref": "11255",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8434349821,
+  "lat": 36.9091344,
+  "lon": 30.6498938,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Ulusoy Cad. 5",
+    "name:en": "Ulusoy Cad. Bus stop",
+    "public_transport": "platform",
+    "ref": "12150",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8434351719,
+  "lat": 36.9088504,
+  "lon": 30.6478713,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "75 Yıl Caddesi-18",
+    "public_transport": "platform",
+    "ref": "12028",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8434423617,
+  "lat": 36.9086382,
+  "lon": 30.6548610,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Ulusoy cad. 8",
+    "public_transport": "platform",
+    "ref": "12086",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8434423618,
+  "lat": 36.9087627,
+  "lon": 30.6549509,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Ulusoy cad. 3",
+    "public_transport": "platform",
+    "ref": "12139",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8449809919,
+  "lat": 36.8852374,
+  "lon": 30.6914799,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Konyaalti Cad. 2",
+    "public_transport": "platform",
+    "ref": "10531"
+  }
+},
+{
+  "type": "node",
+  "id": 8449830317,
+  "lat": 36.8855053,
+  "lon": 30.6962201,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "KONYAALTI CD-1",
+    "public_transport": "platform",
+    "ref": "10529"
+  }
+},
+{
+  "type": "node",
+  "id": 8960774117,
+  "lat": 36.8620345,
+  "lon": 30.6383628,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12282"
+  }
+},
+{
+  "type": "node",
+  "id": 8960774317,
+  "lat": 36.8595501,
+  "lon": 30.6341495,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11680",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8960774318,
+  "lat": 36.8549372,
+  "lon": 30.6281240,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10542"
+  }
+},
+{
+  "type": "node",
+  "id": 8960774417,
+  "lat": 36.8573795,
+  "lon": 30.6312298,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10541"
+  }
+},
+{
+  "type": "node",
+  "id": 8963783459,
+  "lat": 36.8733901,
+  "lon": 30.6468345,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "network": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "10355"
+  }
+},
+{
+  "type": "node",
+  "id": 8968779218,
+  "lat": 36.8470108,
+  "lon": 30.6074964,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Akdeniz Blv-9",
+    "public_transport": "platform",
+    "ref": "14224",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8968779219,
+  "lat": 36.8466489,
+  "lon": 30.6074727,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Akdeniz Blv-5",
+    "public_transport": "platform",
+    "ref": "10005",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8979320717,
+  "lat": 36.8672093,
+  "lon": 30.6465123,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10538",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8987975919,
+  "lat": 36.8952258,
+  "lon": 30.8205602,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "10866"
+  }
+},
+{
+  "type": "node",
+  "id": 8987976017,
+  "lat": 36.8928888,
+  "lon": 30.8208202,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "12260"
+  }
+},
+{
+  "type": "node",
+  "id": 9283964553,
+  "lat": 36.8934962,
+  "lon": 30.6894278,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "TONGUÇ CD-1",
+    "public_transport": "platform",
+    "ref": "10361"
+  }
+},
+{
+  "type": "node",
+  "id": 9722527688,
+  "lat": 36.8942632,
+  "lon": 30.6655513,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Adliye Sarayi",
+    "public_transport": "platform",
+    "ref": "10588",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9727020715,
+  "lat": 36.9085699,
+  "lon": 30.6483870,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "75 Yıl Caddesi-3",
+    "public_transport": "platform",
+    "ref": "10593",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9727290745,
+  "lat": 36.9075761,
+  "lon": 30.6727057,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Bus stop",
+    "ref": "12102",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9743528268,
+  "lat": 36.9073754,
+  "lon": 30.6724456,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Fikri Erten Caddesi Durağı",
+    "ref": "12185",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9934267383,
+  "lat": 36.9044111,
+  "lon": 30.7225334,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "11208",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9934279260,
+  "lat": 36.9042360,
+  "lon": 30.7221905,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "11211",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9934290308,
+  "lat": 36.9065250,
+  "lon": 30.7208037,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11487"
+  }
+},
+{
+  "type": "node",
+  "id": 9934302039,
+  "lat": 36.9043117,
+  "lon": 30.7189400,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "public_transport": "platform",
+    "ref": "11210",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9934303767,
+  "lat": 36.9065413,
+  "lon": 30.7206909,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12120"
+  }
+},
+{
+  "type": "node",
+  "id": 9954963907,
+  "lat": 36.8689629,
+  "lon": 30.6494543,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Konyaaltı Akdeniz BLV-9",
+    "public_transport": "platform",
+    "ref": "10517",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9954988030,
+  "lat": 36.8592677,
+  "lon": 30.6339119,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10513",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9955005398,
+  "lat": 36.8666903,
+  "lon": 30.6460782,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Konyaaltı Plajı",
+    "public_transport": "platform",
+    "ref": "10516",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9955006082,
+  "lat": 36.8472185,
+  "lon": 30.6154806,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "AKDENİZ BLV-6",
+    "public_transport": "platform",
+    "ref": "14281",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9955014354,
+  "lat": 36.8465019,
+  "lon": 30.6052477,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Akdeniz Blv-4",
+    "public_transport": "platform",
+    "ref": "10004",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9955018810,
+  "lat": 36.8568462,
+  "lon": 30.6306997,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13696"
+  }
+},
+{
+  "type": "node",
+  "id": 10045076833,
+  "lat": 36.9063493,
+  "lon": 30.6561020,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "3847. Sokak-2 Durağı",
+    "public_transport": "platform",
+    "ref": "11246",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10119595639,
+  "lat": 36.8607837,
+  "lon": 30.6254584,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "GÜRSU DEPLOMA",
+    "public_transport": "platform",
+    "ref": "13003",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10119647874,
+  "lat": 36.8415659,
+  "lon": 30.6122857,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "LİMAN CD-3",
+    "public_transport": "platform",
+    "ref": "10832"
+  }
+},
+{
+  "type": "node",
+  "id": 10121532672,
+  "lat": 36.8783600,
+  "lon": 30.6423708,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "18. CADDE",
+    "public_transport": "platform",
+    "ref": "12382"
+  }
+},
+{
+  "type": "node",
+  "id": 10121536453,
+  "lat": 36.8784694,
+  "lon": 30.6425814,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "18. CADDE",
+    "public_transport": "platform",
+    "ref": "12383"
+  }
+},
+{
+  "type": "node",
+  "id": 10121547116,
+  "lat": 36.8765605,
+  "lon": 30.6418167,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "18. CADDE",
+    "public_transport": "platform",
+    "ref": "12381"
+  }
+},
+{
+  "type": "node",
+  "id": 10121559441,
+  "lat": 36.8767450,
+  "lon": 30.6421278,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "18. CADDE",
+    "public_transport": "platform",
+    "ref": "10341"
+  }
+},
+{
+  "type": "node",
+  "id": 10140128931,
+  "lat": 36.8763254,
+  "lon": 30.7174732,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10290",
+    "route_ref": "800"
+  }
+},
+{
+  "type": "node",
+  "id": 10152062960,
+  "lat": 36.9004360,
+  "lon": 30.6767000,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Palmiye Cad. 5",
+    "public_transport": "platform",
+    "ref": "12493"
+  }
+},
+{
+  "type": "node",
+  "id": 10152118120,
+  "lat": 36.9032548,
+  "lon": 30.6792491,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Palmiye Cad. 1",
+    "public_transport": "platform",
+    "ref": "12490"
+  }
+},
+{
+  "type": "node",
+  "id": 10152144165,
+  "lat": 36.9005225,
+  "lon": 30.6766158,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Palmiye Cad. 2",
+    "public_transport": "platform",
+    "ref": "12492"
+  }
+},
+{
+  "type": "node",
+  "id": 10223585175,
+  "lat": 36.8544892,
+  "lon": 30.6277948,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10512",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10571504094,
+  "lat": 36.9045500,
+  "lon": 30.6632124,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "112 Acil Durağı",
+    "public_transport": "platform",
+    "ref": "10258",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10577242170,
+  "lat": 36.9090331,
+  "lon": 30.6502174,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Ulusoy Caddesi Durağı",
+    "public_transport": "platform",
+    "ref": "12085",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10592382198,
+  "lat": 36.9027817,
+  "lon": 30.6592897,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12105",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10608540058,
+  "lat": 36.9147085,
+  "lon": 30.5676245,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "information": "bus_stop",
+    "name": "Aşağikaraman-11",
+    "public_transport": "platform",
+    "ref": "11909",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10884281135,
+  "lat": 36.8690988,
+  "lon": 30.4584921,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "13983 Çağlarca-1",
+    "public_transport": "platform",
+    "ref": "13983",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10899226358,
+  "lat": 36.9022371,
+  "lon": 30.5380139,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Doyran-1",
+    "public_transport": "platform",
+    "ref": "12679",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10899226363,
+  "lat": 36.9042148,
+  "lon": 30.5425875,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Doyran-2",
+    "public_transport": "platform",
+    "ref": "14427",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10899226364,
+  "lat": 36.9041728,
+  "lon": 30.5435728,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Doyran-3",
+    "public_transport": "platform",
+    "ref": "11675",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10906454666,
+  "lat": 36.9124654,
+  "lon": 30.5708786,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aşağıkaraman-13",
+    "public_transport": "platform",
+    "ref": "12581",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10906454671,
+  "lat": 36.9068008,
+  "lon": 30.5780677,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Aşağıkaraman-17",
+    "public_transport": "platform",
+    "ref": "12574",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10914452060,
+  "lat": 36.8451047,
+  "lon": 30.5958682,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "164. Sokak",
+    "public_transport": "platform",
+    "ref": "10448",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10994885105,
+  "lat": 36.8847027,
+  "lon": 30.6799950,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Konyaaltı plajı",
+    "public_transport": "platform",
+    "ref": "13698",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10997672175,
+  "lat": 36.8936168,
+  "lon": 30.6303600,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Emniyet Caddesi-2",
+    "public_transport": "platform",
+    "ref": "12175",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10997672176,
+  "lat": 36.8935918,
+  "lon": 30.6302436,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Emniyet Caddesi-3",
+    "public_transport": "platform",
+    "ref": "10397"
+  }
+},
+{
+  "type": "node",
+  "id": 11005791509,
+  "lat": 36.8307717,
+  "lon": 30.5963011,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Sarısu Depolama Merkezi-1",
+    "public_transport": "platform",
+    "ref": "13001",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11005791510,
+  "lat": 36.8360194,
+  "lon": 30.5931193,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Sarısu Mahallesi",
+    "public_transport": "platform",
+    "ref": "14292"
+  }
+},
+{
+  "type": "node",
+  "id": 11005791511,
+  "lat": 36.8357468,
+  "lon": 30.5904484,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "122. Sokak-1",
+    "public_transport": "platform",
+    "ref": "13816"
+  }
+},
+{
+  "type": "node",
+  "id": 11005791512,
+  "lat": 36.8375893,
+  "lon": 30.5887050,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "132. Sokak",
+    "public_transport": "platform",
+    "ref": "14823"
+  }
+},
+{
+  "type": "node",
+  "id": 11005791513,
+  "lat": 36.8402013,
+  "lon": 30.5893598,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "138. Sokak-1",
+    "public_transport": "platform",
+    "ref": "10446",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11005791515,
+  "lat": 36.8482957,
+  "lon": 30.5963602,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "169. Sokak-1",
+    "public_transport": "platform",
+    "ref": "10449"
+  }
+},
+{
+  "type": "node",
+  "id": 11005795429,
+  "lat": 36.8645749,
+  "lon": 30.6246978,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal İlkokulu",
+    "public_transport": "platform",
+    "ref": "10349",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11005795430,
+  "lat": 36.8663114,
+  "lon": 30.6240054,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "353. Sokak-2",
+    "public_transport": "platform",
+    "ref": "13685"
+  }
+},
+{
+  "type": "node",
+  "id": 11006128509,
+  "lat": 36.8681693,
+  "lon": 30.6253125,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-1",
+    "public_transport": "platform",
+    "ref": "10350"
+  }
+},
+{
+  "type": "node",
+  "id": 11006229904,
+  "lat": 36.8691024,
+  "lon": 30.6280286,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-2",
+    "public_transport": "platform",
+    "ref": "10351"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241706,
+  "lat": 36.8719002,
+  "lon": 30.6274535,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-3",
+    "public_transport": "platform",
+    "ref": "10264"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241707,
+  "lat": 36.8763546,
+  "lon": 30.6263903,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-4",
+    "public_transport": "platform",
+    "ref": "10390"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241708,
+  "lat": 36.8790328,
+  "lon": 30.6262335,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-5",
+    "public_transport": "platform",
+    "ref": "10391"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241709,
+  "lat": 36.8812288,
+  "lon": 30.6261227,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-6",
+    "public_transport": "platform",
+    "ref": "12470"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241710,
+  "lat": 36.8850320,
+  "lon": 30.6260365,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-7",
+    "public_transport": "platform",
+    "ref": "10393"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241711,
+  "lat": 36.8897870,
+  "lon": 30.6258204,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Uncalı Caddesi-1",
+    "public_transport": "platform",
+    "ref": "11902"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241712,
+  "lat": 36.8919222,
+  "lon": 30.6264757,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Uncalı Çevik Kuvvet",
+    "public_transport": "platform",
+    "ref": "10395"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241713,
+  "lat": 36.8942205,
+  "lon": 30.6278555,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Uncalı Caddesi-3",
+    "public_transport": "platform",
+    "ref": "10396"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241727,
+  "lat": 36.8917555,
+  "lon": 30.6332193,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "1336. Sokak-1",
+    "public_transport": "platform",
+    "ref": "10714"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241728,
+  "lat": 36.8926194,
+  "lon": 30.6358676,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "1336. Sokak-2",
+    "public_transport": "platform",
+    "ref": "12562"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241732,
+  "lat": 36.8893373,
+  "lon": 30.6380248,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-12",
+    "public_transport": "platform",
+    "ref": "12564"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241736,
+  "lat": 36.8859015,
+  "lon": 30.6388677,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-13",
+    "public_transport": "platform",
+    "ref": "12384"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241737,
+  "lat": 36.8841252,
+  "lon": 30.6424700,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Konyaaltı Toroslar Cadessi-13",
+    "public_transport": "platform",
+    "ref": "11868"
+  }
+},
+{
+  "type": "node",
+  "id": 11006241738,
+  "lat": 36.8840570,
+  "lon": 30.6453714,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Konyaaltı Toroslar Cadessi-14",
+    "public_transport": "platform",
+    "ref": "10274"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273417,
+  "lat": 36.8821797,
+  "lon": 30.6491860,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Pınarbaşı Caddesi-1",
+    "public_transport": "platform",
+    "ref": "11854"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273418,
+  "lat": 36.8841858,
+  "lon": 30.6457041,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Konyaaltı Toroslar Cadessi-1",
+    "public_transport": "platform",
+    "ref": "12371"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273419,
+  "lat": 36.8841806,
+  "lon": 30.6416041,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Konyaaltı Expo Park",
+    "public_transport": "platform",
+    "ref": "12376"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273420,
+  "lat": 36.8861034,
+  "lon": 30.6390244,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-10",
+    "public_transport": "platform",
+    "ref": "12385"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273421,
+  "lat": 36.8895082,
+  "lon": 30.6382594,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-11",
+    "public_transport": "platform",
+    "ref": "12565"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273422,
+  "lat": 36.8926421,
+  "lon": 30.6356094,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "1336. Sokak-3",
+    "public_transport": "platform",
+    "ref": "12563"
+  }
+},
+{
+  "type": "node",
+  "id": 11006273423,
+  "lat": 36.8922397,
+  "lon": 30.6322245,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Emniyet Caddesi-1",
+    "public_transport": "platform",
+    "ref": "10733"
+  }
+},
+{
+  "type": "node",
+  "id": 11007306373,
+  "lat": 36.8938792,
+  "lon": 30.6273130,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Uncalı Caddesi-8",
+    "public_transport": "platform",
+    "ref": "10402"
+  }
+},
+{
+  "type": "node",
+  "id": 11007306374,
+  "lat": 36.8925340,
+  "lon": 30.6266104,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Uncalı Caddesi-9",
+    "public_transport": "platform",
+    "ref": "10403"
+  }
+},
+{
+  "type": "node",
+  "id": 11007306376,
+  "lat": 36.8900853,
+  "lon": 30.6256093,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Uncalı Caddesi-10",
+    "public_transport": "platform",
+    "ref": "12177"
+  }
+},
+{
+  "type": "node",
+  "id": 11007306377,
+  "lat": 36.8858035,
+  "lon": 30.6257914,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-8",
+    "public_transport": "platform",
+    "ref": "10405"
+  }
+},
+{
+  "type": "node",
+  "id": 11007306392,
+  "lat": 36.8831543,
+  "lon": 30.6258509,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-9",
+    "public_transport": "platform",
+    "ref": "12472"
+  }
+},
+{
+  "type": "node",
+  "id": 11007306399,
+  "lat": 36.8783533,
+  "lon": 30.6260681,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-11",
+    "public_transport": "platform",
+    "ref": "10408"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344007,
+  "lat": 36.8758737,
+  "lon": 30.6262078,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-12",
+    "public_transport": "platform",
+    "ref": "10409"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344008,
+  "lat": 36.8718981,
+  "lon": 30.6271289,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Bulvarı-13",
+    "public_transport": "platform",
+    "ref": "10346"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344009,
+  "lat": 36.8692924,
+  "lon": 30.6279834,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-21",
+    "public_transport": "platform",
+    "ref": "12100"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344010,
+  "lat": 36.8683355,
+  "lon": 30.6251139,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Anadolu Caddesi-22",
+    "public_transport": "platform",
+    "ref": "12101"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344011,
+  "lat": 36.8659628,
+  "lon": 30.6238736,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "353. Sokak-3",
+    "public_transport": "platform",
+    "ref": "13684"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344012,
+  "lat": 36.8640989,
+  "lon": 30.6246187,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "353. Sokak-4",
+    "public_transport": "platform",
+    "ref": "10388"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344014,
+  "lat": 36.8443492,
+  "lon": 30.5955742,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Seyit Onbaşı Parkı",
+    "public_transport": "platform",
+    "ref": "10477"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344015,
+  "lat": 36.8428132,
+  "lon": 30.5928401,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "153. Sokak-2",
+    "public_transport": "platform",
+    "ref": "11891"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344016,
+  "lat": 36.8403378,
+  "lon": 30.5893102,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "138. Sokak-2",
+    "public_transport": "platform",
+    "ref": "11892",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 11007344017,
+  "lat": 36.8356038,
+  "lon": 30.5902023,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "122. Sokak-2",
+    "public_transport": "platform",
+    "ref": "13817"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782850,
+  "lat": 36.8307911,
+  "lon": 30.5959490,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Sarısu Depolama Merkezi-1",
+    "public_transport": "platform",
+    "ref": "13001",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782851,
+  "lat": 36.8307800,
+  "lon": 30.5959869,
+  "tags": {
+    "bus": "yes",
+    "name": "Sarısu Depolama Merkezi-1",
+    "public_transport": "stop_position",
+    "ref": "13001"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782852,
+  "lat": 36.8405642,
+  "lon": 30.5968445,
+  "tags": {
+    "bus": "yes",
+    "public_transport": "stop_position",
+    "ref": "10181"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782853,
+  "lat": 36.8405965,
+  "lon": 30.5967430,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "no",
+    "public_transport": "platform",
+    "ref": "10181",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782854,
+  "lat": 36.8431051,
+  "lon": 30.5983125,
+  "tags": {
+    "bus": "yes",
+    "name": "Akdeniz Blv-10",
+    "public_transport": "stop_position",
+    "ref": "10180"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782855,
+  "lat": 36.8431480,
+  "lon": 30.5981946,
+  "tags": {
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Akdeniz Blv-10",
+    "public_transport": "platform",
+    "ref": "10180"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782856,
+  "lat": 36.8430162,
+  "lon": 30.5985493,
+  "tags": {
+    "bus": "yes",
+    "name": "Akdeniz Blv-3",
+    "public_transport": "stop_position",
+    "ref": "13003"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782857,
+  "lat": 36.8429729,
+  "lon": 30.5986839,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Akdeniz Blv-3",
+    "public_transport": "platform",
+    "ref": "13003",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782858,
+  "lat": 36.8375665,
+  "lon": 30.5959563,
+  "tags": {
+    "bus": "yes",
+    "name": "Akdeniz Blv-1",
+    "public_transport": "stop_position",
+    "ref": "10001"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782859,
+  "lat": 36.8375642,
+  "lon": 30.5960463,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Akdeniz Blv-1",
+    "public_transport": "platform",
+    "ref": "10001",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11020782860,
+  "lat": 36.8307667,
+  "lon": 30.5962403,
+  "tags": {
+    "bus": "yes",
+    "name": "Sarısu Depolama Merkezi-1",
+    "public_transport": "stop_position",
+    "ref": "13001"
+  }
+},
+{
+  "type": "node",
+  "id": 11119933905,
+  "lat": 36.8660897,
+  "lon": 30.6328820,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi Mustafa Kemal Blv-1",
+    "network": "Antalya Ulaşım",
+    "public_transport": "platform",
+    "ref": "10261"
+  }
+},
+{
+  "type": "node",
+  "id": 11312797027,
+  "lat": 36.8472318,
+  "lon": 30.6105102,
+  "tags": {
+    "bench": "no",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Akdeniz Blv-8",
+    "public_transport": "platform",
+    "ref": "11879",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 11649877604,
+  "lat": 36.8937120,
+  "lon": 30.7155487,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Mevlana CD-4",
+    "public_transport": "platform",
+    "ref": "10708",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11655740153,
+  "lat": 36.8905990,
+  "lon": 30.6646062,
+  "tags": {
+    "highway": "bus_stop",
+    "name": "10185 Dumlupinar Bulvari-14"
+  }
+},
+{
+  "type": "node",
+  "id": 11691962525,
+  "lat": 36.8507994,
+  "lon": 30.6156103,
+  "tags": {
+    "bus": "yes",
+    "name": "Atatürk Blv-2",
+    "public_transport": "stop_position",
+    "ref": "10008"
+  }
+},
+{
+  "type": "node",
+  "id": 11691962526,
+  "lat": 36.8484832,
+  "lon": 30.6131090,
+  "tags": {
+    "bus": "yes",
+    "name": "Atatürk Blv-1",
+    "public_transport": "stop_position",
+    "ref": "10005"
+  }
+},
+{
+  "type": "node",
+  "id": 11691962527,
+  "lat": 36.8467772,
+  "lon": 30.6074616,
+  "tags": {
+    "bus": "yes",
+    "name": "Akdeniz Blv-5",
+    "public_transport": "stop_position",
+    "ref": "10005"
+  }
+},
+{
+  "type": "node",
+  "id": 11691962534,
+  "lat": 36.8466238,
+  "lon": 30.6052363,
+  "tags": {
+    "bus": "yes",
+    "name": "Akdeniz Blv-4",
+    "public_transport": "stop_position",
+    "ref": "10004"
+  }
+},
+{
+  "type": "node",
+  "id": 11692078084,
+  "lat": 36.8508995,
+  "lon": 30.6154512,
+  "tags": {
+    "bus": "yes",
+    "name": "Atatürk Blv-30",
+    "name:en": "Ataturk Blv-30",
+    "public_transport": "stop_position",
+    "ref": "10177"
+  }
+},
+{
+  "type": "node",
+  "id": 11692078085,
+  "lat": 36.8471884,
+  "lon": 30.6105164,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Akdeniz Blv-8",
+    "public_transport": "stop_position",
+    "ref": "11879",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11692078086,
+  "lat": 36.8488015,
+  "lon": 30.6132073,
+  "tags": {
+    "bus": "yes",
+    "name": "Atatürk Blv-31",
+    "name:en": "Ataturk Blv-31",
+    "public_transport": "stop_position",
+    "ref": "10177"
+  }
+},
+{
+  "type": "node",
+  "id": 11692078087,
+  "lat": 36.8469428,
+  "lon": 30.6075038,
+  "tags": {
+    "bus": "yes",
+    "name": "Akdeniz Blv-9",
+    "public_transport": "stop_position",
+    "ref": "14224"
+  }
+},
+{
+  "type": "node",
+  "id": 11918094504,
+  "lat": 36.8758478,
+  "lon": 30.4654540,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "13985 Geyikbayırı-2",
+    "public_transport": "platform",
+    "ref": "13985"
+  }
+},
+{
+  "type": "node",
+  "id": 11941549145,
+  "lat": 36.9100753,
+  "lon": 30.7399603,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi blv-15",
+    "public_transport": "platform",
+    "ref": "12656"
+  }
+},
+{
+  "type": "node",
+  "id": 12053073026,
+  "lat": 36.9030807,
+  "lon": 30.6792898,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Palmiye Cad. 6",
+    "public_transport": "platform",
+    "ref": "12491"
+  }
+},
+{
+  "type": "node",
+  "id": 12053073027,
+  "lat": 36.8990134,
+  "lon": 30.6744749,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Palmiye Cad. 3",
+    "public_transport": "platform",
+    "ref": "12494"
+  }
+},
+{
+  "type": "node",
+  "id": 12053073028,
+  "lat": 36.8989690,
+  "lon": 30.6747368,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Palmiye Cad. 4",
+    "public_transport": "platform",
+    "ref": "12495"
+  }
+},
+{
+  "type": "node",
+  "id": 12053073029,
+  "lat": 36.8937775,
+  "lon": 30.6895791,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "TONGUÇ CD-10",
+    "public_transport": "platform",
+    "ref": "10380"
+  }
+},
+{
+  "type": "node",
+  "id": 12053073030,
+  "lat": 36.8943746,
+  "lon": 30.6912507,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "TONGUÇ CD-9",
+    "public_transport": "platform",
+    "ref": "10379"
+  }
+},
+{
+  "type": "node",
+  "id": 12053073031,
+  "lat": 36.8850373,
+  "lon": 30.6913049,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "MESLEK LİSESİ",
+    "public_transport": "platform",
+    "ref": "15058"
+  }
+},
+{
+  "type": "node",
+  "id": 12057021592,
+  "lat": 36.8869483,
+  "lon": 30.7271323,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "10442",
+    "public_transport": "platform",
+    "ref": "10442"
+  }
+},
+{
+  "type": "node",
+  "id": 12134202079,
+  "lat": 37.0510834,
+  "lon": 30.6206311,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "D650 Akdeniz Blv-10",
+    "public_transport": "platform",
+    "ref": "14149",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12134202085,
+  "lat": 37.0503613,
+  "lon": 30.6199228,
+  "tags": {
+    "bus": "yes",
+    "departures_board": "no",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "D650 Akdeniz Blv-25",
+    "public_transport": "platform",
+    "ref": "14148",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12242182569,
+  "lat": 36.8989097,
+  "lon": 30.7253137,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "1115 SK-1",
+    "public_transport": "platform",
+    "ref": "12609",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12249057342,
+  "lat": 36.8803273,
+  "lon": 30.7383256,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10528",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12249874203,
+  "lat": 36.8937165,
+  "lon": 30.7274126,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "965 SK-1",
+    "public_transport": "platform",
+    "ref": "12119",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12249883204,
+  "lat": 36.8964023,
+  "lon": 30.7260050,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "965 SK-2",
+    "public_transport": "platform",
+    "ref": "11901",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12249886208,
+  "lat": 36.8961172,
+  "lon": 30.7257850,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "965 SK-3",
+    "public_transport": "platform",
+    "ref": "11488",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12250899040,
+  "lat": 36.8745388,
+  "lon": 30.7321747,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Perge Blv-6",
+    "public_transport": "platform",
+    "ref": "10521",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12252249180,
+  "lat": 36.8826133,
+  "lon": 30.7398242,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "no",
+    "name": "Perge Blv-9",
+    "public_transport": "platform",
+    "ref": "10524",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12252249398,
+  "lat": 36.8770701,
+  "lon": 30.7354470,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "lit": "yes",
+    "name": "Perge Blv-7",
+    "public_transport": "platform",
+    "ref": "11949",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12279634592,
+  "lat": 36.9124875,
+  "lon": 30.7097411,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Gazi̇ Blv-9",
+    "public_transport": "platform",
+    "ref": "11928"
+  }
+},
+{
+  "type": "node",
+  "id": 12281890410,
+  "lat": 36.8858047,
+  "lon": 30.7392577,
+  "tags": {
+    "bench": "yes",
+    "bin": "no",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Perge Blv-1",
+    "public_transport": "platform",
+    "ref": "10526",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12281917547,
+  "lat": 36.8836331,
+  "lon": 30.7394962,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Perge Blv-2",
+    "public_transport": "platform",
+    "ref": "10836",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12620187319,
+  "lat": 36.8706008,
+  "lon": 30.8227362,
+  "tags": {
+    "bin": "no",
+    "bus": "yes",
+    "departures_board": "no",
+    "highway": "bus_stop",
+    "name": "10746",
+    "public_transport": "platform",
+    "ref": "10746",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12620187320,
+  "lat": 36.8702575,
+  "lon": 30.8221085,
+  "tags": {
+    "bin": "no",
+    "bus": "yes",
+    "departures_board": "no",
+    "highway": "bus_stop",
+    "name": "11929",
+    "public_transport": "platform",
+    "ref": "11929",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 12645971088,
+  "lat": 36.8801284,
+  "lon": 30.7384829,
+  "tags": {
+    "highway": "bus_stop",
+    "name": "Perge blv-8",
+    "ref": "10523"
+  }
+},
+{
+  "type": "node",
+  "id": 12646002103,
+  "lat": 36.8802506,
+  "lon": 30.7383208,
+  "tags": {
+    "highway": "bus_stop",
+    "name": "Perge blv-3",
+    "ref": "10528"
+  }
+},
+{
+  "type": "node",
+  "id": 12842229141,
+  "lat": 36.9542090,
+  "lon": 30.6646481,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "16098"
+  }
+},
+{
+  "type": "node",
+  "id": 12842247740,
+  "lat": 36.9550922,
+  "lon": 30.6687504,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "14925"
+  }
+},
+{
+  "type": "node",
+  "id": 12894218496,
+  "lat": 36.9001559,
+  "lon": 30.6336738,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "10725"
+  }
+},
+{
+  "type": "node",
+  "id": 12894251334,
+  "lat": 36.9001559,
+  "lon": 30.6336738,
+  "tags": {
+    "highway": "bus_stop",
+    "ref": "10725"
+  }
+},
+{
+  "type": "node",
+  "id": 13342957856,
+  "lat": 36.8856252,
+  "lon": 30.5554943,
+  "tags": {
+    "bus": "yes",
+    "departures_board": "no",
+    "highway": "bus_stop",
+    "network": "TK51",
+    "public_transport": "platform",
+    "ref": "12618",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736384,
+  "lat": 36.8772446,
+  "lon": 30.4771865,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16182 Geyikbayırı-10",
+    "public_transport": "platform",
+    "ref": "16182"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736385,
+  "lat": 36.8777308,
+  "lon": 30.4799101,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16180 Geyikbayırı-8",
+    "public_transport": "platform",
+    "ref": "16180"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736386,
+  "lat": 36.8776210,
+  "lon": 30.4826972,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16178 Geyikbayırı-6",
+    "public_transport": "platform",
+    "ref": "16178"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736387,
+  "lat": 36.8762531,
+  "lon": 30.4943945,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16176 Geyikbayırı-4",
+    "public_transport": "platform",
+    "ref": "16176"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736388,
+  "lat": 36.8761428,
+  "lon": 30.4589545,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "13984 Geyikbayırı-1",
+    "public_transport": "platform",
+    "ref": "13984"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736389,
+  "lat": 36.8775221,
+  "lon": 30.4735165,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16163 Geyikbayırı-3",
+    "public_transport": "platform",
+    "ref": "16163"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736390,
+  "lat": 36.8710336,
+  "lon": 30.5195948,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16185 Akdamlar-13",
+    "public_transport": "platform",
+    "ref": "16185"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736391,
+  "lat": 36.8693406,
+  "lon": 30.5232201,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11659 Akdamlar-8",
+    "public_transport": "platform",
+    "ref": "11659"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736392,
+  "lat": 36.8672913,
+  "lon": 30.5270031,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "13982 Akdamlar-10",
+    "public_transport": "platform",
+    "ref": "13982"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736393,
+  "lat": 36.8648710,
+  "lon": 30.5289709,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "14835 Akdamlar",
+    "public_transport": "platform",
+    "ref": "14835"
+  }
+},
+{
+  "type": "node",
+  "id": 13373736394,
+  "lat": 36.8607681,
+  "lon": 30.5343965,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "14416 Girne Cd-8",
+    "public_transport": "platform",
+    "ref": "14416"
+  }
+},
+{
+  "type": "node",
+  "id": 13373773232,
+  "lat": 36.8609001,
+  "lon": 30.5410387,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11646 Girne Cd-10",
+    "public_transport": "platform",
+    "ref": "11646"
+  }
+},
+{
+  "type": "node",
+  "id": 13373773233,
+  "lat": 36.8774404,
+  "lon": 30.4772397,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16183 Geyikbayırı-11",
+    "public_transport": "platform",
+    "ref": "16183"
+  }
+},
+{
+  "type": "node",
+  "id": 13373773234,
+  "lat": 36.8775537,
+  "lon": 30.4798847,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16181 Geyikbayırı-9",
+    "public_transport": "platform",
+    "ref": "16181"
+  }
+},
+{
+  "type": "node",
+  "id": 13373773235,
+  "lat": 36.8774977,
+  "lon": 30.4826109,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16179 Geyikbayırı-7",
+    "public_transport": "platform",
+    "ref": "16179"
+  }
+},
+{
+  "type": "node",
+  "id": 13373773236,
+  "lat": 36.8761869,
+  "lon": 30.4947716,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "16177 Geyikbayırı-5",
+    "public_transport": "platform",
+    "ref": "16177"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838270,
+  "lat": 36.8616294,
+  "lon": 30.5361863,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "12672 Girne Cd-7",
+    "public_transport": "platform",
+    "ref": "12672"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838271,
+  "lat": 36.8611645,
+  "lon": 30.5334695,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "14413 Akdamlar-1",
+    "public_transport": "platform",
+    "ref": "14413"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838272,
+  "lat": 36.8632097,
+  "lon": 30.5309696,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11671 Akdamlar-2",
+    "public_transport": "platform",
+    "ref": "11671"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838273,
+  "lat": 36.8673402,
+  "lon": 30.5273220,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "13981 Akdamlar-3",
+    "public_transport": "platform",
+    "ref": "13981"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838274,
+  "lat": 36.8685641,
+  "lon": 30.5250355,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "14414 Akdamlar-4",
+    "public_transport": "platform",
+    "ref": "14414"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838275,
+  "lat": 36.8694610,
+  "lon": 30.5231192,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11670 Akdamlar-5",
+    "public_transport": "platform",
+    "ref": "11670"
+  }
+},
+{
+  "type": "node",
+  "id": 13373838276,
+  "lat": 36.8717934,
+  "lon": 30.5183559,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "11669 Akdamlar-6",
+    "public_transport": "platform",
+    "ref": "11669",
+    "shelter": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105402,
+  "lat": 36.8713941,
+  "lon": 30.6528524,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10536"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105403,
+  "lat": 36.8644558,
+  "lon": 30.6427157,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10515"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105404,
+  "lat": 36.8617065,
+  "lon": 30.6380266,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10514"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105405,
+  "lat": 36.8505968,
+  "lon": 30.6225216,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10511"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105406,
+  "lat": 36.8503755,
+  "lon": 30.6222085,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "19543"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105407,
+  "lat": 36.8475569,
+  "lon": 30.6157328,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14331"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105408,
+  "lat": 36.8362199,
+  "lon": 30.5967748,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14241"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105409,
+  "lat": 36.8361586,
+  "lon": 30.6052085,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12567"
+  }
+},
+{
+  "type": "node",
+  "id": 13664105410,
+  "lat": 36.8438258,
+  "lon": 30.6147342,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13657"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118927,
+  "lat": 36.8580795,
+  "lon": 30.9169969,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14638"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118928,
+  "lat": 36.8581398,
+  "lon": 30.9168586,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14639"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118929,
+  "lat": 36.8582932,
+  "lon": 30.9146551,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11600"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118930,
+  "lat": 36.8582677,
+  "lon": 30.9137780,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11597"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118932,
+  "lat": 36.8587434,
+  "lon": 30.9077555,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11601"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118933,
+  "lat": 36.8587766,
+  "lon": 30.8988026,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11594"
+  }
+},
+{
+  "type": "node",
+  "id": 13664118934,
+  "lat": 36.8587476,
+  "lon": 30.8984477,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11595"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171072,
+  "lat": 36.8813057,
+  "lon": 30.8640074,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11382"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171073,
+  "lat": 36.8813854,
+  "lon": 30.8639238,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12860"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171074,
+  "lat": 36.8829173,
+  "lon": 30.8644841,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12859"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171075,
+  "lat": 36.8829337,
+  "lon": 30.8642709,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11379"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171076,
+  "lat": 36.8968829,
+  "lon": 30.8664650,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11380"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171077,
+  "lat": 36.8970020,
+  "lon": 30.8662279,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12861"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171078,
+  "lat": 36.8942409,
+  "lon": 30.8654557,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14482"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171079,
+  "lat": 36.8920768,
+  "lon": 30.8661974,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11378"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171080,
+  "lat": 36.8916532,
+  "lon": 30.8664173,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12858"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171081,
+  "lat": 36.8923091,
+  "lon": 30.8683228,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14481"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171093,
+  "lat": 36.8920868,
+  "lon": 30.8727648,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14480"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171094,
+  "lat": 36.8891906,
+  "lon": 30.8820785,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14478"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171095,
+  "lat": 36.8786881,
+  "lon": 30.9112472,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10860"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171096,
+  "lat": 36.8773794,
+  "lon": 30.9115665,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11583"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171097,
+  "lat": 36.8769609,
+  "lon": 30.9114882,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12856"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171098,
+  "lat": 36.8758746,
+  "lon": 30.9122351,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12031"
+  }
+},
+{
+  "type": "node",
+  "id": 13664171100,
+  "lat": 36.8752381,
+  "lon": 30.9126294,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14773"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185101,
+  "lat": 36.8752891,
+  "lon": 30.9128985,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12855"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185102,
+  "lat": 36.8756373,
+  "lon": 30.9149993,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11584"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185103,
+  "lat": 36.8755928,
+  "lon": 30.9151476,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12854"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185104,
+  "lat": 36.8736391,
+  "lon": 30.9172325,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14477"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185105,
+  "lat": 36.8666852,
+  "lon": 30.9222599,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13014"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185106,
+  "lat": 36.8663057,
+  "lon": 30.9223907,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14476"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185111,
+  "lat": 36.8614825,
+  "lon": 30.9206797,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11599"
+  }
+},
+{
+  "type": "node",
+  "id": 13664185112,
+  "lat": 36.8612105,
+  "lon": 30.9207420,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11598"
+  }
+},
+{
+  "type": "node",
+  "id": 13665050695,
+  "lat": 37.0110674,
+  "lon": 30.5643824,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14512"
+  }
+},
+{
+  "type": "node",
+  "id": 13665050696,
+  "lat": 37.0110276,
+  "lon": 30.5684518,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14511"
+  }
+},
+{
+  "type": "node",
+  "id": 13665050697,
+  "lat": 37.0110095,
+  "lon": 30.5767026,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14510"
+  }
+},
+{
+  "type": "node",
+  "id": 13665050698,
+  "lat": 37.0117142,
+  "lon": 30.5837345,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14770"
+  }
+},
+{
+  "type": "node",
+  "id": 13665050699,
+  "lat": 37.0121581,
+  "lon": 30.5873725,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "16395"
+  }
+},
+{
+  "type": "node",
+  "id": 13665050700,
+  "lat": 37.0128304,
+  "lon": 30.5899532,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14883"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102847,
+  "lat": 37.0571982,
+  "lon": 30.5620384,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11609"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102860,
+  "lat": 37.0569990,
+  "lon": 30.5637119,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14518"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102861,
+  "lat": 37.0568257,
+  "lon": 30.5637899,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13958"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102862,
+  "lat": 37.0496612,
+  "lon": 30.5611515,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11610"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102863,
+  "lat": 37.0493628,
+  "lon": 30.5607384,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12717"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102864,
+  "lat": 37.0471048,
+  "lon": 30.5587932,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11611"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102865,
+  "lat": 37.0471188,
+  "lon": 30.5589459,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12716"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102866,
+  "lat": 37.0449439,
+  "lon": 30.5578574,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14110"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102867,
+  "lat": 37.0446238,
+  "lon": 30.5575622,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14109"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102868,
+  "lat": 37.0429703,
+  "lon": 30.5569770,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12715"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102869,
+  "lat": 37.0430135,
+  "lon": 30.5568541,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11612"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102870,
+  "lat": 37.0401954,
+  "lon": 30.5562370,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11613"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102871,
+  "lat": 37.0400319,
+  "lon": 30.5563844,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12714"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102872,
+  "lat": 37.0381673,
+  "lon": 30.5555850,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14516"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102873,
+  "lat": 37.0379719,
+  "lon": 30.5551834,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14517"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102874,
+  "lat": 37.0363138,
+  "lon": 30.5550088,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11614"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102875,
+  "lat": 37.0346025,
+  "lon": 30.5533271,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12719"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102876,
+  "lat": 37.0315490,
+  "lon": 30.5512815,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11615"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102877,
+  "lat": 37.0317032,
+  "lon": 30.5510912,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12720"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102878,
+  "lat": 37.0302311,
+  "lon": 30.5499312,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12722"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102879,
+  "lat": 37.0303532,
+  "lon": 30.5497438,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12721"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102880,
+  "lat": 37.0285146,
+  "lon": 30.5470545,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12723"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102881,
+  "lat": 37.0283587,
+  "lon": 30.5471421,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12724"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102882,
+  "lat": 37.0260642,
+  "lon": 30.5409662,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13705"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102883,
+  "lat": 37.0262320,
+  "lon": 30.5409837,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13700"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102884,
+  "lat": 37.0251106,
+  "lon": 30.5384701,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11903"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102885,
+  "lat": 37.0252665,
+  "lon": 30.5384827,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12725"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102886,
+  "lat": 37.0250184,
+  "lon": 30.5338203,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12727"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102887,
+  "lat": 37.0249108,
+  "lon": 30.5336356,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12726"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102888,
+  "lat": 37.0253854,
+  "lon": 30.5304735,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11616"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102889,
+  "lat": 37.0284067,
+  "lon": 30.5286857,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14847"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102890,
+  "lat": 37.0270163,
+  "lon": 30.5269104,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14846"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102891,
+  "lat": 37.0254606,
+  "lon": 30.5506734,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14515"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102892,
+  "lat": 37.0223777,
+  "lon": 30.5496279,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "16282"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102893,
+  "lat": 37.0148011,
+  "lon": 30.5552619,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14514"
+  }
+},
+{
+  "type": "node",
+  "id": 13665102894,
+  "lat": 37.0134840,
+  "lon": 30.5589559,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14513"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147301,
+  "lat": 37.0117730,
+  "lon": 30.5911328,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14186"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147302,
+  "lat": 37.0115397,
+  "lon": 30.5912656,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14187"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147303,
+  "lat": 37.0100324,
+  "lon": 30.5902461,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14576"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147304,
+  "lat": 37.0098335,
+  "lon": 30.5904055,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14575"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147305,
+  "lat": 37.0085277,
+  "lon": 30.5895591,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14577"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147306,
+  "lat": 37.0079577,
+  "lon": 30.5896252,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14574"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147307,
+  "lat": 37.0065051,
+  "lon": 30.5888081,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14578"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147308,
+  "lat": 37.0062027,
+  "lon": 30.5889573,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14573"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147309,
+  "lat": 37.0040624,
+  "lon": 30.5897868,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11619"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147310,
+  "lat": 37.0040074,
+  "lon": 30.5899857,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13839"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147311,
+  "lat": 37.0022972,
+  "lon": 30.5896483,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13838"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147312,
+  "lat": 37.0020721,
+  "lon": 30.5897232,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11620"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147313,
+  "lat": 36.9998322,
+  "lon": 30.5881079,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13836"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147314,
+  "lat": 36.9997448,
+  "lon": 30.5881619,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13837"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147315,
+  "lat": 36.9974378,
+  "lon": 30.5848534,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11621"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147316,
+  "lat": 36.9973270,
+  "lon": 30.5849312,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13957"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147318,
+  "lat": 36.9945296,
+  "lon": 30.5830996,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "16381"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147319,
+  "lat": 36.9895724,
+  "lon": 30.5800742,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14509"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147320,
+  "lat": 36.9890606,
+  "lon": 30.5796682,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11622"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147321,
+  "lat": 36.9893083,
+  "lon": 30.5740329,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11623"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147322,
+  "lat": 36.9892237,
+  "lon": 30.5734852,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13643"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147323,
+  "lat": 36.9888056,
+  "lon": 30.5698542,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11624"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147324,
+  "lat": 36.9885697,
+  "lon": 30.5695489,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14508"
+  }
+},
+{
+  "type": "node",
+  "id": 13665147325,
+  "lat": 36.9847676,
+  "lon": 30.5672615,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14507"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491591,
+  "lat": 37.0144560,
+  "lon": 30.5923828,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14884"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491592,
+  "lat": 37.0144072,
+  "lon": 30.5926123,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14885"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491593,
+  "lat": 37.0163116,
+  "lon": 30.5936306,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14185"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491594,
+  "lat": 37.0165860,
+  "lon": 30.5935293,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14184"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491595,
+  "lat": 37.0206064,
+  "lon": 30.5957662,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14182"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491596,
+  "lat": 37.0204527,
+  "lon": 30.5959754,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14183"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491597,
+  "lat": 37.0232868,
+  "lon": 30.5976330,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13780"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491598,
+  "lat": 37.0233937,
+  "lon": 30.5978166,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13781"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491599,
+  "lat": 37.0239913,
+  "lon": 30.5908679,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14571"
+  }
+},
+{
+  "type": "node",
+  "id": 13665491600,
+  "lat": 37.0227252,
+  "lon": 30.5857336,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "12712"
+  }
+},
+{
+  "type": "node",
+  "id": 13665511701,
+  "lat": 37.0251871,
+  "lon": 30.5746508,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13723"
+  }
+},
+{
+  "type": "node",
+  "id": 13665511702,
+  "lat": 37.0298570,
+  "lon": 30.5680780,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "13722"
+  }
+},
+{
+  "type": "node",
+  "id": 13665511703,
+  "lat": 37.0317464,
+  "lon": 30.5644463,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "14180"
+  }
+},
+{
+  "type": "node",
+  "id": 13665511704,
+  "lat": 37.0345091,
+  "lon": 30.5591803,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11617"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173411,
+  "lat": 36.8924393,
+  "lon": 30.6786943,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10384"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173412,
+  "lat": 36.8922911,
+  "lon": 30.6769610,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10356"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173413,
+  "lat": 36.8923228,
+  "lon": 30.6817712,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10358"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173414,
+  "lat": 36.8925588,
+  "lon": 30.6816316,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10383"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173415,
+  "lat": 36.8926566,
+  "lon": 30.6845284,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10359"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173416,
+  "lat": 36.8928671,
+  "lon": 30.6842125,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11747"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173417,
+  "lat": 36.8927929,
+  "lon": 30.6863792,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10360"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173418,
+  "lat": 36.8930235,
+  "lon": 30.6868950,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "10381"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173419,
+  "lat": 36.8949360,
+  "lon": 30.6937304,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11250"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173420,
+  "lat": 36.8951920,
+  "lon": 30.6940558,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11293"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173421,
+  "lat": 36.8987386,
+  "lon": 30.6996536,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11253"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173422,
+  "lat": 36.8989067,
+  "lon": 30.6995420,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11266"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173423,
+  "lat": 36.9001213,
+  "lon": 30.7008796,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11254"
+  }
+},
+{
+  "type": "node",
+  "id": 13682173424,
+  "lat": 36.9002965,
+  "lon": 30.7007289,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "public_transport": "platform",
+    "ref": "11265"
+  }
+}
+
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-04-21T17:01:53Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "relation",
+  "id": 2968075,
+  "tags": {
+    "from": "Havalimanı",
+    "name": "600 Havalimanı - Terminal",
+    "name:en": "600 Airportline",
+    "network": "Antalya",
+    "operator": "ANTALYA BÜYÜKŞEHİR BELEDİYESİ",
+    "ref": "600",
+    "route": "bus",
+    "to": "Terminal",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 9983476,
+  "tags": {
+    "ref": "LF08, LF09, KL08",
+    "route": "bus",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 13249018,
+  "tags": {
+    "from": "Organize Sanayi",
+    "name": "DC15 Organize Sanayi - Meydan",
+    "operator": "Antalya Ulaşım AŞ",
+    "ref": "DC15",
+    "route": "bus",
+    "to": "Meydan",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 13249064,
+  "tags": {
+    "from": "Varsak Depolama",
+    "name": "VF63 Varsak Depolama - Eğitim araştırma Hastanesi",
+    "operator": "Antalya Ulaşım AŞ",
+    "ref": "VF63",
+    "route": "bus",
+    "to": "Eğitim araştırma Hastanesi",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 13270806,
+  "tags": {
+    "from": "Havalimanı",
+    "name": "HAVAŞ Havalimanı - Şehir Mekezi",
+    "operator": "Antalya Ulaşım",
+    "ref": "HAVAŞ",
+    "route": "bus",
+    "to": "Şehir Mekezi",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 14718871,
+  "tags": {
+    "from": "GÜRSU DEPLOMA",
+    "name": "GURSU - KONYAALTI SAHIL",
+    "ref": "104",
+    "route": "bus",
+    "to": "MİGROS",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 15926990,
+  "tags": {
+    "duration": "01:45",
+    "from": "Kemer",
+    "interval": "20",
+    "name": "Kemer => Göynuk => Beldibi => Antalya",
+    "public_transport:version": "2",
+    "ref": "Autogar",
+    "route": "bus",
+    "to": "Antalya Autogar",
+    "type": "route",
+    "via": "Göynuk;Beldibi"
+  }
+},
+{
+  "type": "relation",
+  "id": 15926991,
+  "tags": {
+    "duration": "01:45",
+    "from": "Antalya Autogar",
+    "interval": "20",
+    "name": "Antalya => Beldibi => Göynuk => Kemer",
+    "public_transport:version": "2",
+    "route": "bus",
+    "to": "Kemer",
+    "type": "route",
+    "via": "Beldibi;Göynuk"
+  }
+},
+{
+  "type": "relation",
+  "id": 16018025,
+  "tags": {
+    "from": "Sarısu",
+    "name": "UC32: Sarısu - Demirciler Çarşısı",
+    "public_transport:version": "2",
+    "ref": "UC32",
+    "route": "bus",
+    "to": "Demirciler Çarşısı",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 16019081,
+  "tags": {
+    "from": "Demirciler Çarşısı",
+    "name": "UC32: Demirciler Çarşısı - Sarısu",
+    "public_transport:version": "2",
+    "ref": "UC32",
+    "route": "bus",
+    "to": "Sarısu",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 16050582,
+  "tags": {
+    "from": "Varsak",
+    "name": "Varsak → Sarisu Depolama",
+    "public_transport:version": "2",
+    "ref": "VS18",
+    "route": "bus",
+    "to": "Sarisu Depolama",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 16050583,
+  "tags": {
+    "from": "Sarısu Depolama",
+    "name": "Sarisu Depolama - Varsak",
+    "operator": "Antalya Ulaşım",
+    "public_transport:version": "2",
+    "ref": "VS18",
+    "route": "bus",
+    "to": "Varsak",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 18230942,
+  "tags": {
+    "from": "Sarisu Depolama",
+    "public_transport:version": "2",
+    "ref": "KL08",
+    "route": "bus",
+    "to": "Guzeloba",
+    "type": "route"
+  }
+},
+{
+  "type": "relation",
+  "id": 18238372,
+  "tags": {
+    "from": "Guzeloba",
+    "operator": "Antobüs",
+    "public_transport:version": "2",
+    "ref": "KL08",
+    "route": "bus",
+    "to": "Sarisu Depolama",
+    "type": "route"
+  }
+}
+
+  ]
+}
