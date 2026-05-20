@@ -1419,6 +1419,34 @@
       <div id="filterSheetList" style="padding:8px 12px 16px;"></div>
     </div>
 
+    <!-- In-App PDF-Modal -->
+    <div id="pdfModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.9);flex-direction:column;">
+      <div style="background:var(--bg2);display:flex;flex-direction:column;width:100%;height:100%;height:-webkit-fill-available;">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0;">
+          <button onclick="closePdfModal()" style="background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:0;line-height:1;">✕</button>
+          <span id="pdfModalTitle" style="font-weight:700;font-size:15px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);"></span>
+          <a id="pdfModalExtLink" href="#" target="_blank" style="background:none;border:none;color:var(--gold2);font-size:12px;text-decoration:none;white-space:nowrap;padding:4px 8px;border:1px solid var(--gold2);border-radius:8px;">↗ öffnen</a>
+        </div>
+        <div id="pdfFrameWrap" style="flex:1;width:100%;min-height:0;position:relative;background:#1a1a2e;">
+          <iframe id="pdfEmbed" src="" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>
+          <div id="pdfLoader" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a2e;gap:12px;">
+            <div style="width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin 1s linear infinite;"></div>
+            <span style="color:var(--text2);font-size:13px;">Karte wird geladen…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liniennetz-Auswahl-Sheet -->
+    <div id="netMapBackdrop" onclick="closeNetMapSheet()" style="display:none;position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,.5);"></div>
+    <div id="netMapSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:8501;background:var(--bg2);border-radius:20px 20px 0 0;border-top:2px solid var(--gold);max-height:70vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px);transform:translateY(100%);transition:transform .35s cubic-bezier(.32,0,.67,0);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1;">
+        <span style="font-weight:700;font-size:15px;color:var(--gold2);">🗺️ Liniennetz wählen</span>
+        <button onclick="closeNetMapSheet()" style="background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;line-height:1;">✕</button>
+      </div>
+      <div id="netMapList" style="padding:8px 12px 20px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
     <!-- In-App Karten-Modal -->
     <div id="mapModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);flex-direction:column;">
       <div style="background:var(--bg2);display:flex;flex-direction:column;width:100%;height:100%;height:-webkit-fill-available;">
@@ -1523,18 +1551,20 @@ let _mapModalIsTransit = false;
 let _activeTransitMode = '';
 
 // ══════════════════════════════════════════════════════════
-//  GEOCODING (Nominatim — kostenlos)
+//  GEOCODING (Photon — kein Rate-Limit, CORS-sicher)
 // ══════════════════════════════════════════════════════════
 async function geocodeCity(cityName) {
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityName)}&format=json&limit=1`;
-  const res = await fetch(url, { headers: { 'Accept-Language': 'de' } });
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(cityName)}&limit=1&lang=de`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Geocoding-Fehler: ' + res.status);
   const data = await res.json();
-  if (!data.length) throw new Error('Stadt nicht gefunden. Bitte prüfe die Schreibweise.');
+  if (!data.features || !data.features.length) throw new Error('Stadt nicht gefunden. Bitte prüfe die Schreibweise.');
+  const f = data.features[0];
   return {
-    lat: parseFloat(data[0].lat),
-    lng: parseFloat(data[0].lon),
-    displayName: data[0].display_name.split(',')[0],
-    country: data[0].display_name.split(',').slice(-1)[0].trim(),
+    lat: f.geometry.coordinates[1],
+    lng: f.geometry.coordinates[0],
+    displayName: f.properties.name || cityName,
+    country: f.properties.country || '',
   };
 }
 
@@ -2075,7 +2105,10 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (Metro-Eingänge)', '📱 T-mobilitat App', '🏪 Tabakläden (Estancos)', '🌐 tmb.cat'],
       tip: '💡 T-Casual kaufen — spart 55% gegenüber Einzelfahrten!',
-      networkMap: { url: 'https://www.tmb.cat/en/barcelona-transport/map/metro', label: 'TMB Metro-Netzplan' },
+      networkMaps: [
+        { label: '🚇 Metro-Netzplan', url: 'maps/barcelona/metro.pdf' },
+      ],
+      gtfsJson: 'maps/barcelona/',
     },
     'madrid': {
       operator: 'Metro Madrid / EMT',
@@ -2093,6 +2126,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro)', '📱 Metro Madrid App', '🌐 metromadrid.es'],
       tip: '💡 Für Kurztrips: Tourist Ticket 3T schlägt Einzelfahrten ab 3 Trips/Tag.',
       networkMap: { url: 'https://www.metromadrid.es/en/travel-in-the-metro/metro-de-madrid-maps', label: 'Metro Madrid Netzplan' },
+      gtfsJson: 'maps/madrid/',
     },
     'paris': {
       operator: 'RATP / Île-de-France Mobilités',
@@ -2112,6 +2146,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Métro/RER)', '📱 Bonjour RATP App', '🏪 Tabakläden', '🌐 ratp.fr'],
       tip: '💡 Paris Visite lohnt sich ab 5 Fahrten/Tag. Navigo Easy für Gelegenheitsnutzer.',
       networkMap: { url: 'https://www.ratp.fr/sites/default/files/plans-lignes/Plans-essentiels/Plan-Metro.1736413859.pdf', label: 'RATP Métro-Plan (PDF)' },
+      gtfsJson: 'maps/paris/',
     },
     'london': {
       operator: 'Transport for London (TfL)',
@@ -2145,6 +2180,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (U/S-Bahn)', '📱 BVG Jelbi App', '🏪 Einzelhandel', '🌐 bvg.de'],
       tip: '💡 Tageskarte ab 3 Fahrten günstiger als Einzeltickets.',
       networkMap: { url: 'https://www.bvg.de/dam/jcr:60a89e3b-f88d-4d48-b8a6-98ab340ada05/S_U-Bahn_07_2024_Internetversion_BVG.pdf', label: 'BVG Netzplan S+U (PDF)' },
+      gtfsJson: 'maps/berlin/',
     },
     'munich': {
       operator: 'MVV / MVG München',
@@ -2162,6 +2198,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (U/S-Bahn)', '📱 MVV App', '🏪 Tabakläden', '🌐 mvv-muenchen.de'],
       tip: '💡 Partnerkarte: 5 Personen für 17,80 € — ideal für Familien!',
       networkMap: { url: 'https://www.mvv-muenchen.de/fileadmin/mediapool/03-Plaene_Bahnhoefe/Netzplaene/Downloads_2025/2025_layout_SURTX_M_SCR.pdf', label: 'MVV Netzplan (PDF)' },
+      gtfsJson: 'maps/munich/',
     },
     'vienna': {
       operator: 'Wiener Linien / WienMobil',
@@ -2180,7 +2217,13 @@ const TRANSIT_DB = {
       ],
       buyAt: ['🏧 Automaten (U-Bahn)', '📱 WienMobil App', '🏪 Trafik', '🌐 wienerlinien.at'],
       tip: '💡 72h-Karte ist das beste Preis-Leistungs-Verhältnis für 3-Tage-Trips.',
-      networkMap: { url: 'https://www.wienerlinien.at/web/wl-en/network-maps', label: 'Wiener Linien Netzplan' },
+      networkMaps: [
+        { label: '🗺️ U-Bahn & S-Bahn', url: 'maps/wien/ubahn-sbahn.pdf' },
+        { label: '🌞 Tagesnetz',         url: 'maps/wien/tagesnetz.pdf' },
+        { label: '🌙 Nachtlinien',       url: 'maps/wien/nachtlinien.pdf' },
+        { label: '🏙️ Innenstadtservice', url: 'maps/wien/innenstadtservice.pdf' },
+      ],
+      gtfsJson: 'maps/wien/',
     },
     'rome': {
       operator: 'ATAC Roma',
@@ -2198,6 +2241,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro A & B)', '📱 MyCicero App', '🏪 Tabaccherie', '🌐 atac.roma.it'],
       tip: '💡 Rom hat günstigste Einzeltickets Europas. Tageskarte ab 6 Fahrten sinnvoll.',
       networkMap: { url: 'https://www.atac.roma.it/en/utility/maps', label: 'ATAC Roma Netzplan' },
+      gtfsJson: 'maps/rome/',
     },
     'amsterdam': {
       operator: 'GVB Amsterdam',
@@ -2215,6 +2259,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro/Tram)', '📱 GVB App', '🏪 GVB Service-Punkte', '💳 Bankkarte direkt eintappen'],
       tip: '💡 Einfach Bankkarte/Handy antappen — OVpay, kein Ticket kaufen nötig!',
       networkMap: { url: 'https://www.gvb.nl/en/gvb-maps', label: 'GVB Amsterdam Netzplan' },
+      gtfsJson: 'maps/amsterdam/',
     },
     'lisbon': {
       operator: 'Carris / Metro Lisboa',
@@ -2232,6 +2277,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro)', '📱 Carris App', '🏪 Zeitungskioske', '🌐 metrolisboa.pt'],
       tip: '💡 Lisboa Card lohnt bei Museumsbesuchen — Transport + 36 Sehenswürdigkeiten inklusive.',
       networkMap: { url: 'https://www.metrolisboa.pt/en/travel/diagrams-and-maps/', label: 'Metro Lisboa Netzplan' },
+      gtfsJson: 'maps/lisbon/',
     },
     'prague': {
       operator: 'DPP Praha',
@@ -2248,6 +2294,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro)', '📱 Lítačka App (5% günstiger)', '🏪 DPP-Büros', '🌐 dpp.cz'],
       tip: '💡 Lítačka App nutzen — 5% Rabatt gegenüber Automat.',
       networkMap: { url: 'https://www.dpp.cz/en/timetables/traffic-scheme', label: 'DPP Praha Netzplan' },
+      gtfsJson: 'maps/prague/',
     },
     'budapest': {
       operator: 'BKK Budapest',
@@ -2264,6 +2311,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro)', '📱 BudapestGO App', '🏪 Ticket-Kioske', '🌐 bkk.hu'],
       tip: '💡 72h-Ticket: bestes Preis-Leistungs-Verhältnis für Wochenend-Trips.',
       networkMap: { url: 'https://bkk.hu/en/journey-planning/maps/', label: 'BKK Budapest Netzplan' },
+      gtfsJson: 'maps/budapest/',
     },
     'istanbul': {
       operator: 'IETT / Belbim',
@@ -2293,6 +2341,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (SBB/ZVV)', '📱 ZVV-App', '🌐 sbb.ch'],
       tip: '💡 Zürich ist teuer — Swiss Travel Pass lohnt sich für Schweizreisen.',
       networkMap: { url: 'https://www.zvv.ch/en/timetable-and-information/network.html', label: 'ZVV Zürich Netzplan' },
+      gtfsJson: 'maps/zurich/',
     },
     'dubai': {
       operator: 'RTA Dubai (Nol Card)',
@@ -2310,6 +2359,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro/Tram)', '📱 S\'hail App', '🏪 Carrefour / Supermarkets', '🌐 rta.ae'],
       tip: '💡 Nol Silver Card kaufen — günstiger, und der Tageslimit von 14 AED gilt automatisch.',
       networkMap: { url: 'https://www.rta.ae/wps/portal/rta/ae/public-transport/networks-routes/metro', label: 'RTA Dubai Metro Netzplan' },
+      gtfsJson: 'maps/dubai/',
     },
     'new york': {
       operator: 'MTA New York',
@@ -2325,6 +2375,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Subway)', '📱 MYmta App', '🌐 mta.info', '💳 Bankkarte direkt antappen (OMNY)'],
       tip: '💡 Einfach Kreditkarte/Handy antappen (OMNY) — kein Ticket-Kauf nötig. 7-Tage-Cap: $ 34.',
       networkMap: { url: 'https://www.datocms-assets.com/21037/1580335134-subwaymap.pdf', label: 'MTA New York Subway Map (PDF)' },
+      gtfsJson: 'maps/new-york/',
     },
     'tokyo': {
       operator: 'Tokyo Metro / Toei / JR East',
@@ -2356,6 +2407,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Tram-Haltestellen)', '📱 Antalyakart Mobil App', '🏪 Kioske & Supermärkte'],
       tip: '💡 Antalyakart kaufen — günstiger als Einzelticket und an allen Haltestellen aufladbar.',
       networkMap: { url: 'https://www.antalya.bel.tr/hizmetler/ulasim', label: 'Antalya ÖPNV Karte' },
+      gtfsJson: 'maps/antalya/',
     },
     'marseille': {
       operator: 'RTM — Régie des Transports Métropolitains',
@@ -2376,6 +2428,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (Metro-Stationen)', '📱 RTM App', '🏪 Tabakläden', '🌐 rtm.fr'],
       tip: '💡 Kinder unter 11 Jahren fahren kostenlos. 72h-Ticket beste Wahl für Kurztrips.',
       networkMap: { url: 'https://www.rtm.fr/sites/default/files/Plans/plan-reseau-rtm.pdf', label: 'RTM Marseille Netzplan (PDF)' },
+      gtfsJson: 'maps/marseille/',
     },
     'rotterdam': {
       operator: 'RET Rotterdam',
@@ -2394,6 +2447,7 @@ const TRANSIT_DB = {
       buyAt: ['📱 RET App', '💳 OVpay (Bankkarte/Apple Pay direkt)', '🏪 RET Service Points', '🏧 Automaten'],
       tip: '💡 OVpay: einfach Bankkarte antappen — automatischer Tageslimit, kein Ticket nötig!',
       networkMap: { url: 'https://www.ret.nl/en/home/travelling-with-the-ret/maps.html', label: 'RET Rotterdam Netzplan' },
+      gtfsJson: 'maps/rotterdam/',
     },
     'oslo': {
       operator: 'Ruter Oslo',
@@ -2409,6 +2463,7 @@ const TRANSIT_DB = {
       buyAt: ['📱 Ruter App (empfohlen)', '🏧 Automaten (T-Bane)', '🏪 Kioske (Narvesen, 7-Eleven)', '🌐 ruter.no'],
       tip: '💡 Ruter App nutzen — Tickets sofort verfügbar, keine Warteschlange.',
       networkMap: { url: 'https://ruter.no/en/plan-journey/timetables-and-route-maps/', label: 'Ruter Oslo Netzplan' },
+      gtfsJson: 'maps/oslo/',
     },
     'copenhagen': {
       operator: 'DOT — Din Offentlige Transport (Movia / Metro / DSB)',
@@ -2426,6 +2481,7 @@ const TRANSIT_DB = {
       buyAt: ['📱 Rejsebillet App (empfohlen)', '🏧 Automaten (Metro/S-Tog)', '💳 Rejsekort-Karte', '🌐 publictransport.dk'],
       tip: '💡 Kinder unter 11 Jahren fahren kostenlos (mit Erwachsenem). 20% Rabatt außerhalb der Stoßzeiten.',
       networkMap: { url: 'https://dinoffentligetransport.dk/en/plan-your-journey/zone-and-line-maps', label: 'DOT København Netzplan' },
+      gtfsJson: 'maps/copenhagen/',
     },
     'hamburg': {
       operator: 'HVV — Hamburger Verkehrsverbund',
@@ -2445,6 +2501,7 @@ const TRANSIT_DB = {
       buyAt: ['📱 hvv switch App (7% Rabatt)', '🏧 Automaten (U/S-Bahn)', '🏪 Einzelhandel', '🌐 hvv.de'],
       tip: '💡 hvv switch App nutzen — 7% günstiger als am Automaten. Tageskarte ab 2 Fahrten rentabel.',
       networkMap: { url: 'https://www.hvv.de/en/timetables/overview', label: 'HVV Hamburg Netzplan' },
+      gtfsJson: 'maps/hamburg/',
     },
     'singapore': {
       operator: 'SMRT / TransitLink',
@@ -2462,6 +2519,7 @@ const TRANSIT_DB = {
       buyAt: ['🏧 Automaten (MRT)', '📱 SimplyGo App', '🏪 7-Eleven / Cheers', '💳 Bankkarte antappen'],
       tip: '💡 SimplyGo: Kreditkarte direkt nutzen, automatisch günstigster Tarif.',
       networkMap: { url: 'https://www.lta.gov.sg/content/dam/ltagov/getting_around/public_transport/rail_network/pdf/SM_Eng_(Ver280225)_Hume.pdf', label: 'LTA Singapore Rail Map (PDF)' },
+      gtfsJson: 'maps/singapore/',
     },
   },
 };
@@ -2512,7 +2570,10 @@ function openTicketSheet() {
       </a>
       ${data.networkMap ? `<a href="${data.networkMap.url}" target="_blank" class="ticket-website-btn" style="margin-top:8px;background:var(--bg3);border:1.5px solid var(--border);color:var(--text);">
         🗺️ ${data.networkMap.label} →
-      </a>` : ''}`;
+      </a>` : ''}
+      ${data.networkMaps ? `<button onclick="closeTicketSheet();openTransitNetworkMap();" class="ticket-website-btn" style="margin-top:8px;background:var(--bg3);border:1.5px solid var(--border);color:var(--text);cursor:pointer;text-align:left;width:100%;">
+        🗺️ Liniennetz anzeigen →
+      </button>` : ''}`;
   }
 
   document.getElementById('ticketSheet').classList.add('open');
@@ -2790,7 +2851,67 @@ function loadMapEmbed(transitMode) {
   document.getElementById('mapEmbed').src = url;
 }
 
+function openPdfViewer(url, label) {
+  if (!url) { alert('Diese Karte ist noch nicht verfügbar.'); return; }
+  document.getElementById('pdfModalTitle').textContent = label;
+  document.getElementById('pdfModalExtLink').href = url;
+  const loader = document.getElementById('pdfLoader');
+  loader.style.display = 'flex';
+  const frame = document.getElementById('pdfEmbed');
+  frame.src = '';
+  const modal = document.getElementById('pdfModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  frame.onload = () => { loader.style.display = 'none'; };
+  frame.onerror = () => { loader.style.display = 'none'; };
+  frame.src = url;
+  // Fallback: hide loader after 8s regardless
+  setTimeout(() => { loader.style.display = 'none'; }, 8000);
+}
+
+function closePdfModal() {
+  const modal = document.getElementById('pdfModal');
+  modal.style.display = 'none';
+  document.getElementById('pdfEmbed').src = '';
+  document.body.style.overflow = '';
+}
+
+function openNetMapSheet() {
+  const data = findTransitData(currentCity || '');
+  if (!data || !data.networkMaps) return;
+  const list = document.getElementById('netMapList');
+  list.innerHTML = data.networkMaps.map(m => `
+    <button onclick="closeNetMapSheet();openPdfViewer('${m.url.replace(/'/g,"\\'")}','${m.label.replace(/'/g,"\\'")}');"
+      style="width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;font-weight:600;color:${m.url ? 'var(--text)' : 'var(--text3)'};cursor:${m.url ? 'pointer' : 'default'};display:flex;align-items:center;justify-content:space-between;">
+      <span>${m.label}</span>
+      ${m.url ? '<span style="color:var(--gold2);font-size:16px;">›</span>' : '<span style="color:var(--text3);font-size:11px;">bald</span>'}
+    </button>`).join('');
+  const sheet = document.getElementById('netMapSheet');
+  const backdrop = document.getElementById('netMapBackdrop');
+  sheet.style.display = 'block';
+  backdrop.style.display = 'block';
+  requestAnimationFrame(() => { sheet.style.transform = 'translateY(0)'; });
+}
+
+function closeNetMapSheet() {
+  const sheet = document.getElementById('netMapSheet');
+  sheet.style.transform = 'translateY(100%)';
+  document.getElementById('netMapBackdrop').style.display = 'none';
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
 function openTransitNetworkMap() {
+  const data = findTransitData(currentCity || '');
+  // GTFS interaktive Karte wenn vorhanden
+  if (data && data.gtfsJson) {
+    loadGtfsMap(data.gtfsJson);
+    return;
+  }
+  // PDF-Auswahl wenn vorhanden
+  if (data && data.networkMaps) {
+    openNetMapSheet();
+    return;
+  }
   document.getElementById('mapModalTitle').textContent = '🗺️ Liniennetz ' + currentCity;
   document.getElementById('transitBar').style.display = 'none';
   // iframe ausblenden, eigene Karte verwenden
@@ -2951,6 +3072,175 @@ out body ${250};`;
   } catch(e) {
     console.warn('Haltestellen konnten nicht geladen werden', e);
   }
+}
+
+// ══════════════════════════════════════════════════════════
+//  GTFS INTERAKTIVE KARTE
+// ══════════════════════════════════════════════════════════
+let _gtfsData = null;
+let _gtfsRouteLayer = null;
+let _gtfsStopLayer  = null;
+
+async function loadGtfsMap(basePath) {
+  document.getElementById('mapModalTitle').textContent = '🚇 Liniennetz ' + currentCity;
+  document.getElementById('transitBar').style.display = 'none';
+  const frame = document.getElementById('mapEmbed');
+  frame.style.display = 'none';
+
+  let container = document.getElementById('transitNetMap');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'transitNetMap';
+    container.style.cssText = 'flex:1;width:100%;min-height:0;';
+    frame.parentNode.insertBefore(container, frame);
+  }
+  container.style.display = 'block';
+  container.innerHTML = '';
+
+  // Info-Panel (Haltestelle Detail)
+  let stopPanel = document.getElementById('stopDetailPanel');
+  if (!stopPanel) {
+    stopPanel = document.createElement('div');
+    stopPanel.id = 'stopDetailPanel';
+    stopPanel.style.cssText = 'display:none;background:var(--bg2);border-top:1px solid var(--border);padding:12px 14px;max-height:40vh;overflow-y:auto;flex-shrink:0;';
+    frame.parentNode.appendChild(stopPanel);
+  } else { stopPanel.style.display = 'none'; stopPanel.innerHTML = ''; }
+
+  document.getElementById('mapModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // Ladeanzeige
+  container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;gap:12px;flex-direction:column;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin 1s linear infinite;"></div><span style="color:var(--text2);font-size:13px;">GTFS-Daten laden…</span></div>';
+
+  try {
+    if (!_gtfsData || _gtfsData.base !== basePath) {
+      const [stops, routes, stopRoutes, shapes] = await Promise.all([
+        fetch(basePath + 'stops.json').then(r => r.json()),
+        fetch(basePath + 'routes.json').then(r => r.json()),
+        fetch(basePath + 'stop_routes.json').then(r => r.json()),
+        fetch(basePath + 'shapes.json').then(r => r.json()),
+      ]);
+      // Route-ID → route object lookup
+      const routeById = {};
+      routes.forEach(r => { routeById[r.id] = r; });
+      // Route-Name → route object
+      const routeByName = {};
+      routes.forEach(r => { routeByName[r.name] = r; });
+      _gtfsData = { base: basePath, stops, routes, stopRoutes, shapes, routeById, routeByName };
+    }
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--text2);padding:24px;text-align:center;">Fehler beim Laden der GTFS-Daten.</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  if (window._transitMap) { window._transitMap.remove(); window._transitMap = null; }
+
+  const lat = currentLat || 48.2, lng = currentLng || 16.37;
+  const map = L.map('transitNetMap', { zoomControl: true, preferCanvas: true }).setView([lat, lng], 13);
+  window._transitMap = map;
+
+  // Basiskarte
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '© Esri, © OpenStreetMap', maxZoom: 19,
+  }).addTo(map);
+  // Straßennamen als Overlay
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', {
+    attribution: '', maxZoom: 19, opacity: 0.8,
+  }).addTo(map);
+
+  // Eigener Standort
+  if (userGpsLat && userGpsLng) {
+    L.marker([userGpsLat, userGpsLng], {
+      icon: L.divIcon({ className:'', html:'<div style="font-size:22px;">📍</div>', iconAnchor:[11,22] })
+    }).addTo(map).bindPopup('Dein Standort');
+  }
+
+  // Routen-Layer (wird bei Klick befüllt)
+  _gtfsRouteLayer = L.layerGroup().addTo(map);
+
+  // Haltestellen als Canvas-Circles
+  _gtfsStopLayer = L.layerGroup().addTo(map);
+  const { stops, stopRoutes, routeByName } = _gtfsData;
+
+  const typeColor = { 0:'#FB8C00', 1:'#E53935', 2:'#43A047', 3:'#1E88E5', 4:'#00ACC1', 11:'#8E24AA', 12:'#8E24AA' };
+
+  stops.forEach(s => {
+    const lines = stopRoutes[s.id] || [];
+    if (!lines.length) return;
+    // Farbe: wichtigste Linie bestimmt Farbe
+    let color = '#888';
+    for (const name of lines) {
+      const r = routeByName[name];
+      if (r) { color = typeColor[r.type] || r.color || '#888'; break; }
+    }
+    const circle = L.circleMarker([s.lat, s.lng], {
+      radius: 7, color: '#fff', weight: 1.5,
+      fillColor: color, fillOpacity: 0.9,
+    });
+    circle.on('click', () => showGtfsStopDetail(s, lines));
+    circle.addTo(_gtfsStopLayer);
+  });
+
+}
+
+function showGtfsStopDetail(stop, lineNames) {
+  const panel = document.getElementById('stopDetailPanel');
+  if (!panel) return;
+  panel.style.display = 'block';
+
+  const { routeByName, shapes, routeById } = _gtfsData;
+  const typeIcon = { 0:'🚋', 1:'🚇', 2:'🚆', 3:'🚌', 4:'⛴️', 11:'🚎', 12:'🚈' };
+
+  const chips = lineNames.map(name => {
+    const r = routeByName[name];
+    const bg    = r ? r.color : '#555';
+    const icon  = r ? (typeIcon[r.type] || '🚏') : '🚏';
+    return `<button onclick="drawGtfsRoute('${(r && r.id)||''}','${name}')"
+      style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:none;background:${bg};color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin:3px;">
+      ${icon} ${name}
+    </button>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <span style="font-weight:700;font-size:15px;color:var(--text);">🚏 ${stop.name}</span>
+      <button onclick="clearGtfsRoute()" style="margin-left:auto;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:12px;font-size:12px;cursor:pointer;">✕ Route</button>
+      <button onclick="document.getElementById('stopDetailPanel').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0;">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Tippe eine Linie um die Route zu sehen:</div>
+    <div>${chips}</div>`;
+}
+
+function drawGtfsRoute(routeId, routeName) {
+  if (!_gtfsData || !_gtfsRouteLayer) return;
+  _gtfsRouteLayer.clearLayers();
+  // Route-ID suchen (per Name wenn nötig)
+  let rid = routeId;
+  if (!rid) {
+    const r = _gtfsData.routeByName[routeName];
+    if (r) rid = r.id;
+  }
+  const shape = _gtfsData.shapes[rid];
+  if (!shape || !shape.length) {
+    alert('Keine Route-Daten für ' + routeName);
+    return;
+  }
+  const r = _gtfsData.routeById[rid];
+  const typeLineColor = { 0:'#FFD700', 1:'#E53935', 2:'#E53935', 3:'#1E88E5', 4:'#1E88E5', 11:'#FFD700', 12:'#E53935' };
+  const color = r ? (typeLineColor[r.type] || '#FFD700') : '#FFD700';
+  L.polyline(shape, { color, weight: 5, opacity: 0.95 }).addTo(_gtfsRouteLayer);
+  // Stops ausblenden während Route angezeigt wird
+  if (_gtfsStopLayer) _gtfsStopLayer.eachLayer(l => l.setStyle({ opacity: 0, fillOpacity: 0 }));
+  // Karte auf Route zoomen
+  const poly = L.polyline(shape);
+  window._transitMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
+}
+
+function clearGtfsRoute() {
+  if (_gtfsRouteLayer) _gtfsRouteLayer.clearLayers();
+  // Stops wieder einblenden
+  if (_gtfsStopLayer) _gtfsStopLayer.eachLayer(l => l.setStyle({ opacity: 1, fillOpacity: 0.9 }));
 }
 
 function closeMapModal() {
