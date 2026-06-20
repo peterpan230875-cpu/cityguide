@@ -3136,7 +3136,8 @@ async function loadGtfsMap(basePath) {
       _gtfsData = { base: basePath, stops, routes, stopRoutes, shapes, routeById, routeByName };
     }
   } catch(e) {
-    container.innerHTML = '<div style="color:var(--text2);padding:24px;text-align:center;">Fehler beim Laden der GTFS-Daten.</div>';
+    console.error('GTFS load error:', e);
+    container.innerHTML = `<div style="color:var(--text2);padding:24px;text-align:center;">Fehler beim Laden der GTFS-Daten.<br><small style="opacity:.6;font-size:11px;">${e.message || e}</small></div>`;
     return;
   }
 
@@ -3209,7 +3210,15 @@ async function loadGtfsMap(basePath) {
       fillColor: color, fillOpacity: 0.9,
     });
     circle._stopType = stopType;
-    circle.on('click', () => showGtfsStopDetail(s, lines));
+    circle.on('click', () => {
+      if (lines.length === 1) {
+        const r = routeByName[lines[0]];
+        drawGtfsRoute(r ? r.id : '', lines[0]);
+        showGtfsStopDetail(s, lines);
+      } else {
+        showGtfsStopDetail(s, lines);
+      }
+    });
     circle.addTo(_gtfsStopLayer);
     if (!_stopsByType[stopType]) _stopsByType[stopType] = [];
     _stopsByType[stopType].push(circle);
